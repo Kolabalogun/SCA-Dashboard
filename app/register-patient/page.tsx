@@ -1,4 +1,3 @@
-import LoginForm from "@/components/forms/LoginForm";
 import { PatientForm } from "@/components/forms/PatientForm";
 
 import Image from "next/image";
