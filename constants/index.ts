@@ -1,41 +1,67 @@
 export const GenderOptions = ["Male", "Female", "Other"];
 
+export const DrugsOptions = ["Tobacco", "Alcohol", "Cannabis", "Cocaine"];
+
+export const maritialStatusOptions = ["Single", "Married", "Other"];
+
 export const PatientFormDefaultValues = {
-  firstName: "",
-  lastName: "",
+  name: "",
   email: "",
   phone: "",
   birthDate: new Date(Date.now()),
+  maritialStatus: "Single" as MaritalStatus,
   gender: "Male" as Gender,
   address: "",
   occupation: "",
-  emergencyContactName: "",
-  emergencyContactNumber: "",
+  occupationHistory: "",
+
+  // Medical Information
   primaryPhysician: "",
-  insuranceProvider: "",
-  insurancePolicyNumber: "",
   allergies: "",
   currentMedication: "",
   familyMedicalHistory: "",
   pastMedicalHistory: "",
+
+  // Drug Abuse
+  typeOfDrugUse: "",
+  otherDrugs: "",
+  quantityDrugsConsumedDaily: "",
+  financialImplicationsOfDrugAbuse: "",
+  factorsThatLedToTheAbuse: "",
+
+  // Doctor Information
+  primaryDoctor: "",
+  familyMembersComplaints: "",
+  socialWorkerFindings: "",
+  patientNeeds: "",
+  diagnosis: "",
+  newMedication: "",
+  rehabilitationRecommendation: "",
+
+  // Identification
   identificationType: "Birth Certificate",
   identificationNumber: "",
   identificationDocument: [],
   treatmentConsent: false,
   disclosureConsent: false,
   privacyConsent: false,
+
+  // Next of Kin
+  nextOfKinName: "",
+  nextOfKinNumber: "",
+  nextOfKinOccupation: "",
+  nextOfKinAddress: "",
+  nextOfKinRelationship: "",
+  relativeMaritialStatus: "Single" as MaritalStatus,
 };
 
 export const IdentificationTypes = [
   "Birth Certificate",
   "Driver's License",
   "Medical Insurance Card/Policy",
-  "Military ID Card",
   "National Identity Card",
   "Passport",
   "Resident Alien Card (Green Card)",
-  "Social Security Card",
-  "State ID Card",
   "Student ID Card",
   "Voter ID Card",
 ];

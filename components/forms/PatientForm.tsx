@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,9 +61,9 @@ export const PatientForm = () => {
       if (docRef.id) {
         router.push(`/patients/${docRef.id}/register`);
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("Error adding document: ", error);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -72,7 +73,9 @@ export const PatientForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
         <section className="mb-12 space-y-4">
           <h1 className="header">Hi there 👋</h1>
-          <p className="text-dark-700">Get started with appointments.</p>
+          <p className="text-dark-700">
+            Get started with Patient's Registration.
+          </p>
         </section>
 
         <CustomFormField

@@ -32,25 +32,54 @@ export const CreateEmployeeFormValidation = z.object({
       (password) => /[@$!%*?&]/.test(password),
       "Password must contain at least one special character"
     ), // Special character
-
-  birthDate: z.coerce.date(),
-  gender: z.enum(["Male", "Female", "Other"]),
-  address: z
-    .string()
-    .min(5, "Address must be at least 5 characters")
-    .max(500, "Address must be at most 500 characters"),
   occupation: z
     .string()
     .min(2, "Occupation must be at least 2 characters")
     .max(500, "Occupation must be at most 500 characters"),
-  emergencyContactName: z
+  primaryEducation: z
+    .string()
+    .min(2, "Field must be at least 2 characters")
+    .max(500, "Field must be at most 500 characters"),
+  secondaryEducation: z
+    .string()
+    .min(2, "Field must be at least 2 characters")
+    .max(500, "Field must be at most 500 characters"),
+  tertiaryEducation: z
+    .string()
+    .min(2, "Field must be at least 2 characters")
+    .max(500, "Field must be at most 500 characters"),
+  vocationalEducation: z
+    .string()
+    .min(2, "Field must be at least 2 characters")
+    .max(500, "Field must be at most 500 characters"),
+  birthDate: z.coerce.date(),
+  gender: z.enum(["Male", "Female", "Other"]),
+  maritialStatus: z.enum(["Single", "Married", "Other"]),
+  address: z
+    .string()
+    .min(5, "Address must be at least 5 characters")
+    .max(500, "Address must be at most 500 characters"),
+  nextOfKinAddress: z
+    .string()
+    .min(5, "Address must be at least 5 characters")
+    .max(500, "Address must be at most 500 characters"),
+  nextOfKinRelationship: z
+    .string()
+    .min(5, "Field must be at least 5 characters")
+    .max(500, "Field must be at most 500 characters"),
+  nextOfKinOccupation: z
+    .string()
+    .min(5, "Field must be at least 5 characters")
+    .max(500, "Field must be at most 500 characters"),
+
+  nextOfKinName: z
     .string()
     .min(2, "Contact name must be at least 2 characters")
     .max(50, "Contact name must be at most 50 characters"),
-  emergencyContactNumber: z
+  nextOfKinNumber: z
     .string()
     .refine(
-      (emergencyContactNumber) => /^\+\d{10,15}$/.test(emergencyContactNumber),
+      (nextOfKinNumber) => /^\+\d{10,15}$/.test(nextOfKinNumber),
       "Invalid phone number"
     ),
 
@@ -112,6 +141,8 @@ export const PatientFormValidation = z.object({
     .refine((phone) => /^\d{13,14}$/.test(phone), "Invalid phone number"),
   birthDate: z.coerce.date(),
   gender: z.enum(["Male", "Female", "Other"]),
+  maritialStatus: z.enum(["Single", "Married", "Other"]),
+  relativeMaritialStatus: z.enum(["Single", "Married", "Other"]),
   address: z
     .string()
     .min(5, "Address must be at least 5 characters")
@@ -120,29 +151,58 @@ export const PatientFormValidation = z.object({
     .string()
     .min(2, "Occupation must be at least 2 characters")
     .max(500, "Occupation must be at most 500 characters"),
-  emergencyContactName: z
-    .string()
-    .min(2, "Contact name must be at least 2 characters")
-    .max(50, "Contact name must be at most 50 characters"),
-  emergencyContactNumber: z
-    .string()
-    .refine(
-      (emergencyContactNumber) => /^\d{13,14}$/.test(emergencyContactNumber),
-      "Invalid phone number"
-    ),
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
-  insuranceProvider: z
-    .string()
-    .min(2, "Insurance name must be at least 2 characters")
-    .max(50, "Insurance name must be at most 50 characters"),
-  insurancePolicyNumber: z
-    .string()
-    .min(2, "Policy number must be at least 2 characters")
-    .max(50, "Policy number must be at most 50 characters"),
+  occupationHistory: z.string().optional(),
+
+  primaryPhysician: z.string().min(2, "Select at least one physician"),
+  primaryDoctor: z.string().optional(),
+
+  // Medical Informations
+
   allergies: z.string().optional(),
   currentMedication: z.string().optional(),
   familyMedicalHistory: z.string().optional(),
   pastMedicalHistory: z.string().optional(),
+  familyMembersComplains: z.string().optional(),
+  patientsMembersComplains: z.string().optional(),
+  socialWorkerFindings: z.string().optional(),
+  patientNeeds: z.string().optional(),
+
+  typeofDruguse: z.string().optional(),
+  otherDrugs: z.string().optional(),
+  quantityDrugsConsumedDaily: z.string().optional(),
+  financilaImplicationsOfDrugAbuse: z.string().optional(),
+  factorsThatLedToTheAbuse: z.string().optional(),
+
+  diagnosis: z.string().optional(),
+  newMedication: z.string().optional(),
+  rehabilitationRecommendation: z.string().optional(),
+
+  primaryEducation: z.string().optional(),
+  secondaryEducation: z.string().optional(),
+  tertiaryEducation: z.string().optional(),
+  vocationalEducation: z.string().optional(),
+
+  nextOfKinAddress: z
+    .string()
+    .min(5, "Address must be at least 5 characters")
+    .max(500, "Address must be at most 500 characters"),
+  nextOfKinRelationship: z
+    .string()
+    .min(5, "Field must be at least 5 characters")
+    .max(500, "Field must be at most 500 characters"),
+  nextOfKinOccupation: z
+    .string()
+    .min(5, "Field must be at least 5 characters")
+    .max(500, "Field must be at most 500 characters"),
+
+  nextOfKinName: z
+    .string()
+    .min(2, "Contact name must be at least 2 characters")
+    .max(50, "Contact name must be at most 50 characters"),
+  nextOfKinNumber: z
+    .string()
+    .refine((phone) => /^\d{13,14}$/.test(phone), "Invalid phone number"),
+
   identificationType: z.string().optional(),
   identificationNumber: z.string().optional(),
   identificationDocument: z.custom<File[]>().optional(),

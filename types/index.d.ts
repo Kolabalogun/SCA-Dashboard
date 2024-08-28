@@ -6,6 +6,7 @@ declare type SearchParamProps = {
 };
 
 declare type Gender = "Male" | "Female" | "Other";
+declare type MaritalStatus = "Single" | "Married" | "Other";
 declare type Status = "pending" | "scheduled" | "cancelled";
 
 declare interface EmployeeUserParams {
@@ -19,8 +20,8 @@ declare interface EmployeeUserParams {
   gender: Gender;
   address: string;
   occupation: string;
-  emergencyContactName: string;
-  emergencyContactNumber: string;
+  nextOfKinName: string;
+  nextOfKinNumber: string;
   identificationType: string | undefined;
   identificationNumber: string | undefined;
   identificationDocument: FormData | undefined;
@@ -42,8 +43,8 @@ declare interface RegisterUserParams extends CreateUserParams {
   gender: Gender;
   address: string;
   occupation: string;
-  emergencyContactName: string;
-  emergencyContactNumber: string;
+  nextOfKinName: string;
+  nextOfKinNumber: string;
   primaryPhysician: string;
   insuranceProvider: string;
   insurancePolicyNumber: string;
