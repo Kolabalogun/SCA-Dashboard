@@ -7,10 +7,12 @@ import { Form } from "@/components/ui/form";
 
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginFormValidation } from "@/lib/validation";
-import { useRouter } from "next/navigation";
- 
+import { useRouter, redirect } from "next/navigation";
+import { auth } from "@/config/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useSelector } from "react-redux";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -26,6 +28,12 @@ const LoginForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
+  const { user } = useSelector((state: any) => state.auth);
+
+  useEffect(() => {
+    user && redirect(`/admin/dashboard`);
+  }, [user]);
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof LoginFormValidation>>({
     resolver: zodResolver(LoginFormValidation),
@@ -39,14 +47,24 @@ const LoginForm = () => {
   async function onSubmit(values: z.infer<typeof LoginFormValidation>) {
     console.log(values);
 
+    const { email, password } = values;
+
     setIsLoading(true);
 
     try {
-      //   const userData = { ...values };
-      //   const user = await createUser(userData);
-      //   if (user) router.push(`/patients/${user.$id}/register`);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      console.log("User  logged in successfully!");
+      setIsLoading(false);
+      router.push(`/dashboard`);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   }
 

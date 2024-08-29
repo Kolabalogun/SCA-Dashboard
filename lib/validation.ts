@@ -32,67 +32,6 @@ export const CreateEmployeeFormValidation = z.object({
       (password) => /[@$!%*?&]/.test(password),
       "Password must contain at least one special character"
     ), // Special character
-  occupation: z
-    .string()
-    .min(2, "Occupation must be at least 2 characters")
-    .max(500, "Occupation must be at most 500 characters"),
-  primaryEducation: z
-    .string()
-    .min(2, "Field must be at least 2 characters")
-    .max(500, "Field must be at most 500 characters"),
-  secondaryEducation: z
-    .string()
-    .min(2, "Field must be at least 2 characters")
-    .max(500, "Field must be at most 500 characters"),
-  tertiaryEducation: z
-    .string()
-    .min(2, "Field must be at least 2 characters")
-    .max(500, "Field must be at most 500 characters"),
-  vocationalEducation: z
-    .string()
-    .min(2, "Field must be at least 2 characters")
-    .max(500, "Field must be at most 500 characters"),
-  birthDate: z.coerce.date(),
-  gender: z.enum(["Male", "Female", "Other"]),
-  maritialStatus: z.enum(["Single", "Married", "Other"]),
-  address: z
-    .string()
-    .min(5, "Address must be at least 5 characters")
-    .max(500, "Address must be at most 500 characters"),
-  nextOfKinAddress: z
-    .string()
-    .min(5, "Address must be at least 5 characters")
-    .max(500, "Address must be at most 500 characters"),
-  nextOfKinRelationship: z
-    .string()
-    .min(5, "Field must be at least 5 characters")
-    .max(500, "Field must be at most 500 characters"),
-  nextOfKinOccupation: z
-    .string()
-    .min(5, "Field must be at least 5 characters")
-    .max(500, "Field must be at most 500 characters"),
-
-  nextOfKinName: z
-    .string()
-    .min(2, "Contact name must be at least 2 characters")
-    .max(50, "Contact name must be at most 50 characters"),
-  nextOfKinNumber: z
-    .string()
-    .refine(
-      (nextOfKinNumber) => /^\+\d{10,15}$/.test(nextOfKinNumber),
-      "Invalid phone number"
-    ),
-
-  identificationType: z.string().optional(),
-  identificationNumber: z.string().optional(),
-  identificationDocument: z.custom<File[]>().optional(),
-
-  privacyConsent: z
-    .boolean()
-    .default(false)
-    .refine((value) => value === true, {
-      message: "You must consent to privacy in order to proceed",
-    }),
 });
 
 export const LoginFormValidation = z.object({

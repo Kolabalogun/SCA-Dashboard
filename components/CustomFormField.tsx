@@ -31,6 +31,7 @@ interface CustomProps {
   control: Control<any>;
   fieldType: FormFieldType;
   name: string;
+  readOnly?: boolean;
   placeholder?: string;
   label?: string;
   iconSrc?: string;
@@ -60,6 +61,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
             <Input
               placeholder={props.placeholder}
               {...field}
+              readOnly={props.readOnly}
               className="shad-input border-0"
             />
           </FormControl>
@@ -71,6 +73,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
         <FormControl>
           <PhoneInput
             country="ng"
+            disabled={props.readOnly}
             placeholder={props.placeholder}
             value={field.value as E164Number | undefined}
             onChange={field.onChange}
@@ -99,6 +102,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
           <Textarea
             placeholder={props.placeholder}
             {...field}
+            readOnly={props.readOnly}
             className="shad-textArea"
             disabled={props.disabled}
           />
@@ -113,6 +117,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
               id={props.name}
               checked={field.value}
               onCheckedChange={field.onChange}
+              disabled={props.readOnly}
             />
             <label htmlFor={props.name} className="checkbox-label">
               {props.label}
@@ -134,7 +139,10 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
             <ReactDatePicker
               showTimeSelect={props.showTimeSelect ?? false}
               selected={field.value}
-              onChange={(date: Date) => field.onChange(date)}
+              disabled={props.readOnly}
+              onChange={(date: Date | null) => {
+                field.onChange(date);
+              }}
               timeInputLabel="Time:"
               dateFormat={props.dateFormat ?? "MM/dd/yyyy"}
               wrapperClassName="date-picker"
@@ -145,7 +153,12 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.SELECT:
       return (
         <FormControl>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select
+            disabled={props.readOnly}
+            onValueChange={field.onChange}
+            defaultValue={field.value}
+            value={field.value}
+          >
             <FormControl>
               <SelectTrigger className="shad-select-trigger">
                 <SelectValue placeholder={props.placeholder} />

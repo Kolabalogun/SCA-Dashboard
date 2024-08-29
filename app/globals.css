@@ -56,6 +56,10 @@
     @apply text-18-bold md:text-24-bold;
   }
 
+  .sub-sub-header {
+    @apply text-14-medium;
+  }
+
   .container {
     @apply relative flex-1 overflow-y-auto px-[5%];
   }

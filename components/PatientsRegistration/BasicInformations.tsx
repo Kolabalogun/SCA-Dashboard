@@ -16,9 +16,10 @@ import Image from "next/image";
 
 type Props = {
   form: UseFormReturn<any>;
+  editProfile: boolean;
 };
 
-const BasicInformations = ({ form }: Props) => {
+const BasicInformations = ({ form, editProfile }: Props) => {
   return (
     <div className="space-y-9">
       <section className="space-y-6">
@@ -36,6 +37,7 @@ const BasicInformations = ({ form }: Props) => {
             placeholder="John Doe"
             iconSrc="/assets/icons/user.svg"
             iconAlt="user"
+            readOnly={!editProfile}
           />
           <CustomFormField
             fieldType={FormFieldType.INPUT}
@@ -45,6 +47,7 @@ const BasicInformations = ({ form }: Props) => {
             placeholder="johndoe@gmail.com"
             iconSrc="/assets/icons/email.svg"
             iconAlt="email"
+            readOnly={!editProfile}
           />
         </div>
 
@@ -56,30 +59,35 @@ const BasicInformations = ({ form }: Props) => {
             name="phone"
             label="Phone Number"
             placeholder="(555) 123-4567"
+            readOnly={!editProfile}
           />
           <CustomFormField
             fieldType={FormFieldType.SKELETON}
             control={form.control}
             name="maritialStatus"
             label="Maritial Status"
-            renderSkeleton={(field) => (
-              <FormControl>
-                <RadioGroup
-                  className="flex h-11 gap-6 xl:justify-between"
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  {maritialStatusOptions.map((option, i) => (
-                    <div key={option + i} className="radio-group">
-                      <RadioGroupItem value={option} id={option} />
-                      <Label htmlFor={option} className="cursor-pointer">
-                        {option}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </FormControl>
-            )}
+            renderSkeleton={(field) => {
+              return (
+                <FormControl>
+                  <RadioGroup
+                    disabled={!editProfile}
+                    className="flex h-11 gap-6 xl:justify-between"
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    {maritialStatusOptions.map((option, i) => (
+                      <div key={option + i} className="radio-group">
+                        <RadioGroupItem value={option} id={option} />
+                        <Label htmlFor={option} className="cursor-pointer">
+                          {option}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+              );
+            }}
           />
         </div>
 
@@ -90,6 +98,7 @@ const BasicInformations = ({ form }: Props) => {
             control={form.control}
             name="birthDate"
             label="Date of birth"
+            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -100,9 +109,11 @@ const BasicInformations = ({ form }: Props) => {
             renderSkeleton={(field) => (
               <FormControl>
                 <RadioGroup
+                  disabled={!editProfile}
                   className="flex h-11 gap-6 xl:justify-between"
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                 >
                   {GenderOptions.map((option, i) => (
                     <div key={option + i} className="radio-group">
@@ -126,6 +137,7 @@ const BasicInformations = ({ form }: Props) => {
             name="address"
             label="Address"
             placeholder="14 street, New york, NY - 5101"
+            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -134,6 +146,7 @@ const BasicInformations = ({ form }: Props) => {
             name="occupation"
             label="Occupation"
             placeholder=" Software Engineer"
+            readOnly={!editProfile}
           />
         </div>
 
@@ -143,6 +156,7 @@ const BasicInformations = ({ form }: Props) => {
           name="occupationHistory"
           label="Occupation History"
           placeholder="Enter Patient Occupation History"
+          readOnly={!editProfile}
         />
       </section>
       <section className="space-y-6">
@@ -158,6 +172,7 @@ const BasicInformations = ({ form }: Props) => {
             name="nextOfKinName"
             label="Name of Next of KIN"
             placeholder="Next of KIN's name"
+            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -166,10 +181,10 @@ const BasicInformations = ({ form }: Props) => {
             name="nextOfKinNumber"
             label="Phone Number"
             placeholder="(555) 123-4567"
+            readOnly={!editProfile}
           />
         </div>
 
-        {/* INSURANCE & POLICY NUMBER */}
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
@@ -177,6 +192,7 @@ const BasicInformations = ({ form }: Props) => {
             name="nextOfKinAddress"
             label="Address"
             placeholder="14 street, New york, NY - 5101"
+            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -190,6 +206,8 @@ const BasicInformations = ({ form }: Props) => {
                   className="flex h-11 gap-6 xl:justify-between"
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
+                  disabled={!editProfile}
                 >
                   {maritialStatusOptions.map((option, i) => (
                     <div key={option + i} className="radio-group">
@@ -213,6 +231,7 @@ const BasicInformations = ({ form }: Props) => {
             name="nextOfKinRelationship"
             label="Relationship"
             placeholder="Parent?"
+            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -221,6 +240,7 @@ const BasicInformations = ({ form }: Props) => {
             name="nextOfKinOccupation"
             label="Occupation"
             placeholder=" Software Engineer"
+            readOnly={!editProfile}
           />
         </div>
       </section>
@@ -237,6 +257,7 @@ const BasicInformations = ({ form }: Props) => {
             name="primaryEducation"
             label="Primary Education"
             placeholder="Ogunmepon Nursery & Primary"
+            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -245,6 +266,7 @@ const BasicInformations = ({ form }: Props) => {
             name="secondaryEducation"
             label="Secondary Education"
             placeholder="Ajanlekoko High School"
+            readOnly={!editProfile}
           />
         </div>
 
@@ -256,6 +278,7 @@ const BasicInformations = ({ form }: Props) => {
             name="tertiaryEducation"
             label="Tertiary Education"
             placeholder="Mafikubolaje University"
+            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -263,7 +286,8 @@ const BasicInformations = ({ form }: Props) => {
             control={form.control}
             name="vocationalEducation"
             label="Vocational Education (if any)"
-            placeholder="Yaba Vocational Transformation"
+            placeholder="Olowokinpelaye Vocational Transformation"
+            readOnly={!editProfile}
           />
         </div>
       </section>
@@ -279,6 +303,7 @@ const BasicInformations = ({ form }: Props) => {
           name="identificationType"
           label="Identification Type"
           placeholder="Select identification type"
+          readOnly={!editProfile}
         >
           {IdentificationTypes.map((type, i) => (
             <SelectItem key={type + i} value={type}>
@@ -293,6 +318,7 @@ const BasicInformations = ({ form }: Props) => {
           name="identificationNumber"
           label="Identification Number"
           placeholder="123456789"
+          readOnly={!editProfile}
         />
 
         <CustomFormField
@@ -315,6 +341,7 @@ const BasicInformations = ({ form }: Props) => {
           name="primaryPhysician"
           label="Primary care professional"
           placeholder="Select a physician"
+          readOnly={!editProfile}
         >
           {Doctors.map((doctor, i) => (
             <SelectItem key={doctor.name + i} value={doctor.name}>
@@ -340,6 +367,7 @@ const BasicInformations = ({ form }: Props) => {
           control={form.control}
           name="treatmentConsent"
           label="Patient consent to receive treatment for their health condition."
+          readOnly={!editProfile}
         />
 
         <CustomFormField
@@ -348,6 +376,7 @@ const BasicInformations = ({ form }: Props) => {
           name="disclosureConsent"
           label="Patient consent to the use and disclosure of my health
             information for their treatment purposes."
+          readOnly={!editProfile}
         />
 
         <CustomFormField
@@ -356,6 +385,7 @@ const BasicInformations = ({ form }: Props) => {
           name="privacyConsent"
           label="Patient acknowledge that have reviewed and agree to the
             privacy policy"
+          readOnly={!editProfile}
         />
       </section>
     </div>

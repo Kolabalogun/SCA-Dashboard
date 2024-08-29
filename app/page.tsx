@@ -22,7 +22,7 @@ export default function Home() {
             <h1 className="font-bold text-3xl">SCA</h1>
           </div>
 
-          <PatientForm />
+          <LoginForm />
 
           <div className="text-14-regular mt-20 flex justify-between">
             <p className="justify-items-end text-dark-500 xl:text-left">

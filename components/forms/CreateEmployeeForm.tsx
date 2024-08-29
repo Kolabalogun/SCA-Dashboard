@@ -4,17 +4,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
-
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { useEffect, useState } from "react";
 import { CreateEmployeeFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import { createEmployee } from "@/lib/actions/employee.actions";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/config/firebase";
-import axios from "axios";
-import registerUser from "@/api/createEmployee";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db } from "@/config/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setCredentials } from "@/redux/features/authSlice";
+import { useDispatch } from "react-redux";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -30,6 +29,8 @@ const CreateEmployeeForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setTimeout(() => {
@@ -54,35 +55,39 @@ const CreateEmployeeForm = () => {
   ) => {
     setIsLoading(true);
 
-    // try {
-    //   const user = {
-    //     email: values.email,
-    //     password: values.password,
-    //     firstName: values.firstName,
-    //     lastName: values.lastName,
-    //     phone: values.phone,
-    //   };
+    const { email, password } = values;
 
-    //   const data = await registerUser(user);
+    try {
+      const userData = {
+        email: values.email,
+        password: values.password,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phone: values.phone,
+        createdAt: serverTimestamp(),
+      };
 
-    //   console.log("User created successfully:", data);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
 
-    //   if (data) {
-    //     // router.push(`/patients/${newUser.$id}/register`);
-    //   }
-    // } catch (error) {
-    //   console.error(error);
+      await setDoc(doc(db, "users", user.uid), userData);
 
-    //   if (axios.isAxiosError(error)) {
-    //     const errorMessage =
-    //       error.response?.data?.error || "An unknown error occurred";
-    //     setError(errorMessage);
-    //   } else {
-    //     setError("An unknown error occurred");
-    //   }
-    // }
+      console.log("User created successfully!");
 
-    setIsLoading(false);
+      dispatch(setCredentials(user));
+
+      router.push(`/`);
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+
+      setError("An unknown error occurred");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -142,7 +147,7 @@ const CreateEmployeeForm = () => {
             iconSrc="/assets/icons/key.svg"
             iconAlt="user"
           />
-          <SubmitButton isLoading={isLoading}>Procees</SubmitButton>
+          <SubmitButton isLoading={isLoading}>Proceed</SubmitButton>
         </form>
       </Form>
     </div>

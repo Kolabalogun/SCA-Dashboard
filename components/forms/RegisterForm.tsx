@@ -34,8 +34,6 @@ const RegisterForm = ({ user }: { user: User }) => {
     },
   });
 
-  const values = form.getValues();
-
   const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
     console.log(values);
 
@@ -113,18 +111,16 @@ const RegisterForm = ({ user }: { user: User }) => {
 
       // Create a reference to the document
       const docRef = doc(db, "patients", user.id);
- 
+
       // Update the document
       await updateDoc(docRef, patient);
-
 
       if (step === 1) {
         setStep(2);
         setIsLoading(false);
       } else {
-    
         router.replace(`/success/${patient.name}`);
-        
+
         setIsLoading(false);
       }
     } catch (error) {
@@ -159,16 +155,14 @@ const RegisterForm = ({ user }: { user: User }) => {
         </section>
 
         {step === 1 ? (
-          <BasicInformations form={form} />
+          <BasicInformations form={form} editProfile={true} />
         ) : (
-          <MedicalInfomations form={form} />
+          <MedicalInfomations form={form} editProfile={true} />
         )}
 
-        {/* <div className="mt-5" onClick={() => onSubmit(values)}> */}
         <SubmitButton isLoading={isLoading}>
           {step === 1 ? "Continue" : "Submit"}
         </SubmitButton>
-        {/* </div> */}
       </form>
 
       {step === 2 && (
