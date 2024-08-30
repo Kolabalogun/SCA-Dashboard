@@ -13,7 +13,7 @@ import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, db } from "@/config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setCredentials } from "@/redux/features/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -29,6 +29,7 @@ const CreateEmployeeForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { user } = useSelector((state: any) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -65,6 +66,7 @@ const CreateEmployeeForm = () => {
         lastName: values.lastName,
         phone: values.phone,
         createdAt: serverTimestamp(),
+        registeredBy: `${user?.firstName} ${user?.lastName}`,
       };
 
       const userCredential = await createUserWithEmailAndPassword(
@@ -72,13 +74,13 @@ const CreateEmployeeForm = () => {
         email,
         password
       );
-      const user = userCredential.user;
+      const res = userCredential.user;
 
-      await setDoc(doc(db, "users", user.uid), userData);
+      await setDoc(doc(db, "users", res.uid), userData);
 
       console.log("User created successfully!");
 
-      dispatch(setCredentials(user));
+      dispatch(setCredentials(res));
 
       router.push(`/`);
       setIsLoading(false);

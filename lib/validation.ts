@@ -142,6 +142,21 @@ export const PatientFormValidation = z.object({
     .string()
     .refine((phone) => /^\d{13,14}$/.test(phone), "Invalid phone number"),
 
+  dateOfAdmission: z.coerce.date().optional(),
+
+  stayPeriods: z.string().optional(),
+
+  paymentReceived: z.number().optional(),
+  paymentHistory: z
+    .array(
+      z.object({
+        id: z.string(),
+        paymentReceived: z.number(),
+        formDate: z.string(),
+      })
+    )
+    .optional(),
+
   identificationType: z.string().optional(),
   identificationNumber: z.string().optional(),
   identificationDocument: z.custom<File[]>().optional(),

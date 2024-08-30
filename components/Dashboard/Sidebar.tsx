@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   Drawer,
@@ -7,10 +8,10 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  useDisclosure,
   Button,
 } from "@chakra-ui/react";
 import { HomeIcon, Menu, MenuSquareIcon, Users } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const Sidebar = ({
   isOpen,
@@ -21,6 +22,40 @@ const Sidebar = ({
   onOpen: () => void;
   onClose: () => void;
 }) => {
+  const links = [
+    {
+      icon: <HomeIcon size={20} />,
+      title: "Home",
+      link: "/admin/dashboard",
+    },
+    {
+      icon: <Users size={20} />,
+      title: "Patients",
+      link: "/admin/dashboard/patients",
+    },
+    {
+      icon: <Users size={20} />,
+      title: "Doctors",
+      link: "/admin/dashboard/profile",
+    },
+    {
+      icon: <Users size={20} />,
+      title: "Staffs",
+      link: "/admin/dashboard/profile",
+    },
+    {
+      icon: <Users size={20} />,
+      title: "Revenue",
+      link: "/admin/dashboard/profile",
+    },
+    {
+      icon: <Users size={20} />,
+      title: "Expenses",
+      link: "/admin/dashboard/profile",
+    },
+  ];
+
+  const pathname = usePathname();
   return (
     <>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
@@ -49,53 +84,25 @@ const Sidebar = ({
         </DrawerContent>
       </Drawer>
 
-      <div className="w-32 bg-[#0d0f10] shadow-md text-white flex justify-between flex-col space-y-12  px-4 items-center pt-8 pb-10 ">
+      <div className="w-32 bg-[#0d0f10] shadow-md text-white flex justify-between flex-col space-y-12  px-2 items-center pt-8 pb-10 ">
         <div onClick={onOpen} className="mb-10 cursor-pointer">
           <Menu size={24} />
         </div>
-        <div className="space-y-12 flex-1">
-          <Link
-            className="flex flex-col gap-2 items-center"
-            href="/admin/dashboard"
-          >
-            <HomeIcon size={24} />
-            <p className="text-sm">Home</p>
-          </Link>
-          <Link
-            className="flex flex-col gap-2 items-center"
-            href="/admin/dashboard/patients"
-          >
-            <Users size={24} />
-            <p className="text-sm">Patients</p>
-          </Link>
-          <Link
-            className="flex flex-col gap-2 items-center"
-            href="/admin/dashboard/profile"
-          >
-            <HomeIcon size={24} />
-            <p className="text-sm">Doctors</p>
-          </Link>
-          <Link
-            className="flex flex-col gap-2 items-center"
-            href="/admin/dashboard/profile"
-          >
-            <HomeIcon size={24} />
-            <p className="text-sm">Staffs</p>
-          </Link>
-          <Link
-            className="flex flex-col gap-2 items-center"
-            href="/admin/dashboard/profile"
-          >
-            <HomeIcon size={24} />
-            <p className="text-sm">Revenue</p>
-          </Link>
-          <Link
-            className="flex flex-col gap-2 items-center"
-            href="/admin/dashboard/profile"
-          >
-            <HomeIcon size={24} />
-            <p className="text-sm">Expenses</p>
-          </Link>
+        <div className="space-y-9 flex-1">
+          {links.map((link, i) => (
+            <Link
+              key={i}
+              className={`flex rounded py-4 px-6 ${
+                pathname === link.link
+                  ? "bg-gradient-to-r from-[#242a2b] via-[#1d2225] to-[#171b1e]"
+                  : "hover:bg-gradient-to-r from-[#242a2b] via-[#1d2225] to-[#171b1e]"
+              }     flex-col gap-2 items-center `}
+              href={link.link}
+            >
+              {link.icon}
+              <p className="text-xs">{link.title}</p>
+            </Link>
+          ))}
         </div>
       </div>
     </>

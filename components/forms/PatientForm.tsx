@@ -12,15 +12,16 @@ import { UserFormValidation } from "@/lib/validation";
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
-import registerUser from "@/api/createEmployee";
-import axios from "axios";
+
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
+import { useSelector } from "react-redux";
 
 export const PatientForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { user } = useSelector((state: any) => state.auth);
 
   useEffect(() => {
     setTimeout(() => {
@@ -56,6 +57,7 @@ export const PatientForm = () => {
         email,
         phone,
         createdAt: new Date(),
+        registeredBy: `${user?.firstName} ${user?.lastName}`,
       });
 
       if (docRef.id) {

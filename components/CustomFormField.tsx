@@ -31,6 +31,7 @@ interface CustomProps {
   control: Control<any>;
   fieldType: FormFieldType;
   name: string;
+  type?: string;
   readOnly?: boolean;
   placeholder?: string;
   label?: string;
@@ -51,8 +52,20 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
           {props.iconSrc && (
             <Image
               src={props.iconSrc}
-              height={props.iconSrc === "/assets/icons/key.svg" ? 16 : 24}
-              width={props.iconSrc === "/assets/icons/key.svg" ? 16 : 24}
+              height={
+                props.iconSrc === "/assets/icons/key.svg"
+                  ? 16
+                  : props.iconSrc === "/assets/icons/naira.svg"
+                  ? 16
+                  : 24
+              }
+              width={
+                props.iconSrc === "/assets/icons/key.svg"
+                  ? 16
+                  : props.iconSrc === "/assets/icons/naira.svg"
+                  ? 16
+                  : 24
+              }
               alt={props.iconAlt || "icon"}
               className="ml-2"
             />
@@ -61,6 +74,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
             <Input
               placeholder={props.placeholder}
               {...field}
+              type={props.type === "number" ? "number" : "text"}
               readOnly={props.readOnly}
               className="shad-input border-0"
             />

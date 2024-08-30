@@ -53,7 +53,26 @@ export const PatientFormDefaultValues = {
   nextOfKinAddress: "",
   nextOfKinRelationship: "",
   relativeMaritialStatus: "Single" as MaritalStatus,
+
+  // Payment
+  dateOfAdmission: new Date(Date.now()),
+  stayPeriods: "",
+  paymentReceived: "",
+  paymentHistory: [],
+  otherPaymentInformation: {},
 };
+
+export const stayPeriods = [
+  "1 month",
+  "2 months",
+  "3 months",
+  "6 months",
+  "12 months",
+  "15 months",
+  "18 months",
+  "24 months",
+  "2 years +",
+];
 
 export const IdentificationTypes = [
   "Birth Certificate",

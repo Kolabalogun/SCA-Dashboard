@@ -9,7 +9,7 @@ import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { useEffect, useState } from "react";
 import { LoginFormValidation } from "@/lib/validation";
-import { useRouter, redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { auth } from "@/config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useSelector } from "react-redux";
@@ -25,14 +25,8 @@ export enum FormFieldType {
 }
 
 const LoginForm = () => {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
-  const { user } = useSelector((state: any) => state.auth);
-
-  useEffect(() => {
-    user && redirect(`/admin/dashboard`);
-  }, [user]);
+  const router = useRouter();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof LoginFormValidation>>({

@@ -17,12 +17,13 @@ import BasicInformations from "../PatientsRegistration/BasicInformations";
 import MedicalInfomations from "../PatientsRegistration/MedicalInfomations";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "lucide-react";
-import { log } from "node:console";
+
+import PaymentInformations from "../PatientsRegistration/PaymentInformations";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(3);
 
   const form = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
@@ -118,6 +119,9 @@ const RegisterForm = ({ user }: { user: User }) => {
       if (step === 1) {
         setStep(2);
         setIsLoading(false);
+      } else if (step === 2) {
+        setStep(3);
+        setIsLoading(false);
       } else {
         router.replace(`/success/${patient.name}`);
 
@@ -147,21 +151,39 @@ const RegisterForm = ({ user }: { user: User }) => {
       >
         <section className="space-y-4">
           <h1 className="header">
-            {step === 1 ? "Welcome 👋" : "Medications 🩺"}
+            {step === 1
+              ? "Welcome 👋"
+              : step === 2
+              ? "Medications 🩺"
+              : "Payment 📇"}
           </h1>
           <p className="text-dark-700">
-            Enter {step === 1 ? "Patient" : "Medical"} Informations.
+            Enter {step === 1 ? "Patient" : step === 2 ? "Medical" : "Payment"}{" "}
+            Informations.
           </p>
         </section>
 
         {step === 1 ? (
           <BasicInformations form={form} editProfile={true} />
-        ) : (
+        ) : step === 2 ? (
           <MedicalInfomations form={form} editProfile={true} />
+        ) : (
+          <PaymentInformations form={form} editProfile={true} />
+        )}
+
+        {step === 3 && (
+          <div className="mb-5 flex justify-start ">
+            <Button
+              className="flex bg-green-700 items-center gap-2 px-0"
+              type="submit"
+            >
+              Skip
+            </Button>
+          </div>
         )}
 
         <SubmitButton isLoading={isLoading}>
-          {step === 1 ? "Continue" : "Submit"}
+          {step !== 3 ? "Continue" : "Submit"}
         </SubmitButton>
       </form>
 

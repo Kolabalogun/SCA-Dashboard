@@ -1,9 +1,19 @@
-import { PatientForm } from "@/components/forms/PatientForm";
+"use client";
 
+import { PatientForm } from "@/components/forms/PatientForm";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function Home() {
+  const { user } = useSelector((state: any) => state.auth);
+
+  useEffect(() => {
+    !user && redirect(`/`);
+  }, [user]);
+
   return (
     <div className="flex h-screen max-h-screen">
       {/* OTP  */}

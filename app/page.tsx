@@ -1,10 +1,19 @@
-import LoginForm from "@/components/forms/LoginForm";
-import { PatientForm } from "@/components/forms/PatientForm";
+"use client";
 
+import LoginForm from "@/components/forms/LoginForm";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function Home() {
+  const { user } = useSelector((state: any) => state.auth);
+
+  useEffect(() => {
+    user && redirect(`/admin/dashboard`);
+  }, [user]);
+
   return (
     <div className="flex h-screen max-h-screen">
       {/* OTP  */}
@@ -17,7 +26,7 @@ export default function Home() {
               alt="logo"
               height={24}
               width={24}
-              className="  h-10 w-fit"
+              className="h-10 w-fit"
             />
             <h1 className="font-bold text-3xl">SCA</h1>
           </div>

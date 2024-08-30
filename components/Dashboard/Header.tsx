@@ -6,13 +6,16 @@ const Header = () => {
   return (
     <header className="admin-header mb-10">
       <Link href="/" className="cursor-pointer">
-        <Image
-          src="/assets/icons/logo-full.svg"
-          height={32}
-          width={162}
-          alt="logo"
-          className="h-8 w-fit"
-        />
+        <div className="flex gap-4 items-center flex-row">
+          <Image
+            src={"/assets/icons/logo-icon.svg"}
+            alt="logo"
+            height={24}
+            width={24}
+            className="  h-10 w-fit"
+          />
+          <h1 className="font-bold text-3xl">SCA</h1>
+        </div>
       </Link>
 
       <p className="text-16-semibold">Admin Dashboard</p>

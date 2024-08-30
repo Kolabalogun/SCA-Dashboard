@@ -41,12 +41,6 @@ const Dashboard = () => {
     fetchPatients();
   }, []);
 
-  const appointments = {
-    scheduledCount: 0,
-    cancelledCount: 0,
-    pendingCount: 0,
-    documents: [],
-  };
   return (
     <div className=" flex flex-col space-y-14">
       <main className="admin-main">
