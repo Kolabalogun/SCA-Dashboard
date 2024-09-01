@@ -15,3 +15,8 @@ export { default as PendingBg } from "./pending-bg.png";
 export { default as OnboardingBg } from "./onboarding-img.png";
 
 export { default as RegisterImg } from "./register-img.png";
+
+export { default as PatientsIcon } from "./group.png";
+export { default as ExpensesIcon } from "./expenses.png";
+export { default as Revenue } from "./naira.png";
+export { default as Staff } from "./staffs.png";

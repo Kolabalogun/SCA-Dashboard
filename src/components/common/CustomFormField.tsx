@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Calender } from "@/assets/icons";
 
 interface CustomProps {
   control: Control<any>;
@@ -139,7 +140,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <div className="flex rounded-md border border-dark-500 bg-dark-400">
           <img
-            src="/src/assets/icons/calendar.svg"
+            src={Calender}
             height={24}
             width={24}
             alt="user"

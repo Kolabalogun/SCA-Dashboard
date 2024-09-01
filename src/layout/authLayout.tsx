@@ -1,6 +1,7 @@
 import { LogoIcon } from "@/assets/icons";
 import { OnboardingBg } from "@/assets/images";
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
 type Props = {
   children: ReactNode;
@@ -28,6 +29,9 @@ const AuthLayout = ({ children }: Props) => {
             <p className="justify-items-end text-dark-500 xl:text-left">
               © 2024 Shayofunmi Care Agency
             </p>
+            <Link to={"/dashboard"} className="text-green-500">
+              Dashboard
+            </Link>
           </div>
         </div>
       </section>

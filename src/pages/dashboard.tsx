@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useAppContext } from "@/contexts/AppContext";
 import { useEffect, useState } from "react";
 import { StatCard } from "@/components/common/StatCard";
+import { ExpensesIcon, PatientsIcon, Revenue, Staff } from "@/assets/images";
 
 const Dashboard = () => {
   const { user } = useSelector((state: any) => state.auth);
@@ -55,25 +56,25 @@ const Dashboard = () => {
             type="appointments"
             count={adminData?.totalPatients || 0}
             label="Total Patients"
-            icon={"/assets/icons/appointments.svg"}
+            icon={PatientsIcon}
           />
           <StatCard
             type="pending"
             count={adminData?.totalRevenue || 0}
             label="Total Revenue"
-            icon={"/assets/icons/pending.svg"}
+            icon={Revenue}
           />
           <StatCard
-            type="pending"
+            type="cancelled"
             count={adminData?.totalExpenses || 0}
             label="Total Expenditure"
-            icon={"/assets/icons/pending.svg"}
+            icon={ExpensesIcon}
           />
           <StatCard
             type="cancelled"
             count={adminData?.totalStaffs || 0}
             label="Total Staffs"
-            icon={"/assets/icons/cancelled.svg"}
+            icon={Staff}
           />
         </section>
 

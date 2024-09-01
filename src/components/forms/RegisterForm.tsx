@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-binary-expression */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -79,12 +80,12 @@ const RegisterForm = ({ user }: { user: User }) => {
         nextOfKinNumber: values.nextOfKinNumber || "",
         primaryPhysician: values.primaryPhysician || "",
         occupationHistory: values.occupationHistory || "",
-        typeofDruguse: values.typeofDruguse || "",
+        typeOfDrugUse: values.typeOfDrugUse || "",
         otherDrugs: values.otherDrugs || "",
 
         quantityDrugsConsumedDaily: values.quantityDrugsConsumedDaily || "",
-        financilaImplicationsOfDrugAbuse:
-          values.financilaImplicationsOfDrugAbuse || "",
+        financialImplicationsOfDrugAbuse:
+          values.financialImplicationsOfDrugAbuse || "",
         factorsThatLedToTheAbuse: values.factorsThatLedToTheAbuse || "",
         primaryDoctor: values.primaryDoctor || "",
         familyMembersComplains: values.familyMembersComplains || "",
@@ -92,7 +93,7 @@ const RegisterForm = ({ user }: { user: User }) => {
         patientNeeds: values.patientNeeds || "",
         newMedication: values.newMedication || "",
 
-        patientsMembersComplains: values.patientsMembersComplains || "",
+        patientsComplains: values.patientsComplains || "",
         rehabilitationRecommendation: values.rehabilitationRecommendation || "",
 
         nextOfKinOccupation: values.nextOfKinOccupation || "",

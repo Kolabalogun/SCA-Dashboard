@@ -1,13 +1,15 @@
 import Protected from "@/components/auth/Protected";
 import UnAuthenticated from "@/components/auth/UnAuthenticated";
 import {
-  PatientRegistration,
   ErrorPage,
   Login,
   Dashboard,
   NotFound,
   Patients,
+  PatientProfile,
+  Success,
 } from "@/pages";
+
 import Root from "@/pages/root";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -28,16 +30,6 @@ const routes = createBrowserRouter([
         <Login />
       </UnAuthenticated>
     ),
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/register-patient",
-    element: (
-      <Protected>
-        <PatientRegistration />
-      </Protected>
-    ),
-    errorElement: <ErrorPage />,
   },
 
   {
@@ -53,8 +45,20 @@ const routes = createBrowserRouter([
         element: <Dashboard />,
       },
       {
+        path: "/dashboard/register-patient",
+        element: <PatientProfile />,
+      },
+      {
         path: "/dashboard/patients",
         element: <Patients />,
+      },
+      {
+        path: "/dashboard/patient/:id",
+        element: <PatientProfile />,
+      },
+      {
+        path: "/dashboard/success/:id",
+        element: <Success />,
       },
     ],
   },

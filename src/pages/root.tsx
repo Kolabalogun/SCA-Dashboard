@@ -7,7 +7,7 @@ export default function Root() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <div className="flex text-white min-h-screen w-full">
+    <div className="flex text-white  h-screen w-full">
       <Sidebar isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
       <div className="    flex-1 h-full min-h-screen overflow-y-scroll  ">
         <Header />

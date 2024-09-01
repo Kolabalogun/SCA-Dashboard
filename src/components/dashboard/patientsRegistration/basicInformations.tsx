@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { email, User } from "@/assets/icons";
 import CustomFormField from "@/components/common/CustomFormField";
 import { FileUploader } from "@/components/common/FileUploader";
 import { FormControl } from "@/components/ui/form";
@@ -36,7 +37,7 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="name"
             label="Full Name"
             placeholder="John Doe"
-            iconSrc="/assets/icons/user.svg"
+            iconSrc={User}
             iconAlt="user"
             readOnly={!editProfile}
           />
@@ -46,7 +47,7 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="email"
             label="Email address"
             placeholder="johndoe@gmail.com"
-            iconSrc="/assets/icons/email.svg"
+            iconSrc={email}
             iconAlt="email"
             readOnly={!editProfile}
           />

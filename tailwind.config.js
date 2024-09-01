@@ -41,9 +41,9 @@ export default {
       //   sans: ["var(--font-sans)", ...fontFamily.sans],
       // },
       backgroundImage: {
-        appointments: "url('/assets/images/appointments-bg.png')",
-        pending: "url('/assets/images/pending-bg.png')",
-        cancelled: "url('/assets/images/cancelled-bg.png')",
+        appointments: "url('/src/assets/images/appointments-bg.png')",
+        pending: "url('/src/assets/images/pending-bg.png')",
+        cancelled: "url('/src/assets/images/cancelled-bg.png')",
       },
       keyframes: {
         "accordion-down": {

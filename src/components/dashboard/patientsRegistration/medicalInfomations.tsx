@@ -8,7 +8,7 @@ import { SelectItem } from "@/components/ui/select";
 import { Doctors, DrugsOptions } from "@/constants";
 
 import { FormFieldType } from "@/types/types";
-import { useEffect } from "react";
+
 import { UseFormReturn } from "react-hook-form";
 
 type Props = {
@@ -17,10 +17,6 @@ type Props = {
 };
 
 const MedicalInfomations = ({ form, editProfile }: Props) => {
-  useEffect(() => {
-    window.scroll(0, 0);
-  }, []);
-
   return (
     <div className="space-y-9">
       {/* PRIMARY DOCTOR */}
@@ -88,7 +84,7 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
             fieldType={FormFieldType.TEXTAREA}
             readOnly={!editProfile}
             control={form.control}
-            name="patientsMembersComplains"
+            name="patientsComplains"
             label="Complaints From The Patient"
             placeholder="Strange acting..."
           />
@@ -143,7 +139,7 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
         <CustomFormField
           fieldType={FormFieldType.SKELETON}
           control={form.control}
-          name="typeofDruguse"
+          name="typeOfDrugUse"
           label="Type of Drug use"
           renderSkeleton={(field) => (
             <FormControl>
@@ -189,7 +185,7 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
             fieldType={FormFieldType.TEXTAREA}
             readOnly={!editProfile}
             control={form.control}
-            name="financilaImplicationsOfDrugAbuse "
+            name="financialImplicationsOfDrugAbuse"
             label="Financial Implications on Drug Consummed"
             placeholder="N500 per Day"
           />

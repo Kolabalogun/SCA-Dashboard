@@ -76,11 +76,10 @@ export const columns = [
 function ActionsCell({ appointment }: { appointment: any }) {
   const navigate = useNavigate();
 
+  console.log(appointment);
   return (
     <button
-      onClick={() =>
-        navigate(`/admin/dashboard/patients/${appointment?.userId}`)
-      }
+      onClick={() => navigate(`/dashboard/patient/${appointment?.id}`)}
       className="cursor-pointer"
     >
       <p className="text-14-medium text-green-500">View Profile</p>

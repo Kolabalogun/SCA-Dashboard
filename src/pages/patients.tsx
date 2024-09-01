@@ -23,16 +23,18 @@ const Patients = () => {
     try {
       const q = query(patientsRef, orderBy("createdAt", "desc"), limit(10));
       const querySnapshot = await getDocs(q);
-      const patients = querySnapshot.docs.map((doc) => doc.data());
+      const patients = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setPatients(patients);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching patients:", error);
       setPatients([]);
+    } finally {
       setLoading(false);
     }
   }
-
   useEffect(() => {
     fetchPatients();
   }, []);
@@ -47,7 +49,7 @@ const Patients = () => {
 
         <div className="">
           <Button
-            onClick={() => navigate("/register-patient")}
+            onClick={() => navigate("/dashboard/register-patient")}
             className="bg-green-700 text-white"
           >
             Add New Patient

@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect } from "react";
+import { useState } from "react";
 
 import { formatDate } from "@/utils/formatJSDate";
 import CustomFormField from "@/components/common/CustomFormField";
@@ -9,10 +10,14 @@ import { FormControl } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
 
 import { FormFieldType } from "@/types/types";
-import { UseFormReturn } from "react-hook-form";
-import { stayPeriods } from "@/constants";
+import { UseFormReturn, useWatch } from "react-hook-form";
+import { stayPeriods as stayPeriodsData } from "@/constants";
 import { Button } from "@/components/ui/button";
-import { Banknote } from "lucide-react";
+import { Banknote, Trash2Icon } from "lucide-react";
+import { Naira } from "@/assets/icons";
+import { uploadFileToStorage } from "@/lib/firebase";
+import { useToast } from "@chakra-ui/react";
+import showToast from "@/components/common/toast";
 
 type Props = {
   form: UseFormReturn<any>;
@@ -20,41 +25,158 @@ type Props = {
 };
 
 const PaymentInformations = ({ form, editProfile }: Props) => {
-  useEffect(() => {
-    window.scroll(0, 0);
-  }, []);
+  const toast = useToast();
 
-  const values = form.getValues();
+  const { paymentReceived, paymentHistory, paymentReceipt, name, stayPeriods } =
+    form.getValues();
 
-  console.log(values.paymentHistory);
+  useWatch({
+    control: form.control,
+    name: "stayPeriods",
+  });
+  useWatch({
+    control: form.control,
+    name: "paymentHistory",
+  });
+  useWatch({
+    control: form.control,
+    name: "paymentReceived",
+  });
+  useWatch({
+    control: form.control,
+    name: "paymentReceipt",
+  });
 
-  console.log(values.stayPeriods);
+  console.log(paymentReceipt);
 
-  console.log(values);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAddPayment = (e: any) => {
+  const handleAddPayment = async (e: any) => {
     e.preventDefault();
-    const paymentHistory = values.paymentHistory || [];
+    setIsLoading(true);
 
-    const newPayment = {
-      paymentReceived: values.paymentReceived,
-      id: `payment-${Date.now()}`,
-      formDate: new Date().toISOString(),
-    };
+    try {
+      if (!paymentReceived)
+        return showToast(
+          toast,
+          "Payment",
+          "error",
+          "Payment Amount can't be 0"
+        );
 
-    const newPaymentHistory = [...paymentHistory, newPayment];
+      const paymentHistoryy = paymentHistory || [];
 
-    form.setValue("paymentHistory", newPaymentHistory);
+      let paymentReceiptFileUrl = "";
+
+      if (paymentReceipt && paymentReceipt.length > 0) {
+        // Upload the first file to Firebase Storage and get its URL
+        paymentReceiptFileUrl = await uploadFileToStorage(
+          paymentReceipt[0],
+          name
+        );
+      }
+
+      const newPayment = {
+        paymentReceived: paymentReceived,
+        id: `payment-${Date.now()}`,
+        formDate: new Date().toISOString(),
+        stayPeriods: stayPeriods,
+        paymentReceipt: paymentReceiptFileUrl,
+      };
+
+      const newPaymentHistory = [...paymentHistoryy, newPayment];
+
+      form.setValue("paymentHistory", newPaymentHistory);
+      showToast(toast, "Payment", "success", "Payment added successfully");
+    } catch (error) {
+      console.log(error);
+      showToast(toast, "Payment", "error", "Error adding payment");
+    } finally {
+      form.setValue("dateOfAdmission", new Date(Date.now()));
+      form.setValue("stayPeriods", "");
+      form.setValue("paymentReceived", 0);
+      form.setValue("paymentReceipt", []);
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeletePayment = (id: string) => {
+    const updatedPayments = paymentHistory.filter(
+      (payment: any) => payment.id !== id
+    );
+
+    form.setValue("paymentHistory", updatedPayments);
+    showToast(toast, "Payment", "error", "Payment deleted successfully");
   };
 
   return (
     <div className="space-y-9">
       <section className="space-y-6">
+        {/* Payment History */}
+        {paymentHistory && paymentHistory.length > 0 && (
+          <section className="space-y-6">
+            <h3 className="sub-header">Payment History</h3>
+            <ul className="space-y-4   ">
+              {paymentHistory?.map((payment: any) => (
+                <li
+                  key={payment.id}
+                  className="space-y-4 flex flex-col border border-[#363a3d] rounded-lg p-4"
+                >
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm capitalize text-[#7682ad] ">
+                      ID: {payment.id}
+                    </p>
+                    <p className="text-sm">
+                      Date: {formatDate(payment.formDate)}{" "}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm">Admission Period: </p>
+                    <p>{payment.stayPeriods} </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm">Amount Received: </p>
+                    <p>
+                      ₦{parseInt(payment.paymentReceived)?.toLocaleString()}{" "}
+                    </p>
+                  </div>
+
+                  <div className="flex my-2 items-center justify-between">
+                    {payment?.paymentReceipt && (
+                      <div className=" ">
+                        <Button
+                          type="button"
+                          className="bg-blue-700"
+                          onClick={() =>
+                            window.open(payment.paymentReceipt, "_blank")
+                          }
+                        >
+                          View Reciept
+                        </Button>
+                      </div>
+                    )}
+
+                    <Button
+                      type="button"
+                      className="bg-red-800 gap-2"
+                      onClick={() => handleDeletePayment(payment.id)}
+                    >
+                      Delete <Trash2Icon className="h-5" />
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </section>
+
+      <section className="space-y-6">
         <div className="mb-9 space-y-1">
           <h2 className="sub-header">Payment Information</h2>
         </div>
-
-        {/* Conditional Fields for Initial Registration */}
 
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
@@ -72,7 +194,7 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
             placeholder="Select Period of Stay"
             readOnly={!editProfile}
           >
-            {stayPeriods.map((type: string, i) => (
+            {stayPeriodsData.map((type: string, i) => (
               <SelectItem key={type + i} value={type}>
                 {type}
               </SelectItem>
@@ -80,7 +202,7 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
           </CustomFormField>
         </div>
 
-        {values.stayPeriods && (
+        {stayPeriods && (
           <>
             {/* Payment Fields */}
             <div className="flex flex-col gap-4">
@@ -91,7 +213,7 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
                 type="number"
                 label="Payment Received"
                 placeholder="0"
-                iconSrc="/assets/icons/naira.svg"
+                iconSrc={Naira}
                 iconAlt="naira"
                 readOnly={!editProfile}
               />
@@ -113,39 +235,21 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
       </section>
 
       {/* Add Payment Button */}
-      {values.stayPeriods && (
+      {stayPeriods && (
         <section>
           <Button
+            type="button"
             onClick={handleAddPayment}
+            disabled={isLoading}
             className="flex bg-green-700 items-center gap-2"
           >
-            <p>{values.paymentHistory?.length ? "Add New Payment" : "Save"}</p>{" "}
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <p>{paymentHistory?.length ? "Add New Payment" : "Save"}</p>
+            )}{" "}
             <Banknote />
           </Button>
-        </section>
-      )}
-
-      {/* Payment History */}
-      {values.paymentHistory && values.paymentHistory.length > 0 && (
-        <section className="space-y-4">
-          <h3 className="sub-header">Payment History</h3>
-          <ul className="space-y-4   ">
-            {values.paymentHistory.map((payment: any) => (
-              <li
-                key={payment.id}
-                className="space-y-4 flex flex-col border rounded-lg p-4"
-              >
-                <div className="flex justify-between items-center">
-                  <p className="text-sm capitalize text-[#7682ad] ">
-                    ID: {payment.id}
-                  </p>
-                  <p>Date: {formatDate(payment.formDate)} </p>
-                </div>
-
-                <span>{payment.paymentReceived}</span>
-              </li>
-            ))}
-          </ul>
         </section>
       )}
     </div>

@@ -1,4 +1,6 @@
-import { fetchFirestoreData } from "@/utils/firebase/fetchFirestoreData";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { fetchFirestoreData } from "@/lib/firebase";
 import {
   createContext,
   useContext,

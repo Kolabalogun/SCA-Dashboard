@@ -16,18 +16,18 @@ export const StatCard = ({ count = 0, label, icon, type }: StatCardProps) => {
         "bg-cancelled": type === "cancelled",
       })}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center bg-transparent gap-4">
         <img
           src={icon}
           height={32}
           width={32}
           alt="appointments"
-          className="size-8 w-fit"
+          className="size-8 w-fit bg-transparent"
         />
-        <h2 className="text-32-bold text-white">{count}</h2>
+        <h2 className="text-32-bold bg-transparent text-white">{count}</h2>
       </div>
 
-      <p className="text-14-regular">{label}</p>
+      <p className="text-14-regular bg-transparent">{label}</p>
     </div>
   );
 };

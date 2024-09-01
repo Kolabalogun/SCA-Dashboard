@@ -1,5 +1,8 @@
+import { useParams } from "react-router-dom";
+
 const Success = () => {
-  return <div>Success</div>;
+  const { id: patientName } = useParams();
+  return <div>{patientName}</div>;
 };
 
 export default Success;

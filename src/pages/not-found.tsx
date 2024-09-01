@@ -1,16 +1,16 @@
 const NotFound = () => {
   return (
-    <div className="flex flex-col justify-center inter space-y-6 items-center h-screen bg-gray-50">
+    <div className="flex flex-col justify-center inter space-y-6 items-center h-screen  ">
       <div className="flex gap-4 items-center">
         <h1 className="text-lg font-bold">404</h1>
         <div className="h-full w-[1px] bg-fade"></div>
         <h2 className="text-lg font-semibold">Page Not Found</h2>
       </div>
-      <p className="text-xs mt-2 text-gray-700 text-center max-w-lg">
+      <p className="text-xs mt-2  text-center max-w-lg">
         Looks like you've stumbled upon a page that doesn't exist. Maybe the URL
         is incorrect, or the page was removed.
       </p>
-      <p className="text-xs mt-4 text-gray-500">
+      <p className="text-xs mt-4 text-gray-400">
         Don't worry, let's get you back to where you belong.
       </p>
       <div className="flex gap-12">

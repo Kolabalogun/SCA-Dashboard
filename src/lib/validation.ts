@@ -41,6 +41,12 @@ const consentSchema = z
     message: "You must consent to proceed",
   });
 
+// Login Form Validation
+export const LoginFormValidation = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+});
+
 // Create Employee Form Validation
 export const CreateEmployeeFormValidation = z.object({
   firstName: nameSchema,
@@ -50,17 +56,14 @@ export const CreateEmployeeFormValidation = z.object({
   password: passwordSchema,
 });
 
-// Login Form Validation
-export const LoginFormValidation = z.object({
-  email: emailSchema,
-  password: passwordSchema,
-});
-
-// Patient Form Validation
-export const PatientFormValidation = z.object({
+export const UserFormValidation = z.object({
   name: nameSchema,
   email: emailSchema,
   phone: phoneSchema,
+});
+
+// Patient Form Validation
+export const PatientFormValidation = UserFormValidation.extend({
   birthDate: z.coerce.date(),
   gender: z.enum(["Male", "Female", "Other"]),
   maritialStatus: z.enum(["Single", "Married", "Other"]),
@@ -73,30 +76,6 @@ export const PatientFormValidation = z.object({
     .string()
     .min(2, "Occupation must be at least 2 characters")
     .max(500, "Occupation must be at most 500 characters"),
-  occupationHistory: z.string().optional(),
-  primaryPhysician: z.string().min(2, "Select at least one physician"),
-  primaryDoctor: z.string().optional(),
-  // Medical Information fields
-  allergies: z.string().optional(),
-  currentMedication: z.string().optional(),
-  familyMedicalHistory: z.string().optional(),
-  pastMedicalHistory: z.string().optional(),
-  familyMembersComplains: z.string().optional(),
-  patientsMembersComplains: z.string().optional(),
-  socialWorkerFindings: z.string().optional(),
-  patientNeeds: z.string().optional(),
-  typeofDruguse: z.string().optional(),
-  otherDrugs: z.string().optional(),
-  quantityDrugsConsumedDaily: z.string().optional(),
-  financilaImplicationsOfDrugAbuse: z.string().optional(),
-  factorsThatLedToTheAbuse: z.string().optional(),
-  diagnosis: z.string().optional(),
-  newMedication: z.string().optional(),
-  rehabilitationRecommendation: z.string().optional(),
-  primaryEducation: z.string().optional(),
-  secondaryEducation: z.string().optional(),
-  tertiaryEducation: z.string().optional(),
-  vocationalEducation: z.string().optional(),
   nextOfKinAddress: z
     .string()
     .min(5, "Address must be at least 5 characters")
@@ -114,22 +93,60 @@ export const PatientFormValidation = z.object({
     .min(2, "Contact name must be at least 2 characters")
     .max(50, "Contact name must be at most 50 characters"),
   nextOfKinNumber: phoneSchema,
+  treatmentConsent: consentSchema,
+  disclosureConsent: consentSchema,
+  privacyConsent: consentSchema,
+  primaryPhysician: z.string().min(2, "Select at least one physician"),
+
+  primaryDoctor: z.string().optional(),
+  occupationHistory: z.string().optional(),
+  // Medical Information fields
+  allergies: z.string().optional(),
+  currentMedication: z.string().optional(),
+  familyMedicalHistory: z.string().optional(),
+  pastMedicalHistory: z.string().optional(),
+  familyMembersComplains: z.string().optional(),
+  patientsComplains: z.string().optional(),
+  socialWorkerFindings: z.string().optional(),
+  patientNeeds: z.string().optional(),
+  typeOfDrugUse: z.string().optional(),
+  otherDrugs: z.string().optional(),
+  quantityDrugsConsumedDaily: z.string().optional(),
+  financialImplicationsOfDrugAbuse: z.string().optional(),
+  factorsThatLedToTheAbuse: z.string().optional(),
+  diagnosis: z.string().optional(),
+  newMedication: z.string().optional(),
+  rehabilitationRecommendation: z.string().optional(),
+  primaryEducation: z.string().optional(),
+  secondaryEducation: z.string().optional(),
+  tertiaryEducation: z.string().optional(),
+  vocationalEducation: z.string().optional(),
+
   dateOfAdmission: z.coerce.date().optional(),
   stayPeriods: z.string().optional(),
-  paymentReceived: z.number().optional(),
+  paymentReceived: z.union([z.string(), z.number()]).optional(),
   paymentHistory: z
     .array(
       z.object({
         id: z.string(),
-        paymentReceived: z.number(),
+        paymentReceived: z.union([z.string(), z.number()]).optional(),
         formDate: z.string(),
+        stayPeriods: z.string(),
       })
     )
     .optional(),
+  paymentReceipt: z.custom<File[]>().optional(),
   identificationType: z.string().optional(),
   identificationNumber: z.string().optional(),
   identificationDocument: z.custom<File[]>().optional(),
-  treatmentConsent: consentSchema,
-  disclosureConsent: consentSchema,
-  privacyConsent: consentSchema,
+
+  // db
+  logs: z
+    .array(
+      z.object({
+        updatedBy: z.string(),
+        updatedAt: z.string(),
+      })
+    )
+    .optional(),
 });
