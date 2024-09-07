@@ -22,11 +22,7 @@ import {
 import { db } from "@/config/firebase";
 import { ArrowLeft, ArrowRight, ListIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  BasicInformations,
-  MedicalInformations,
-  PaymentInformations,
-} from "@/components/dashboard";
+
 import SubmitButton from "@/components/common/SubmitButton";
 
 import { PatientFormDefaultValues } from "@/constants";
@@ -35,8 +31,9 @@ import { fetchFirestoreData, uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
 import showToast from "@/components/common/toast";
 import LogsInformations from "@/components/dashboard/patientsRegistration/logsInformations";
+import BasicInformations from "@/components/dashboard/staffsRegistration/basicInformations";
 
-const PatientProfile = () => {
+const StaffProfile = () => {
   const toast = useToast();
 
   const navigate = useNavigate();
@@ -146,7 +143,7 @@ const PatientProfile = () => {
     setIsLoading(true);
 
     try {
-      if (user?.role === "viewer")
+      if (user?.role === "user")
         return showToast(
           toast,
           "Access Denied",
@@ -314,7 +311,7 @@ const PatientProfile = () => {
               </h1>
               {!userId && (
                 <p className="text-dark-700">
-                  Get started with Patient's Registration.
+                  Get started with Staff's Registration.
                 </p>
               )}
             </section>
@@ -348,20 +345,14 @@ const PatientProfile = () => {
                 )}
               </section>
 
-              {step === 1 ? (
-                <BasicInformations form={form} />
-              ) : step === 2 ? (
-                <MedicalInformations form={form} />
-              ) : step === 4 && userId ? (
+              {step === 4 && userId ? (
                 <LogsInformations form={form} />
               ) : (
-                <PaymentInformations form={form} patientDocId={patientDocId} />
+                <BasicInformations form={form} />
               )}
 
               {step !== 4 && (
-                <SubmitButton isLoading={isLoading}>
-                  {userId ? "Submit" : step === 1 ? "Continue" : "Submit"}
-                </SubmitButton>
+                <SubmitButton isLoading={isLoading}>Submit</SubmitButton>
               )}
             </form>
 
@@ -372,15 +363,6 @@ const PatientProfile = () => {
                   onClick={() => setStep(step - 1)}
                 >
                   <ArrowLeft /> Go Back
-                </Button>
-              )}
-              {step < 3 && userId && (
-                <Button
-                  className="flex bg-blue-700 items-center gap-2 "
-                  onClick={() => setStep(step + 1)}
-                >
-                  Next Page
-                  <ArrowRight />
                 </Button>
               )}
 
@@ -401,4 +383,4 @@ const PatientProfile = () => {
   );
 };
 
-export default PatientProfile;
+export default StaffProfile;

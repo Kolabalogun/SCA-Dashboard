@@ -75,6 +75,7 @@ export const PatientFormDefaultValues = {
 
   // db
   logs: [],
+  updatedAt: new Date(Date.now()),
 };
 
 export const stayPeriods = [
@@ -88,6 +89,8 @@ export const stayPeriods = [
   "24 months",
   "2 years +",
 ];
+
+export const AccessRoles = ["viewer", "editor", "admin"];
 
 export const IdentificationTypes = [
   "Birth Certificate",

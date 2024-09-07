@@ -29,7 +29,10 @@ const Dashboard = () => {
     try {
       const q = query(patientsRef, orderBy("createdAt", "desc"), limit(10));
       const querySnapshot = await getDocs(q);
-      const patients = querySnapshot.docs.map((doc) => doc.data());
+      const patients = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setPatients(patients);
       setLoading(false);
     } catch (error) {

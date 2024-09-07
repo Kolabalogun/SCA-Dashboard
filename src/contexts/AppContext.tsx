@@ -11,7 +11,7 @@ import {
 
 // Define the types for your context state
 interface AdminData {
-  totalRevenue: number;
+  totalRevenue: number | string | any;
   totalPatients: number;
   totalStaffs: number;
   totalExpenses: number;
@@ -22,6 +22,7 @@ interface AppContextProps {
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
   adminData: AdminData | null;
+  getAdminContent: () => void;
 }
 
 // Create the context with an empty default value
@@ -57,6 +58,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
         isLoading,
         setIsLoading,
         adminData,
+        getAdminContent,
       }}
     >
       {children}

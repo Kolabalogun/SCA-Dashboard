@@ -145,8 +145,10 @@ export const PatientFormValidation = UserFormValidation.extend({
     .array(
       z.object({
         updatedBy: z.string(),
-        updatedAt: z.string(),
+        updatedAt: z.coerce.date(),
       })
     )
     .optional(),
+  updatedAt: z.coerce.date().optional(),
+  createdAt: z.coerce.date().optional(),
 });

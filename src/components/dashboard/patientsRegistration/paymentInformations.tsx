@@ -1,14 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/formatJSDate";
 import CustomFormField from "@/components/common/CustomFormField";
 import { FileUploader } from "@/components/common/FileUploader";
 import { FormControl } from "@/components/ui/form";
-
 import { SelectItem } from "@/components/ui/select";
-
 import { FormFieldType } from "@/types/types";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { stayPeriods as stayPeriodsData } from "@/constants";
@@ -18,17 +15,31 @@ import { Naira } from "@/assets/icons";
 import { uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
 import showToast from "@/components/common/toast";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "@/config/firebase";
+import { useSelector } from "react-redux";
+import { useAppContext } from "@/contexts/AppContext";
 
 type Props = {
   form: UseFormReturn<any>;
-  editProfile: boolean;
+  patientDocId?: string;
 };
 
-const PaymentInformations = ({ form, editProfile }: Props) => {
+const PaymentInformations = ({ form, patientDocId }: Props) => {
   const toast = useToast();
-
+  const { user } = useSelector((state: any) => state.auth);
+  const { adminData, getAdminContent } = useAppContext();
   const { paymentReceived, paymentHistory, paymentReceipt, name, stayPeriods } =
     form.getValues();
+
+  console.log(patientDocId);
 
   useWatch({
     control: form.control,
@@ -46,14 +57,16 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
     control: form.control,
     name: "paymentReceipt",
   });
-
-  console.log(paymentReceipt);
+  useEffect(() => {
+    getAdminContent();
+  }, []);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const handleAddPayment = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
+    getAdminContent();
 
     try {
       if (!paymentReceived)
@@ -77,17 +90,60 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
       }
 
       const newPayment = {
-        paymentReceived: paymentReceived,
-        id: `payment-${Date.now()}`,
+        paymentReceived: parseInt(paymentReceived),
+        id: `revenue-${Date.now()}`,
         formDate: new Date().toISOString(),
         stayPeriods: stayPeriods,
         paymentReceipt: paymentReceiptFileUrl,
+        paymentRegisteredBy: `${user?.firstName} ${user?.lastName}`,
       };
 
       const newPaymentHistory = [...paymentHistoryy, newPayment];
 
       form.setValue("paymentHistory", newPaymentHistory);
+
+      // For Revenue Addition
+
+      const newRevenue = {
+        amount: parseInt(paymentReceived),
+        id: `revenue-${Date.now()}`,
+        formDate: new Date().toISOString(),
+        stayPeriods: stayPeriods,
+        receipt: paymentReceiptFileUrl,
+        type: "Patient Admission",
+        patient: name,
+        createdAt: serverTimestamp(),
+        paymentRegisteredBy: `${user?.firstName} ${user?.lastName}`,
+      };
+
+      const collectionRef = collection(db, "revenue");
+
+      const docRef = doc(collectionRef, `revenue-${Date.now()}`);
+
+      await setDoc(docRef, newRevenue);
+
+      if (adminData?.totalRevenue === 0 || adminData?.totalRevenue) {
+        const newRevenue =
+          parseInt(adminData?.totalRevenue) + parseInt(paymentReceived);
+
+        console.log(newRevenue, "newRevenue");
+
+        const docRef = doc(db, "admin", "adminDoc");
+
+        await updateDoc(docRef, {
+          totalRevenue: newRevenue,
+        });
+      }
+
+      if (patientDocId) {
+        const patientPayload = form.getValues();
+        const patientRef = doc(db, "patients", patientDocId);
+
+        await updateDoc(patientRef, patientPayload);
+      }
+
       showToast(toast, "Payment", "success", "Payment added successfully");
+      getAdminContent();
     } catch (error) {
       console.log(error);
       showToast(toast, "Payment", "error", "Error adding payment");
@@ -100,13 +156,44 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
     }
   };
 
-  const handleDeletePayment = (id: string) => {
-    const updatedPayments = paymentHistory.filter(
-      (payment: any) => payment.id !== id
-    );
+  const handleDeletePayment = async (id: string, paymentAmount: number) => {
+    try {
+      // Filter out the payment to be deleted
+      const updatedPayments = paymentHistory.filter(
+        (payment: any) => payment.id !== id
+      );
 
-    form.setValue("paymentHistory", updatedPayments);
-    showToast(toast, "Payment", "error", "Payment deleted successfully");
+      form.setValue("paymentHistory", updatedPayments);
+
+      // Update the patient document's payment history
+      if (patientDocId) {
+        const patientRef = doc(db, "patients", patientDocId);
+        await updateDoc(patientRef, {
+          paymentHistory: updatedPayments, // Save the updated payment history without the deleted payment
+        });
+      }
+
+      // Delete the corresponding revenue document
+      const revenueDocId = `revenue-${id.split("-")[1]}`; // Assuming revenue docId is similar to paymentId
+      const revenueDocRef = doc(db, "revenue", revenueDocId);
+
+      await deleteDoc(revenueDocRef);
+
+      // Deduct the payment amount from totalRevenue
+      if (adminData?.totalRevenue) {
+        const updatedRevenue = parseInt(adminData.totalRevenue) - paymentAmount;
+        const adminDocRef = doc(db, "admin", "adminDoc");
+
+        await updateDoc(adminDocRef, {
+          totalRevenue: updatedRevenue,
+        });
+      }
+
+      showToast(toast, "Payment", "success", "Payment deleted successfully");
+    } catch (error) {
+      console.log(error);
+      showToast(toast, "Payment", "error", "Error deleting payment");
+    }
   };
 
   return (
@@ -119,27 +206,34 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
             <ul className="space-y-4   ">
               {paymentHistory?.map((payment: any) => (
                 <li
-                  key={payment.id}
+                  key={payment?.id}
                   className="space-y-4 flex flex-col border border-[#363a3d] rounded-lg p-4"
                 >
                   <div className="flex justify-between items-center">
                     <p className="text-sm capitalize text-[#7682ad] ">
-                      ID: {payment.id}
+                      ID: {payment?.id}
                     </p>
                     <p className="text-sm">
-                      Date: {formatDate(payment.formDate)}{" "}
+                      Date: {formatDate(payment?.formDate) || "N/A"}{" "}
+                    </p>
+                  </div>
+
+                  <div className="  items-center flex gap-2">
+                    <p className="text-xs">Payment Approved By: </p>
+                    <p className="text-[13px]">
+                      {payment?.paymentRegisteredBy}{" "}
                     </p>
                   </div>
 
                   <div className="space-y-2">
                     <p className="text-sm">Admission Period: </p>
-                    <p>{payment.stayPeriods} </p>
+                    <p>{payment?.stayPeriods} </p>
                   </div>
 
                   <div className="space-y-2">
                     <p className="text-sm">Amount Received: </p>
                     <p>
-                      ₦{parseInt(payment.paymentReceived)?.toLocaleString()}{" "}
+                      ₦{parseInt(payment?.paymentReceived)?.toLocaleString()}{" "}
                     </p>
                   </div>
 
@@ -150,7 +244,7 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
                           type="button"
                           className="bg-blue-700"
                           onClick={() =>
-                            window.open(payment.paymentReceipt, "_blank")
+                            window.open(payment?.paymentReceipt, "_blank")
                           }
                         >
                           View Reciept
@@ -161,7 +255,9 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
                     <Button
                       type="button"
                       className="bg-red-800 gap-2"
-                      onClick={() => handleDeletePayment(payment.id)}
+                      onClick={() =>
+                        handleDeletePayment(payment.id, payment.paymentReceived)
+                      }
                     >
                       Delete <Trash2Icon className="h-5" />
                     </Button>
@@ -184,7 +280,6 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
             control={form.control}
             name="dateOfAdmission"
             label="Date of Admission"
-            readOnly={!editProfile}
           />
           <CustomFormField
             fieldType={FormFieldType.SELECT}
@@ -192,7 +287,6 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
             name="stayPeriods"
             label="Estimated Admission Period"
             placeholder="Select Period of Stay"
-            readOnly={!editProfile}
           >
             {stayPeriodsData.map((type: string, i) => (
               <SelectItem key={type + i} value={type}>
@@ -215,7 +309,6 @@ const PaymentInformations = ({ form, editProfile }: Props) => {
                 placeholder="0"
                 iconSrc={Naira}
                 iconAlt="naira"
-                readOnly={!editProfile}
               />
             </div>
 

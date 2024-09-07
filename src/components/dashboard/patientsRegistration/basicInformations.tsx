@@ -18,10 +18,9 @@ import { UseFormReturn } from "react-hook-form";
 
 type Props = {
   form: UseFormReturn<any>;
-  editProfile: boolean;
 };
 
-const BasicInformations = ({ form, editProfile }: Props) => {
+const BasicInformations = ({ form }: Props) => {
   return (
     <div className="space-y-9">
       <section className="space-y-6">
@@ -39,7 +38,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             placeholder="John Doe"
             iconSrc={User}
             iconAlt="user"
-            readOnly={!editProfile}
           />
           <CustomFormField
             fieldType={FormFieldType.INPUT}
@@ -49,7 +47,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             placeholder="johndoe@gmail.com"
             iconSrc={email}
             iconAlt="email"
-            readOnly={!editProfile}
           />
         </div>
 
@@ -61,7 +58,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="phone"
             label="Phone Number"
             placeholder="(555) 123-4567"
-            readOnly={!editProfile}
           />
           <CustomFormField
             fieldType={FormFieldType.SKELETON}
@@ -72,7 +68,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
               return (
                 <FormControl>
                   <RadioGroup
-                    disabled={!editProfile}
                     className="flex h-11 gap-6 xl:justify-between"
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -100,7 +95,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             control={form.control}
             name="birthDate"
             label="Date of birth"
-            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -111,7 +105,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             renderSkeleton={(field) => (
               <FormControl>
                 <RadioGroup
-                  disabled={!editProfile}
                   className="flex h-11 gap-6 xl:justify-between"
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -139,7 +132,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="address"
             label="Address"
             placeholder="14 street, New york, NY - 5101"
-            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -148,7 +140,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="occupation"
             label="Occupation"
             placeholder=" Software Engineer"
-            readOnly={!editProfile}
           />
         </div>
 
@@ -158,7 +149,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
           name="occupationHistory"
           label="Occupation History"
           placeholder="Enter Patient Occupation History"
-          readOnly={!editProfile}
         />
       </section>
       <section className="space-y-6">
@@ -174,7 +164,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="nextOfKinName"
             label="Name of Next of KIN"
             placeholder="Next of KIN's name"
-            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -183,7 +172,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="nextOfKinNumber"
             label="Phone Number"
             placeholder="(555) 123-4567"
-            readOnly={!editProfile}
           />
         </div>
 
@@ -194,7 +182,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="nextOfKinAddress"
             label="Address"
             placeholder="14 street, New york, NY - 5101"
-            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -209,7 +196,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                   value={field.value}
-                  disabled={!editProfile}
                 >
                   {maritialStatusOptions.map((option, i) => (
                     <div key={option + i} className="radio-group">
@@ -233,7 +219,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="nextOfKinRelationship"
             label="Relationship"
             placeholder="Parent?"
-            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -242,7 +227,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="nextOfKinOccupation"
             label="Occupation"
             placeholder=" Software Engineer"
-            readOnly={!editProfile}
           />
         </div>
       </section>
@@ -259,7 +243,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="primaryEducation"
             label="Primary Education"
             placeholder="Ogunmepon Nursery & Primary"
-            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -268,7 +251,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="secondaryEducation"
             label="Secondary Education"
             placeholder="Ajanlekoko High School"
-            readOnly={!editProfile}
           />
         </div>
 
@@ -280,7 +262,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="tertiaryEducation"
             label="Tertiary Education"
             placeholder="Mafikubolaje University"
-            readOnly={!editProfile}
           />
 
           <CustomFormField
@@ -289,7 +270,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
             name="vocationalEducation"
             label="Vocational Education (if any)"
             placeholder="Olowokinpelaye Vocational Transformation"
-            readOnly={!editProfile}
           />
         </div>
       </section>
@@ -305,7 +285,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
           name="identificationType"
           label="Identification Type"
           placeholder="Select identification type"
-          readOnly={!editProfile}
         >
           {IdentificationTypes.map((type, i) => (
             <SelectItem key={type + i} value={type}>
@@ -320,7 +299,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
           name="identificationNumber"
           label="Identification Number"
           placeholder="123456789"
-          readOnly={!editProfile}
         />
 
         <CustomFormField
@@ -343,7 +321,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
           name="primaryPhysician"
           label="Primary care professional"
           placeholder="Select a physician"
-          readOnly={!editProfile}
         >
           {Doctors.map((doctor, i) => (
             <SelectItem key={doctor.name + i} value={doctor.name}>
@@ -369,7 +346,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
           control={form.control}
           name="treatmentConsent"
           label="Patient consent to receive treatment for their health condition."
-          readOnly={!editProfile}
         />
 
         <CustomFormField
@@ -378,7 +354,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
           name="disclosureConsent"
           label="Patient consent to the use and disclosure of my health
             information for their treatment purposes."
-          readOnly={!editProfile}
         />
 
         <CustomFormField
@@ -387,7 +362,6 @@ const BasicInformations = ({ form, editProfile }: Props) => {
           name="privacyConsent"
           label="Patient acknowledge that have reviewed and agree to the
             privacy policy"
-          readOnly={!editProfile}
         />
       </section>
     </div>

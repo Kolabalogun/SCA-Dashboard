@@ -76,7 +76,6 @@ export const columns = [
 function ActionsCell({ appointment }: { appointment: any }) {
   const navigate = useNavigate();
 
-  console.log(appointment);
   return (
     <button
       onClick={() => navigate(`/dashboard/patient/${appointment?.id}`)}

@@ -13,10 +13,9 @@ import { UseFormReturn } from "react-hook-form";
 
 type Props = {
   form: UseFormReturn<any>;
-  editProfile: boolean;
 };
 
-const MedicalInfomations = ({ form, editProfile }: Props) => {
+const MedicalInfomations = ({ form }: Props) => {
   return (
     <div className="space-y-9">
       {/* PRIMARY DOCTOR */}
@@ -26,7 +25,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
         name="primaryDoctor"
         label="Consultant Psychiatrist"
         placeholder="Select a Psychiatrist"
-        readOnly={!editProfile}
       >
         {Doctors.map((doctor, i) => (
           <SelectItem key={doctor.name + i} value={doctor.name}>
@@ -53,7 +51,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="familyMedicalHistory"
             label="Patient's history"
@@ -62,7 +59,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
 
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="pastMedicalHistory"
             label="Past medical history"
@@ -73,7 +69,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="familyMembersComplains"
             label="Complaints From The Relation"
@@ -82,7 +77,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
 
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="patientsComplains"
             label="Complaints From The Patient"
@@ -93,7 +87,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="socialWorkerFindings"
             label="Social Worker Findings"
@@ -102,7 +95,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
 
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="allergies"
             label="Allergies (if any)"
@@ -114,7 +106,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="patientNeeds"
             label="Patient Needs"
@@ -123,7 +114,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
 
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="currentMedication"
             label="Current medications"
@@ -148,7 +138,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
                 onValueChange={field.onChange}
                 defaultValue={field.value}
                 value={field.value}
-                disabled={!editProfile}
               >
                 {DrugsOptions.map((option, i) => (
                   <div key={option + i} className="radio-group">
@@ -165,7 +154,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
-            readOnly={!editProfile}
             control={form.control}
             name="otherDrugs"
             label="Other Drugs (Specify if any)"
@@ -173,7 +161,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
           />
           <CustomFormField
             fieldType={FormFieldType.INPUT}
-            readOnly={!editProfile}
             control={form.control}
             name="quantityDrugsConsumedDaily"
             label="Quantity Consummed daily"
@@ -183,7 +170,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="financialImplicationsOfDrugAbuse"
             label="Financial Implications on Drug Consummed"
@@ -192,7 +178,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
 
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
-            readOnly={!editProfile}
             control={form.control}
             name="factorsThatLedToTheAbuse"
             label="Factors that led to the Abuse"
@@ -208,7 +193,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
 
         <CustomFormField
           fieldType={FormFieldType.TEXTAREA}
-          readOnly={!editProfile}
           control={form.control}
           name="diagnosis"
           label="Diagnosis"
@@ -217,7 +201,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
 
         <CustomFormField
           fieldType={FormFieldType.TEXTAREA}
-          readOnly={!editProfile}
           control={form.control}
           name="newMedication"
           label="New Medications"
@@ -226,7 +209,6 @@ const MedicalInfomations = ({ form, editProfile }: Props) => {
 
         <CustomFormField
           fieldType={FormFieldType.TEXTAREA}
-          readOnly={!editProfile}
           control={form.control}
           name="rehabilitationRecommendation"
           label="Rehabilitation & Recommendation"

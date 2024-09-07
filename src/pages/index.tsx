@@ -6,7 +6,7 @@ export { default as Patients } from "./patients.tsx";
 
 export { default as PatientRegistration } from "./patient-registration.tsx";
 
-export { default as StaffRegistration } from "./staff-registration.tsx";
+export { default as StaffProfile } from "./staffsprofile.tsx";
 
 export { default as Login } from "./login.tsx";
 

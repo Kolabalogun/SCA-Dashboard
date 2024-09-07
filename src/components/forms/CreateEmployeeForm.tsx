@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -67,6 +68,7 @@ const CreateEmployeeForm = () => {
         phone: values.phone,
         createdAt: serverTimestamp(),
         registeredBy: `${user?.firstName} ${user?.lastName}`,
+        role: "user",
       };
 
       const userCredential = await createUserWithEmailAndPassword(

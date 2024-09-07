@@ -22,19 +22,21 @@ export const uploadFileToStorage = async (
 };
 
 // Helper function to fetch doc from Firestore
-export const fetchFirestoreData = async (
+export const fetchFirestoreData = async <T>(
   collectionName: string,
   docId: string | undefined
-) => {
-  {
-    if (docId)
-      try {
-        const docRef = doc(db, collectionName, docId);
-        const snapshot = await getDoc(docRef);
-        return snapshot.exists() ? snapshot.data() : null;
-      } catch (error) {
-        console.log(error);
-        return null;
-      }
+): Promise<T | null> => {
+  if (docId) {
+    try {
+      const docRef = doc(db, collectionName, docId);
+      const snapshot = await getDoc(docRef);
+      return snapshot.exists()
+        ? ({ id: snapshot.id, ...snapshot.data() } as T)
+        : null;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   }
+  return null;
 };
