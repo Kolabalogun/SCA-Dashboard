@@ -15,8 +15,6 @@ const Staffs = () => {
 
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  console.log(isLoading);
-
   async function fetchstaffs() {
     const staffsRef = collection(db, "staffs");
     setLoading(true);

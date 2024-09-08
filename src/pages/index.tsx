@@ -15,3 +15,4 @@ export { default as ErrorPage } from "./errorPage.tsx";
 export { default as NotFound } from "./not-found.tsx";
 
 export { default as PatientProfile } from "./patientsprofile.tsx";
+export { default as Revenue } from "./revenue.tsx";

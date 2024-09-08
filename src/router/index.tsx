@@ -9,6 +9,7 @@ import {
   PatientProfile,
   Success,
   StaffProfile,
+  Revenue,
 } from "@/pages";
 
 import Root from "@/pages/root";
@@ -61,6 +62,10 @@ const routes = createBrowserRouter([
       {
         path: "/dashboard/staffs",
         element: <Staffs />,
+      },
+      {
+        path: "/dashboard/revenue",
+        element: <Revenue />,
       },
       {
         path: "/dashboard/patient/:id",

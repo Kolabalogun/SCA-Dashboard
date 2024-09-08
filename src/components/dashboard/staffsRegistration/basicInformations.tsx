@@ -30,8 +30,6 @@ const BasicInformations = ({ form, userId }: Props) => {
 
   const { user } = useSelector((state: any) => state.auth);
 
-  console.log(user?.role);
-
   const values = form.getValues();
 
   return (

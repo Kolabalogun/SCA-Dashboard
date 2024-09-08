@@ -10,6 +10,7 @@ import { useAppContext } from "@/contexts/AppContext";
 import { useEffect, useState } from "react";
 import { StatCard } from "@/components/common/StatCard";
 import { ExpensesIcon, PatientsIcon, Revenue, Staff } from "@/assets/images";
+import TableLoader from "@/components/common/TableLoader";
 
 const Dashboard = () => {
   const { user } = useSelector((state: any) => state.auth);
@@ -19,8 +20,6 @@ const Dashboard = () => {
   const [patients, setPatients] = useState<any>([]);
 
   const [isLoading, setLoading] = useState<boolean>(false);
-
-  console.log(isLoading);
 
   async function fetchPatients() {
     const patientsRef = collection(db, "patients");
@@ -81,7 +80,11 @@ const Dashboard = () => {
           />
         </section>
 
-        <DataTable columns={columns} data={patients || []} />
+        {isLoading ? (
+          <TableLoader />
+        ) : (
+          <DataTable columns={columns} data={patients || []} />
+        )}
       </main>
     </div>
   );

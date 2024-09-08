@@ -44,7 +44,7 @@ const Sidebar = ({
     {
       icon: <Users size={20} />,
       title: "Revenue",
-      link: "/dashboard/profile",
+      link: "/dashboard/revenue",
     },
     {
       icon: <Users size={20} />,

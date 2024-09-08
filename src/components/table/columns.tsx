@@ -158,3 +158,73 @@ function StaffActionsCell({ appointment }: { appointment: any }) {
     </button>
   );
 }
+
+export const revenueColumns = [
+  {
+    header: "#",
+    cell: ({ row }: { row: any }) => {
+      return <p className="text-14-medium py-2 ">{row.index + 1}</p>;
+    },
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }: { row: any }) => {
+      const appointment = row.original;
+      return <p className="text-14-medium capitalize ">{appointment?.type}</p>;
+    },
+  },
+
+  {
+    accessorKey: "Date Issued",
+    header: "Date Issued",
+    cell: ({ row }: { row: any }) => {
+      const appointment = row.original;
+      return (
+        <p className="text-14-medium capitalize ">
+          {formatDateTime(appointment?.createdAt)}
+        </p>
+      );
+    },
+  },
+
+  {
+    accessorKey: "from",
+    header: "From",
+    cell: ({ row }: { row: any }) => {
+      const appointment = row.original;
+      return <p className="text-14-regular ">{appointment?.patient}</p>;
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: "Amount",
+    cell: ({ row }: { row: any }) => {
+      const appointment = row.original;
+      return (
+        <p className=" font-bold text-green-700 ">₦{appointment?.amount}</p>
+      );
+    },
+  },
+
+  {
+    id: "actions",
+    header: () => <div className="pl-4">Actions</div>,
+    cell: ({ row }: { row: any }) => (
+      <RevenueActionsCell appointment={row.original} />
+    ),
+  },
+];
+
+function RevenueActionsCell({ appointment }: { appointment: any }) {
+  const navigate = useNavigate();
+
+  return (
+    <button
+      onClick={() => navigate(`/dashboard/revenue/${appointment?.id}`)}
+      className="cursor-pointer"
+    >
+      <p className="text-14-medium text-green-500">View Profile</p>
+    </button>
+  );
+}

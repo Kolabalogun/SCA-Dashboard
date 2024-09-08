@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 type StatCardProps = {
   type: "appointments" | "pending" | "cancelled";
-  count: number;
+  count: number | string;
   label: string;
   icon: string;
 };
@@ -24,7 +24,9 @@ export const StatCard = ({ count = 0, label, icon, type }: StatCardProps) => {
           alt="appointments"
           className="size-8 w-fit bg-transparent"
         />
-        <h2 className="text-32-bold bg-transparent text-white">{count}</h2>
+        <h2 className="text-32-bold bg-transparent text-white">
+          {count?.toLocaleString()}
+        </h2>
       </div>
 
       <p className="text-14-regular bg-transparent">{label}</p>
