@@ -13,10 +13,13 @@ import CustomFormField from "../common/CustomFormField";
 import { FormFieldType } from "@/types/types";
 import SubmitButton from "../common/SubmitButton";
 import { email, Key } from "@/assets/icons";
+import { useToast } from "@chakra-ui/react";
+import showToast from "../common/toast";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
   const dispatch = useDispatch();
 
   // 1. Define your form.
@@ -47,11 +50,19 @@ const LoginForm = () => {
       dispatch(setCredentials(user));
       dispatch(setIsAuthenticated(true));
 
-      console.log("User  logged in successfully!");
+      showToast(toast, "SCA", "success", "You've successfully signed in");
+
       setIsLoading(false);
       navigate(`/dashboard`);
     } catch (error) {
       console.log(error);
+      showToast(
+        toast,
+        "SCA",
+        "error",
+        `${error || "An error occured while trying to Log In"} `
+      );
+
       setIsLoading(false);
     }
   }

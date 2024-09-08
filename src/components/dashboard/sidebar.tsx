@@ -31,15 +31,15 @@ const Sidebar = ({
       title: "Patients",
       link: "/dashboard/patients",
     },
-    {
-      icon: <Users size={20} />,
-      title: "Doctors",
-      link: "/dashboard/profile",
-    },
+    // {
+    //   icon: <Users size={20} />,
+    //   title: "Doctors",
+    //   link: "/dashboard/profile",
+    // },
     {
       icon: <Users size={20} />,
       title: "Staffs",
-      link: "/dashboard/profile",
+      link: "/dashboard/staffs",
     },
     {
       icon: <Users size={20} />,

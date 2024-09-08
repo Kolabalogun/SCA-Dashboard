@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "@/config/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Upload the file to Firebase Storage
 export const uploadFileToStorage = async (
-  file: File,
+  file: any,
   name: string
 ): Promise<string> => {
   const storage = getStorage();

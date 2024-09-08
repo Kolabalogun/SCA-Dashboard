@@ -35,6 +35,7 @@ import { fetchFirestoreData, uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
 import showToast from "@/components/common/toast";
 import LogsInformations from "@/components/dashboard/patientsRegistration/logsInformations";
+import { AccessRole } from "@/types/types";
 
 const PatientProfile = () => {
   const toast = useToast();
@@ -146,7 +147,7 @@ const PatientProfile = () => {
     setIsLoading(true);
 
     try {
-      if (user?.role === "viewer")
+      if (user?.role === AccessRole.Viewer)
         return showToast(
           toast,
           "Access Denied",

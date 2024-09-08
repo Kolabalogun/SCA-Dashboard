@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 // Firebase configuration object with environment variables
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyCPz3mZSa6lmF_ncCuu6Ck8DPp7twMeTaY",
   authDomain: "shayofunmicareagency-928eb.firebaseapp.com",
   projectId: "shayofunmicareagency-928eb",
@@ -21,3 +21,8 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
+// Create a separate app for user creation
+const createAppUserConfig = { ...firebaseConfig };
+export const createApp = initializeApp(createAppUserConfig, "createAppUser"); // Name the new app instance
+export const createAuth = getAuth(createApp);

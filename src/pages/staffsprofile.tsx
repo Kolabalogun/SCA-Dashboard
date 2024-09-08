@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
-import { PatientFormValidation } from "@/lib/validation";
+import { StaffFormValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,19 +19,21 @@ import {
   where,
   Timestamp,
 } from "firebase/firestore";
-import { db } from "@/config/firebase";
-import { ArrowLeft, ArrowRight, ListIcon } from "lucide-react";
+import { createApp, createAuth, db } from "@/config/firebase";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import SubmitButton from "@/components/common/SubmitButton";
 
-import { PatientFormDefaultValues } from "@/constants";
+import { StaffFormDefaultValues } from "@/constants";
 import { useSelector } from "react-redux";
 import { fetchFirestoreData, uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
 import showToast from "@/components/common/toast";
-import LogsInformations from "@/components/dashboard/patientsRegistration/logsInformations";
+
 import BasicInformations from "@/components/dashboard/staffsRegistration/basicInformations";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { deleteApp } from "firebase/app";
 
 const StaffProfile = () => {
   const toast = useToast();
@@ -41,9 +43,7 @@ const StaffProfile = () => {
   const { user } = useSelector((state: any) => state.auth);
   const { id: userId } = useParams();
 
-  const [patient, setPatient] = useState<any>(null);
-
-  const [patientDocId, setPatientDocId] = useState<any>(null);
+  const [Staff, setStaff] = useState<any>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -60,32 +60,29 @@ const StaffProfile = () => {
     });
   };
 
-  const form = useForm<z.infer<typeof PatientFormValidation>>({
-    resolver: zodResolver(PatientFormValidation),
-    defaultValues: PatientFormDefaultValues,
+  const form = useForm<z.infer<typeof StaffFormValidation>>({
+    resolver: zodResolver(StaffFormValidation),
+    defaultValues: StaffFormDefaultValues,
   });
 
   useEffect(() => {
-    const getPatientDoc = async () => {
+    const getStaffDoc = async () => {
       try {
-        const res = await fetchFirestoreData<any>("patients", userId);
+        const res = await fetchFirestoreData<any>("staffs", userId);
 
         if (res) {
           // Destructure the necessary fields and keep 'others' as a const
           const {
             createdAt: createdAtTimestamp,
             updatedAt: updatedAtTimestamp,
-            dateOfAdmission: dateOfAdmissionTimestamp,
+
             birthDate: birthDateTimestamp,
             logs: logsTimestamp,
             ...others
           } = res;
 
           // Convert Firestore _Timestamps to JavaScript Dates
-          const dateOfAdmission =
-            dateOfAdmissionTimestamp instanceof Timestamp
-              ? dateOfAdmissionTimestamp.toDate()
-              : dateOfAdmissionTimestamp;
+
           const birthDate =
             birthDateTimestamp instanceof Timestamp
               ? birthDateTimestamp.toDate()
@@ -110,11 +107,8 @@ const StaffProfile = () => {
               }))
             : logsTimestamp;
 
-          console.log(dateOfAdmission);
-
           // Use 'const' for 'others' since it's not reassigned
-          const patientData = {
-            dateOfAdmission,
+          const StaffData = {
             birthDate,
             updatedAt,
             createdAt,
@@ -122,65 +116,86 @@ const StaffProfile = () => {
             ...others,
           };
 
-          setPatient(patientData);
+          setStaff(StaffData);
 
-          form.reset(patientData);
+          form.reset(StaffData);
         } else {
-          console.log("No patient document found");
+          console.log("No Staff document found");
         }
       } catch (error) {
-        console.log("Error fetching patient document:", error);
+        console.log("Error fetching Staff document:", error);
       }
     };
 
     if (userId) {
-      getPatientDoc();
+      getStaffDoc();
     }
   }, [userId, form]);
 
-  const { logs } = form.getValues();
-  const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
-    setIsLoading(true);
+  const { accessRole } = form.getValues();
 
+  if (accessRole === "No Access") {
+    form.setValue("password", "SCAUser@123");
+  }
+
+  const onSubmit = async (values: z.infer<typeof StaffFormValidation>) => {
+    setIsLoading(true);
+    const { email, staffImage, firstName, lastName } = values;
     try {
       if (user?.role === "user")
         return showToast(
           toast,
           "Access Denied",
           "warning",
-          "You don't have access to edit this patient profile"
+          "You don't have access to edit this staff's profile"
         );
 
       if (userId) {
-        // This block is for editing patient info
-        const patientPayload = {
+        // This block is for editing Staff info
+        const StaffPayload = {
           ...values,
         };
+        if (typeof staffImage !== "string") {
+          let fileUrl = "";
 
-        const docRef = doc(db, "patients", userId);
-        await updateDoc(docRef, patientPayload);
+          if (staffImage && staffImage.length > 0) {
+            // Upload the first file to Firebase Storage and get its URL
+            fileUrl = await uploadFileToStorage(
+              staffImage[0],
+              `${firstName}-${lastName}`
+            );
+          }
+
+          // Add the file URL to the staff payload
+          StaffPayload.staffImage = [fileUrl as any];
+        }
+
+        const docRef = doc(db, "staffs", userId);
+        await updateDoc(docRef, StaffPayload);
 
         showToast(
           toast,
-          "Patient",
+          "Staffs",
           "success",
-          "Patient Data successfully updated"
+          "Staff Data successfully updated"
         );
       } else {
         console.log(values);
-        const { email, identificationDocument, name } = values;
 
         let fileUrl = "";
 
-        if (identificationDocument && identificationDocument.length > 0) {
+        if (staffImage && staffImage.length > 0) {
           // Upload the first file to Firebase Storage and get its URL
-          fileUrl = await uploadFileToStorage(identificationDocument[0], name);
+          fileUrl = await uploadFileToStorage(
+            staffImage[0],
+            `${firstName}-${lastName}`
+          );
         }
 
         if (step === 1) {
           // Check if a document with the same email already exists
           const q = query(
-            collection(db, "patients"),
+            collection(db, "staffs"),
             where("email", "==", email)
           );
           const querySnapshot = await getDocs(q);
@@ -190,7 +205,7 @@ const StaffProfile = () => {
               "email",
               {
                 type: "manual",
-                message: "A patient with this email already exists.",
+                message: "A Staff with this email already exists.",
               },
               {
                 shouldFocus: true,
@@ -200,17 +215,36 @@ const StaffProfile = () => {
             return;
           }
 
-          const patient = {
+          // Register the staff without signing them in
+
+          try {
+            if (values.accessRole !== "No Access") {
+              await createUserWithEmailAndPassword(
+                createAuth,
+                values.email,
+                values.password
+              );
+            }
+
+            // Dispose of the separate app instance
+            await deleteApp(createApp);
+
+            console.log(
+              "Staff successfully registered without signing them in."
+            );
+          } catch (error) {
+            console.error("Error registering staff:", error);
+          }
+
+          const Staff = {
             ...values,
             registeredBy: `${user?.firstName} ${user?.lastName}`,
             createdAt: serverTimestamp(),
-            identificationDocument: fileUrl ? fileUrl : "",
+            staffImage: fileUrl ? [fileUrl] : "",
             logs: [],
           };
 
-          const docRef = await addDoc(collection(db, "patients"), patient);
-
-          setPatientDocId(docRef.id);
+          const docRef = await addDoc(collection(db, "staffs"), Staff);
 
           console.log(docRef);
 
@@ -218,83 +252,16 @@ const StaffProfile = () => {
             toast,
             "Registration",
             "success",
-            "Patient successfully Registered"
+            "Staff successfully Registered"
           );
-          setStep(2);
-          setIsLoading(false);
-        } else if (step === 2) {
-          // This block is for step 2 of patient registration
 
-          const logs = [
-            ...(values.logs || []),
-            {
-              updatedBy: `${user?.firstName} ${user?.lastName}`,
-              updatedAt: new Date(Date.now()),
-            },
-          ];
-          const patientPayload = {
-            ...values,
-            updatedAt: serverTimestamp(),
-            logs,
-          };
-
-          if (patientDocId) {
-            const docRef = doc(db, "patients", patientDocId);
-            await updateDoc(docRef, patientPayload);
-
-            showToast(
-              toast,
-              "Registration",
-              "success",
-              "Patient Data updated successfully"
-            );
-            setStep(3);
-          } else {
-            setStep(1);
-          }
-
-          setIsLoading(false);
-        } else {
-          const logs = [
-            ...(values.logs || []),
-            {
-              updatedBy: `${user?.firstName} ${user?.lastName}`,
-              updatedAt: new Date(Date.now()),
-            },
-          ];
-          const patientPayload = {
-            ...values,
-            updatedAt: serverTimestamp(),
-            logs,
-          };
-
-          if (patientDocId) {
-            const docRef = doc(db, "patients", patientDocId);
-            await updateDoc(docRef, patientPayload);
-
-            showToast(
-              toast,
-              "Registration",
-              "success",
-              "Patient Data updated successfully"
-            );
-            showToast(
-              toast,
-              "Registration",
-              "success",
-              "Patient Data updated successfully"
-            );
-            navigate(`/dashboard/success/${values.name}`);
-          } else {
-            setStep(1);
-          }
-
+          navigate("/dashboard/staffs");
           setIsLoading(false);
         }
       }
     } catch (error) {
       console.log(error);
-      showToast(toast, "Registration", "error", "Error updating patient data");
+      showToast(toast, "Registration", "error", "Error updating Staff data");
     } finally {
       setIsLoading(false);
     }
@@ -307,11 +274,13 @@ const StaffProfile = () => {
           <main>
             <section className="w-full space-y-4 mb-8">
               <h1 className="header ">
-                {userId ? `${patient?.name} Profile` : "Hi there 👋"}
+                {userId ? `${Staff?.firstName}'s Profile` : "Hi there 👋"}
               </h1>
               {!userId && (
                 <p className="text-dark-700">
-                  Get started with Staff's Registration.
+                  {userId
+                    ? `Edit ${Staff?.name} Profile `
+                    : "Get started with Staff's Registration."}
                 </p>
               )}
             </section>
@@ -320,36 +289,7 @@ const StaffProfile = () => {
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex-1 space-y-12"
             >
-              <section className="space-y-4">
-                {userId ? (
-                  <h1 className="sub-header">
-                    {step === 1
-                      ? "Basic Informations"
-                      : step === 2 && "Medical Informations 🩺"}
-                  </h1>
-                ) : (
-                  <h1 className="sub-header">
-                    {step === 2 && "Medical Informations 🩺"}{" "}
-                  </h1>
-                )}
-                {userId && step !== 4 && (
-                  <p className="text-dark-700">
-                    {userId && "Edit"}{" "}
-                    {step === 1
-                      ? "Patient"
-                      : step === 2
-                      ? "Medical"
-                      : step === 3 && "Payment"}{" "}
-                    Informations.
-                  </p>
-                )}
-              </section>
-
-              {step === 4 && userId ? (
-                <LogsInformations form={form} />
-              ) : (
-                <BasicInformations form={form} />
-              )}
+              <BasicInformations userId={userId} form={form} />
 
               {step !== 4 && (
                 <SubmitButton isLoading={isLoading}>Submit</SubmitButton>
@@ -363,16 +303,6 @@ const StaffProfile = () => {
                   onClick={() => setStep(step - 1)}
                 >
                   <ArrowLeft /> Go Back
-                </Button>
-              )}
-
-              {step === 3 && userId && logs && logs?.length > 0 && (
-                <Button
-                  className="flex bg-blue-700 items-center gap-2 "
-                  onClick={() => setStep(step + 1)}
-                >
-                  View Logs
-                  <ListIcon size={18} />
                 </Button>
               )}
             </div>

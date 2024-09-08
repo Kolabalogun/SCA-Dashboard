@@ -67,8 +67,8 @@ const routes = createBrowserRouter([
         element: <PatientProfile />,
       },
       {
-        path: "/dashboard/patient/:id",
-        element: <PatientProfile />,
+        path: "/dashboard/staff/:id",
+        element: <StaffProfile />,
       },
       {
         path: "/dashboard/success/:id",

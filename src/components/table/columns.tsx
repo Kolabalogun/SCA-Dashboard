@@ -85,3 +85,76 @@ function ActionsCell({ appointment }: { appointment: any }) {
     </button>
   );
 }
+
+export const staffsColumns = [
+  {
+    header: "#",
+    cell: ({ row }: { row: any }) => {
+      return <p className="text-14-medium py-2 ">{row.index + 1}</p>;
+    },
+  },
+  {
+    accessorKey: "firstName",
+    header: "First Name",
+    cell: ({ row }: { row: any }) => {
+      const appointment = row.original;
+      return (
+        <p className="text-14-medium capitalize ">{appointment?.firstName}</p>
+      );
+    },
+  },
+
+  {
+    accessorKey: "lastName",
+    header: "Last Name",
+    cell: ({ row }: { row: any }) => {
+      const appointment = row.original;
+      return (
+        <p className="text-14-medium capitalize ">{appointment?.lastName}</p>
+      );
+    },
+  },
+
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }: { row: any }) => {
+      const appointment = row.original;
+      return (
+        <p className="text-14-medium cursor-pointer lowecase ">
+          <a href={`mailto:${appointment?.email}`}> {appointment?.email}</a>
+        </p>
+      );
+    },
+  },
+
+  {
+    accessorKey: "occupation",
+    header: "Occupation",
+    cell: ({ row }: { row: any }) => {
+      const appointment = row.original;
+      return <p className="text-14-regular ">{appointment?.occupation}</p>;
+    },
+  },
+
+  {
+    id: "actions",
+    header: () => <div className="pl-4">Actions</div>,
+    cell: ({ row }: { row: any }) => (
+      <StaffActionsCell appointment={row.original} />
+    ),
+  },
+];
+
+function StaffActionsCell({ appointment }: { appointment: any }) {
+  const navigate = useNavigate();
+
+  return (
+    <button
+      onClick={() => navigate(`/dashboard/staff/${appointment?.id}`)}
+      className="cursor-pointer"
+    >
+      <p className="text-14-medium text-green-500">View Profile</p>
+    </button>
+  );
+}

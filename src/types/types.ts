@@ -7,3 +7,10 @@ export enum FormFieldType {
   SELECT = "select",
   SKELETON = "skeleton",
 }
+
+export enum AccessRole {
+  No_Access = "No Access",
+  Viewer = "Viewer",
+  Editor = "Editor",
+  Admin = "Admin",
+}

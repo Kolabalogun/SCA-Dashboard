@@ -71,7 +71,13 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
             <Input
               placeholder={props.placeholder}
               {...field}
-              type={props.type === "number" ? "number" : "text"}
+              type={
+                props.iconSrc === "/src/assets/icons/key.svg"
+                  ? "password"
+                  : props.type === "number"
+                  ? "number"
+                  : "text"
+              }
               readOnly={props.readOnly}
               className="shad-input border-0"
             />

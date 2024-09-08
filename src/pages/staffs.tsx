@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import TableLoader from "@/components/common/TableLoader";
-import { columns } from "@/components/table/columns";
+import { staffsColumns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/DataTable";
 import { Button } from "@/components/ui/button";
 import { db } from "@/config/firebase";
@@ -60,7 +60,7 @@ const Staffs = () => {
       {isLoading ? (
         <TableLoader />
       ) : (
-        <DataTable columns={columns} data={staffs || []} />
+        <DataTable columns={staffsColumns} data={staffs || []} />
       )}
     </div>
   );

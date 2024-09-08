@@ -6,6 +6,18 @@ declare type SearchParamProps = {
 declare type Gender = "Male" | "Female" | "Other";
 declare type MaritalStatus = "Single" | "Married" | "Other";
 declare type Status = "pending" | "scheduled" | "cancelled";
+declare type AccessRole = "No Access" | "Viewer" | "Editor" | "Admin";
+
+declare type StaffOccupation =
+  | "Administrator"
+  | "Doctor"
+  | "Psychiatric Physician"
+  | "Professional Care Officer"
+  | "Chef"
+  | "Security"
+  | "Cleaner"
+  | "Others"
+  | "Manager";
 
 declare interface EmployeeUserParams {
   firstName: string;

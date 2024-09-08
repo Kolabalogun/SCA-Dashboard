@@ -4,6 +4,25 @@ export const DrugsOptions = ["Tobacco", "Alcohol", "Cannabis", "Cocaine"];
 
 export const maritialStatusOptions = ["Single", "Married", "Other"];
 
+export const StaffFormDefaultValues = {
+  firstName: "",
+  middleName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  birthDate: new Date(Date.now()),
+  maritialStatus: "Single" as MaritalStatus,
+  gender: "Male" as Gender,
+  address: "",
+  occupation: "Administrator" as StaffOccupation,
+  accessRole: "No Access" as AccessRole,
+  password: "",
+  staffImage: [],
+  // db
+  logs: [],
+  updatedAt: new Date(Date.now()),
+};
+
 export const PatientFormDefaultValues = {
   name: "",
   email: "",
@@ -90,7 +109,19 @@ export const stayPeriods = [
   "2 years +",
 ];
 
-export const AccessRoles = ["viewer", "editor", "admin"];
+export const AccessRoles = ["No Access", "Viewer", "Editor", "Admin"];
+
+export const StaffOccupations = [
+  "Administrator",
+  "Doctor",
+  "Psychiatric Physician",
+  "Professional Care Officer",
+  "Chef",
+  "Security",
+  "Cleaner",
+  "Others",
+  "Manager",
+];
 
 export const IdentificationTypes = [
   "Birth Certificate",
