@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const Staffs = () => {
   const navigate = useNavigate();
 
-  const [staffs, setstaffs] = useState<any>([]);
+  const [staffs, setStaffs] = useState<any>([]);
 
   const [isLoading, setLoading] = useState<boolean>(false);
 
@@ -26,10 +26,10 @@ const Staffs = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      setstaffs(staffs);
+      setStaffs(staffs);
     } catch (error) {
       console.error("Error fetching staffs:", error);
-      setstaffs([]);
+      setStaffs([]);
     } finally {
       setLoading(false);
     }

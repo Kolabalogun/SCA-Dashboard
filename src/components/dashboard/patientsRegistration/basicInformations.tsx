@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { email, User } from "@/assets/icons";
+import { DrCruz } from "@/assets/images";
 import CustomFormField from "@/components/common/CustomFormField";
 import { FileUploader } from "@/components/common/FileUploader";
 import { FormControl } from "@/components/ui/form";
@@ -8,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SelectItem } from "@/components/ui/select";
 import {
-  Doctors,
   GenderOptions,
   IdentificationTypes,
   maritialStatusOptions,
@@ -18,9 +18,10 @@ import { UseFormReturn } from "react-hook-form";
 
 type Props = {
   form: UseFormReturn<any>;
+  staffs: any[];
 };
 
-const BasicInformations = ({ form }: Props) => {
+const BasicInformations = ({ form, staffs }: Props) => {
   return (
     <div className="space-y-9">
       <section className="space-y-6">
@@ -331,17 +332,20 @@ const BasicInformations = ({ form }: Props) => {
           label="Primary care professional"
           placeholder="Select a physician"
         >
-          {Doctors.map((doctor, i) => (
-            <SelectItem key={doctor.name + i} value={doctor.name}>
+          {staffs.map((doctor, i) => (
+            <SelectItem
+              key={doctor?.firstName + i}
+              value={`${doctor?.firstName} ${doctor?.lastName}`}
+            >
               <div className="flex cursor-pointer items-center gap-2">
                 <img
-                  src={doctor.image}
+                  src={doctor?.staffImage[0] || DrCruz}
                   width={32}
                   height={32}
                   alt="doctor"
                   className="rounded-full border border-dark-500"
                 />
-                <p>{doctor.name}</p>
+                <p>{`${doctor?.firstName} ${doctor?.lastName}`}</p>
               </div>
             </SelectItem>
           ))}

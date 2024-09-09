@@ -17,6 +17,7 @@ import {
   where,
   Timestamp,
   deleteDoc,
+  orderBy,
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { ArrowLeft, ArrowRight, ListIcon, Trash2Icon } from "lucide-react";
@@ -45,6 +46,7 @@ const PatientProfile = () => {
   const { id: userId } = useParams();
   const [loading, setLoading] = useState<boolean>(false);
   const [patient, setPatient] = useState<any>(null);
+  const [staffs, setStaffs] = useState<any>([]);
   const [patientDocId, setPatientDocId] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,6 +71,40 @@ const PatientProfile = () => {
     resolver: zodResolver(PatientFormValidation),
     defaultValues: PatientFormDefaultValues,
   });
+
+  async function fetchStaffs() {
+    const staffsRef = collection(db, "staffs");
+    setLoading(true);
+
+    try {
+      const q = query(
+        staffsRef,
+        orderBy("createdAt", "desc"),
+        where("occupation", "in", [
+          "Professional Care Officer",
+          "Psychiatric Physician",
+        ])
+      );
+
+      const querySnapshot = await getDocs(q);
+      const staffs = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setStaffs(staffs);
+    } catch (error) {
+      console.error("Error fetching staffs:", error);
+      setStaffs([]);
+      showToast(
+        toast,
+        "Registration",
+        "error",
+        "Error fetching Primary care professionals"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     const getPatientDoc = async () => {
@@ -142,6 +178,8 @@ const PatientProfile = () => {
     if (userId) {
       getPatientDoc();
     }
+
+    fetchStaffs();
   }, [userId, form]);
 
   const { logs } = form.getValues();
@@ -422,9 +460,9 @@ const PatientProfile = () => {
               </section>
 
               {step === 1 ? (
-                <BasicInformations form={form} />
+                <BasicInformations staffs={staffs} form={form} />
               ) : step === 2 ? (
-                <MedicalInformations form={form} />
+                <MedicalInformations staffs={staffs} form={form} />
               ) : step === 4 && userId ? (
                 <LogsInformations form={form} />
               ) : (
