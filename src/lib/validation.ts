@@ -74,6 +74,7 @@ export const AddRevenueValidation = z.object({
 export const StaffFormValidation = z.object({
   firstName: nameSchema,
   lastName: nameSchema,
+  room: nameSchema,
   email: emailSchema,
   phone: phoneSchema,
   middleName: nameSchema.optional(),

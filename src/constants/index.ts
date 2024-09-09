@@ -37,6 +37,7 @@ export const StaffFormDefaultValues = {
 export const PatientFormDefaultValues = {
   name: "",
   email: "",
+  room: "",
   phone: "",
   birthDate: new Date(Date.now()),
   maritialStatus: "Single" as MaritalStatus,

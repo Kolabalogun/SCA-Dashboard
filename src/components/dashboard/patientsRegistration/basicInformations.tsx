@@ -29,15 +29,24 @@ const BasicInformations = ({ form }: Props) => {
         </div>
 
         {/* NAME */}
+
+        <CustomFormField
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name="name"
+          label="Full Name"
+          placeholder="John Doe"
+          iconSrc={User}
+          iconAlt="user"
+        />
+
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
-            name="name"
-            label="Full Name"
-            placeholder="John Doe"
-            iconSrc={User}
-            iconAlt="user"
+            name="room"
+            label="Room"
+            placeholder="Room 201"
           />
           <CustomFormField
             fieldType={FormFieldType.INPUT}

@@ -17,9 +17,10 @@ import {
   query,
   where,
   Timestamp,
+  deleteDoc,
 } from "firebase/firestore";
 import { createApp, createAuth, db } from "@/config/firebase";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Trash2Icon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import SubmitButton from "@/components/common/SubmitButton";
@@ -33,6 +34,8 @@ import showToast from "@/components/common/Toast";
 import BasicInformations from "@/components/dashboard/staffsRegistration/basicInformations";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { deleteApp } from "firebase/app";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
+import Loader from "@/components/common/Loader";
 
 const StaffProfile = () => {
   const toast = useToast();
@@ -45,6 +48,7 @@ const StaffProfile = () => {
   const [Staff, setStaff] = useState<any>(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchLoading, setIsFetchLoading] = useState(false);
 
   const [step, setStep] = useState(1);
 
@@ -65,6 +69,7 @@ const StaffProfile = () => {
   });
 
   useEffect(() => {
+    setIsFetchLoading(true);
     const getStaffDoc = async () => {
       try {
         const res = await fetchFirestoreData<any>("staffs", userId);
@@ -123,6 +128,8 @@ const StaffProfile = () => {
         }
       } catch (error) {
         console.log("Error fetching Staff document:", error);
+      } finally {
+        setIsFetchLoading(false);
       }
     };
 
@@ -266,8 +273,41 @@ const StaffProfile = () => {
     }
   };
 
+  const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
+  const [isDeleteStaffModalOpen, setIsDeleteStaffModalOpen] = useState(false);
+
+  const handleDeleteStaff = async () => {
+    setIsDeleteLoading(true);
+    try {
+      if (userId) {
+        const docRef = doc(db, "staffs", userId);
+        await deleteDoc(docRef);
+
+        setIsDeleteStaffModalOpen(false);
+        showToast(toast, "SCA", "warning", "Staff deleted successfully");
+        navigate("/dashboard/staffs");
+      }
+    } catch (error) {
+      console.log(error);
+      showToast(toast, "SCA", "error", "Error deleting Staff profile");
+    } finally {
+      setIsDeleteLoading(false);
+    }
+  };
+
+  if (isFetchLoading) return <Loader />;
+
   return (
     <div className="container    flex flex-col  ">
+      {/* Confirmation Modals */}
+      <ConfirmationModal
+        isOpen={isDeleteStaffModalOpen}
+        onConfirm={handleDeleteStaff}
+        onCancel={() => setIsDeleteStaffModalOpen(false)}
+        isLoading={deleteLoader}
+        title="Confirm Action"
+        message="Are you sure you want to delete this staff's Profile?"
+      />
       <Form {...form}>
         <div className="flex flex-col  space-y-14">
           <main>
@@ -294,6 +334,16 @@ const StaffProfile = () => {
                 <SubmitButton isLoading={isLoading}>Submit</SubmitButton>
               )}
             </form>
+
+            <div className="my-8">
+              <Button
+                type="button"
+                className="bg-red-800 gap-2"
+                onClick={() => setIsDeleteStaffModalOpen(true)}
+              >
+                Delete Staff's Profile <Trash2Icon className="h-5" />
+              </Button>
+            </div>
 
             <div className="mt-8 flex gap-5 justify-between   ">
               {step !== 1 && (
