@@ -43,6 +43,7 @@ const PatientProfile = () => {
   const navigate = useNavigate();
 
   const { user } = useSelector((state: any) => state.auth);
+
   const { id: userId } = useParams();
 
   const [patient, setPatient] = useState<any>(null);

@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
-const RevenueDetails = () => {
+const ExpenseDetails = () => {
   const toast = useToast();
   const { user } = useSelector((state: any) => state.auth);
 
@@ -22,14 +22,14 @@ const RevenueDetails = () => {
   const { adminData, getAdminContent } = useAppContext();
   const { id: docId } = useParams();
 
-  const [revenue, setRevenue] = useState<any>(null);
+  const [expenses, setExpenses] = useState<any>(null);
 
-  console.log(revenue);
+  console.log(expenses);
 
   useEffect(() => {
-    const getRevenueDoc = async () => {
+    const getExpensesDoc = async () => {
       try {
-        const res = await fetchFirestoreData<any>("revenue", docId);
+        const res = await fetchFirestoreData<any>("expenses", docId);
 
         if (res) {
           const { createdAt: createdAtTimestamp, ...others } = res;
@@ -40,91 +40,52 @@ const RevenueDetails = () => {
               : createdAtTimestamp;
 
           // Use 'const' for 'others' since it's not reassigned
-          const revenueData = {
+          const expensesData = {
             createdAt,
             ...others,
           };
 
-          setRevenue(revenueData);
+          setExpenses(expensesData);
         } else {
-          console.log("No Revenue document found");
+          console.log("No expenses document found");
         }
       } catch (error) {
-        console.log("Error fetching Revenue document:", error);
-        showToast(toast, "SCA", "error", "Error fetching Revenue document");
+        console.log("Error fetching expenses document:", error);
+        showToast(toast, "SCA", "error", "Error fetching expenses document");
       }
     };
 
     if (docId) {
-      getRevenueDoc();
+      getExpensesDoc();
       getAdminContent();
     }
   }, [docId]);
 
-  const handleDeleteRevenue = async (id: string, amount: number) => {
+  const handleDeleteExpenses = async (id: string, amount: number) => {
     try {
-      // Get Patient Documemt
+      const ExpensesDocRef = doc(db, "expenses", id);
 
-      const res = await fetchFirestoreData<any>(
-        "patients",
-        revenue?.patientDocId
-      );
+      await deleteDoc(ExpensesDocRef);
 
-      if (res) {
-        // Filter out the payment to be deleted
-        const updatedPayments = res?.paymentHistory.filter(
-          (payment: any) => payment.id !== id
-        );
-
-        // Update the patient document's payment history
-        if (revenue?.patientDocId) {
-          const patientRef = doc(db, "patients", revenue?.patientDocId);
-          await updateDoc(patientRef, {
-            paymentHistory: updatedPayments,
-          });
-        }
-      }
-
-      // Delete the corresponding revenue document
-
-      const revenueDocRef = doc(db, "revenue", revenue?.id);
-
-      await deleteDoc(revenueDocRef);
-
-      // Deduct the payment amount from totalRevenue
-      if (adminData?.totalRevenue) {
-        const updatedRevenue = parseInt(adminData.totalRevenue) - amount;
+      // Deduct the payment amount from totalExpenses
+      if (adminData?.totalExpenses) {
+        const updatedExpenses = parseInt(adminData.totalExpenses) - amount;
 
         const adminDocRef = doc(db, "admin", "adminDoc");
 
-        if (revenue?.type === "Patient Admission") {
-          const updatedPatientRevenue =
-            parseInt(adminData.patientAdmissionRevenue) - amount;
-
-          await updateDoc(adminDocRef, {
-            patientAdmissionRevenue: updatedPatientRevenue,
-          });
-        } else {
-          const updatedOtherRevenue = parseInt(adminData.otherRevenue) - amount;
-
-          await updateDoc(adminDocRef, {
-            otherRevenue: updatedOtherRevenue,
-          });
-        }
-
         await updateDoc(adminDocRef, {
-          totalRevenue: updatedRevenue,
+          totalExpenses: updatedExpenses,
         });
       }
 
-      showToast(toast, "SCA", "warning", "Revenue deleted successfully");
+      showToast(toast, "SCA", "warning", "Expense deleted successfully");
 
       getAdminContent();
 
-      navigate("/dashboard/revenue");
+      navigate("/dashboard/Expenses");
     } catch (error) {
       console.log(error);
-      showToast(toast, "SCA", "error", "Error deleting revenue");
+      showToast(toast, "SCA", "error", "Error deleting Expenses");
     }
   };
 
@@ -133,54 +94,48 @@ const RevenueDetails = () => {
       <div className="flex flex-col  space-y-14">
         <main>
           <section className="w-full space-y-4 mb-8">
-            <h1 className="header ">Revenue Details</h1>
-            <p className="text-dark-700">Revenue ID: {revenue?.id}</p>
+            <h1 className="header ">Expenses Details</h1>
+            <p className="text-dark-700">ID: {expenses?.id}</p>
           </section>
 
           <section className="w-full mb-8">
             <li
-              key={revenue?.id}
+              key={expenses?.id}
               className="space-y-4 flex flex-col border border-[#363a3d] rounded-lg p-4"
             >
               <div className="flex justify-between items-center">
                 <p className="text-sm capitalize text-[#7682ad] ">
-                  ID: {revenue?.id}
+                  ID: {expenses?.id}
                 </p>
                 <p className="text-sm">
-                  Date: {formatDate(revenue?.formDate) || "N/A"}
+                  Date: {formatDate(expenses?.formDate) || "N/A"}
                 </p>
               </div>
 
               <div className="  items-center flex gap-2">
                 <p className="text-sm">Pevenue Approved By: </p>
                 <p className="text-sm">
-                  {revenue?.paymentRegisteredBy || revenue?.registeredBy}{" "}
+                  {expenses?.paymentRegisteredBy || expenses?.registeredBy}
                 </p>
               </div>
 
-              {revenue?.stayPeriod && (
-                <div className="space-y-2">
-                  <p className="text-sm">Admission Period: </p>
-                  <p>{revenue?.stayPeriods} </p>
-                </div>
-              )}
               <div className="space-y-2">
-                <p className="text-sm">Amount Received: </p>
-                <p>₦{parseInt(revenue?.amount)?.toLocaleString()} </p>
+                <p className="text-sm">Amount Paid: </p>
+                <p>₦{parseInt(expenses?.amount)?.toLocaleString()} </p>
               </div>
 
               <div className="space-y-2">
                 <p className="text-sm">Payment Description: </p>
-                <p>{revenue?.desc} </p>
+                <p>{expenses?.desc} </p>
               </div>
 
               <div className="flex my-2 items-center justify-between">
-                {revenue?.receipt && (
+                {expenses?.receipt && (
                   <div className=" ">
                     <Button
                       type="button"
                       className="bg-blue-700"
-                      onClick={() => window.open(revenue?.receipt, "_blank")}
+                      onClick={() => window.open(expenses?.receipt, "_blank")}
                     >
                       View Reciept
                     </Button>
@@ -192,7 +147,7 @@ const RevenueDetails = () => {
                     type="button"
                     className="bg-red-800 gap-2"
                     onClick={() =>
-                      handleDeleteRevenue(revenue.id, revenue.amount)
+                      handleDeleteExpenses(expenses.id, expenses.amount)
                     }
                   >
                     Delete <Trash2Icon className="h-5" />
@@ -207,4 +162,4 @@ const RevenueDetails = () => {
   );
 };
 
-export default RevenueDetails;
+export default ExpenseDetails;

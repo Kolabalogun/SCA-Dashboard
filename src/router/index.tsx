@@ -1,5 +1,4 @@
-import Protected from "@/components/auth/Protected";
-import UnAuthenticated from "@/components/auth/UnAuthenticated";
+import { UnAuthenticated, Protected } from "@/components/auth";
 import {
   ErrorPage,
   Login,
@@ -10,10 +9,15 @@ import {
   Success,
   StaffProfile,
   Revenue,
+  RevenueDetails,
+  Expenses,
+  ExpenseDetails,
+  AddExpenses,
+  Root,
+  Staffs,
+  AddOtherRevenue,
 } from "@/pages";
 
-import Root from "@/pages/root";
-import Staffs from "@/pages/staffs";
 import { createBrowserRouter } from "react-router-dom";
 
 const routes = createBrowserRouter([
@@ -68,6 +72,26 @@ const routes = createBrowserRouter([
         element: <Revenue />,
       },
       {
+        path: "/dashboard/expenses",
+        element: <Expenses />,
+      },
+      {
+        path: "/dashboard/add-revenue",
+        element: <AddOtherRevenue />,
+      },
+      {
+        path: "/dashboard/add-expense",
+        element: <AddExpenses />,
+      },
+      {
+        path: "/dashboard/revenue/:id",
+        element: <RevenueDetails />,
+      },
+      {
+        path: "/dashboard/expense/:id",
+        element: <ExpenseDetails />,
+      },
+      {
         path: "/dashboard/patient/:id",
         element: <PatientProfile />,
       },
@@ -80,6 +104,7 @@ const routes = createBrowserRouter([
         element: <Success />,
       },
     ],
+    errorElement: <ErrorPage />,
   },
 
   { path: "*", element: <NotFound /> },

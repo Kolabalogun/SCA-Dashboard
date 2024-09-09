@@ -14,8 +14,10 @@ interface AdminData {
   totalRevenue: number | string | any;
   totalPatients: number;
   totalStaffs: number;
-  totalExpenses: number;
+  totalExpenses: number | string | any;
   totalVisitors: number;
+  patientAdmissionRevenue: number | string | any;
+  otherRevenue: number | string | any;
 }
 
 interface AppContextProps {

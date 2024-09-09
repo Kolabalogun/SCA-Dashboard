@@ -39,8 +39,6 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
   const { paymentReceived, paymentHistory, paymentReceipt, name, stayPeriods } =
     form.getValues();
 
-  console.log(patientDocId);
-
   useWatch({
     control: form.control,
     name: "stayPeriods",
@@ -91,11 +89,12 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
 
       const newPayment = {
         paymentReceived: parseInt(paymentReceived),
-        id: `revenue-${Date.now()}`,
+
         formDate: new Date().toISOString(),
-        stayPeriods: stayPeriods,
+        desc: `Revenue from admission of ${name} for a period of ${stayPeriods} `,
         paymentReceipt: paymentReceiptFileUrl,
         paymentRegisteredBy: `${user?.firstName} ${user?.lastName}`,
+        stayPeriods: stayPeriods,
       };
 
       const newPaymentHistory = [...paymentHistoryy, newPayment];
@@ -106,14 +105,16 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
 
       const newRevenue = {
         amount: parseInt(paymentReceived),
-        id: `revenue-${Date.now()}`,
+
         formDate: new Date().toISOString(),
-        stayPeriods: stayPeriods,
         receipt: paymentReceiptFileUrl,
         type: "Patient Admission",
         patient: name,
         createdAt: serverTimestamp(),
         paymentRegisteredBy: `${user?.firstName} ${user?.lastName}`,
+        stayPeriods: stayPeriods,
+        patientDocId,
+        desc: `Revenue from admission of ${name} for a period of ${stayPeriods} `,
       };
 
       const collectionRef = collection(db, "revenue");
@@ -126,12 +127,15 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
         const newRevenue =
           parseInt(adminData?.totalRevenue) + parseInt(paymentReceived);
 
-        console.log(newRevenue, "newRevenue");
+        const newPatientRevenue =
+          parseInt(adminData?.patientAdmissionRevenue) +
+          parseInt(paymentReceived);
 
         const docRef = doc(db, "admin", "adminDoc");
 
         await updateDoc(docRef, {
           totalRevenue: newRevenue,
+          patientAdmissionRevenue: newPatientRevenue,
         });
       }
 
@@ -182,10 +186,14 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       // Deduct the payment amount from totalRevenue
       if (adminData?.totalRevenue) {
         const updatedRevenue = parseInt(adminData.totalRevenue) - paymentAmount;
+
+        const updatedPatientRevenue =
+          parseInt(adminData.patientAdmissionRevenue) - paymentAmount;
         const adminDocRef = doc(db, "admin", "adminDoc");
 
         await updateDoc(adminDocRef, {
           totalRevenue: updatedRevenue,
+          patientAdmissionRevenue: updatedPatientRevenue,
         });
       }
 
@@ -235,6 +243,11 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
                     <p>
                       ₦{parseInt(payment?.paymentReceived)?.toLocaleString()}{" "}
                     </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm">Payment Description: </p>
+                    <p>{payment?.desc} </p>
                   </div>
 
                   <div className="flex my-2 items-center justify-between">

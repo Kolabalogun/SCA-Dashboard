@@ -8,7 +8,14 @@ import {
   DrawerCloseButton,
   Button,
 } from "@chakra-ui/react";
-import { HomeIcon, Menu, Users } from "lucide-react";
+import {
+  ChartCandlestick,
+  Contact,
+  HomeIcon,
+  Landmark,
+  Menu,
+  Users,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = ({
@@ -37,19 +44,19 @@ const Sidebar = ({
     //   link: "/dashboard/profile",
     // },
     {
-      icon: <Users size={20} />,
+      icon: <Contact size={20} />,
       title: "Staffs",
       link: "/dashboard/staffs",
     },
     {
-      icon: <Users size={20} />,
+      icon: <Landmark size={20} />,
       title: "Revenue",
       link: "/dashboard/revenue",
     },
     {
-      icon: <Users size={20} />,
+      icon: <ChartCandlestick size={20} />,
       title: "Expenses",
-      link: "/dashboard/profile",
+      link: "/dashboard/expenses",
     },
   ];
 

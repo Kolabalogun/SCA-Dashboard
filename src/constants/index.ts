@@ -4,6 +4,17 @@ export const DrugsOptions = ["Tobacco", "Alcohol", "Cannabis", "Cocaine"];
 
 export const maritialStatusOptions = ["Single", "Married", "Other"];
 
+export const AddRevenueDefaultValues = {
+  type: "",
+  // createdAt: new Date(Date.now()),
+
+  // id: "",
+  patient: "",
+  receipt: [],
+  amount: 0,
+  desc: "",
+};
+
 export const StaffFormDefaultValues = {
   firstName: "",
   middleName: "",
@@ -121,6 +132,14 @@ export const StaffOccupations = [
   "Cleaner",
   "Others",
   "Manager",
+];
+
+export const RevenueTypeOptions = [
+  "Government Grant",
+  "Donations",
+  "Private Patient",
+  "Teaching and Educational Programs",
+  "Others",
 ];
 
 export const IdentificationTypes = [
