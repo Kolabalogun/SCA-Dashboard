@@ -1,32 +1,52 @@
-import {
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  Button,
-} from "@chakra-ui/react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useToast } from "@chakra-ui/react";
 import {
   ChartCandlestick,
   Contact,
   HomeIcon,
   Landmark,
+  LogOut,
   Menu,
+  Settings,
   Users,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import ConfirmationModal from "../common/ConfirmationModal";
+import { useState } from "react";
+import showToast from "../common/Toast";
+import { signOut } from "firebase/auth";
+import { auth } from "@/config/firebase";
+import { logout } from "@/redux/features/authSlice";
+import { useDispatch } from "react-redux";
 
-const Sidebar = ({
-  isOpen,
-  onOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onOpen: () => void;
-  onClose: () => void;
-}) => {
+const Sidebar = () => {
+  const toast = useToast();
+  const { pathname } = useLocation();
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleLogOut = async () => {
+    try {
+      setIsLoading(true);
+
+      await signOut(auth);
+
+      dispatch(logout());
+      showToast(toast, "SCA", "warning", "You've successfully signed out");
+    } catch (error) {
+      console.log(error);
+      showToast(
+        toast,
+        "SCA",
+        "error",
+        "An error occured while trying log you out"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const links = [
     {
       icon: <HomeIcon size={20} />,
@@ -58,40 +78,27 @@ const Sidebar = ({
       title: "Expenses",
       link: "/dashboard/expenses",
     },
+    {
+      icon: <Settings size={20} />,
+      title: "Settings",
+      link: "/dashboard/settings",
+    },
   ];
-
-  const { pathname } = useLocation();
 
   return (
     <>
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>SCA</DrawerHeader>
+      {/* Confirmation Modals */}
+      <ConfirmationModal
+        isOpen={isOpen}
+        onConfirm={handleLogOut}
+        onCancel={() => setIsOpen(false)}
+        isLoading={isLoading}
+        title="Confirm "
+        message="Are you sure you want to Log Out?"
+      />
 
-          <DrawerBody>
-            <div className="w-64 bg-gray-800 text-white flex flex-col space-y-4 p-4 md:w-20 md:flex-row md:items-center md:space-y-0 md:space-x-4">
-              <Link to="/admin/dashboard">
-                <p className="hover:bg-gray-700 p-2 rounded">Dashboard</p>
-              </Link>
-              <Link to="/admin/dashboard/settings">
-                <p className="hover:bg-gray-700 p-2 rounded">Settings</p>
-              </Link>
-              <Link to="/admin/dashboard/profile">
-                <p className="hover:bg-gray-700 p-2 rounded">Profile</p>
-              </Link>
-            </div>
-          </DrawerBody>
-
-          <DrawerFooter>
-            <Button colorScheme="blue">Log Out</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-
-      <div className="w-32 border-r border-r-gray-600 shadow-md text-white flex justify-between flex-col space-y-12  px-2 items-center pt-8 pb-10 ">
-        <div onClick={onOpen} className="mb-10 cursor-pointer">
+      <div className="w-32 border-r overflow-y-scroll remove-scrollbar shadow-md text-white flex justify-between flex-col h-full space-y-12  px-2 items-center pt-8 pb-10 ">
+        <div className="mb-10 cursor-pointer">
           <Menu size={24} />
         </div>
         <div className="space-y-9 flex-1">
@@ -110,6 +117,14 @@ const Sidebar = ({
             </Link>
           ))}
         </div>
+
+        <button
+          onClick={() => setIsOpen(true)}
+          className="flex rounded py-4 px-6 hover:bg-gradient-to-r from-[#242a2b] via-[#1d2225] to-[#171b1e]    flex-col gap-2 items-center"
+        >
+          <LogOut color="red" />
+          <p className="text-xs text-[#fb0000]">Log Out</p>
+        </button>
       </div>
     </>
   );

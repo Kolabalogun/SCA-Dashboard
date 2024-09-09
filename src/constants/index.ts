@@ -28,6 +28,7 @@ export const StaffFormDefaultValues = {
   occupation: "Administrator" as StaffOccupation,
   accessRole: "No Access" as AccessRole,
   password: "",
+  confirmPassword: "",
   staffImage: [],
   // db
   logs: [],
@@ -129,6 +130,7 @@ export const StaffOccupations = [
   "Psychiatric Physician",
   "Professional Care Officer",
   "Chef",
+  "IT Officer",
   "Security",
   "Cleaner",
   "Others",

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -28,7 +27,6 @@ import {
   PaymentInformations,
 } from "@/components/dashboard";
 import SubmitButton from "@/components/common/SubmitButton";
-
 import { PatientFormDefaultValues } from "@/constants";
 import { useSelector } from "react-redux";
 import { fetchFirestoreData, uploadFileToStorage } from "@/lib/firebase";

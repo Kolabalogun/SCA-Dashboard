@@ -67,8 +67,8 @@ const StaffProfile = () => {
   });
 
   useEffect(() => {
-    setIsFetchLoading(true);
     const getStaffDoc = async () => {
+      setIsFetchLoading(true);
       try {
         const res = await fetchFirestoreData<any>("staffs", userId);
 
@@ -140,6 +140,7 @@ const StaffProfile = () => {
 
   if (accessRole === "No Access") {
     form.setValue("password", "SCAUser@123");
+    form.setValue("confirmPassword", "SCAUser@123");
   }
 
   const onSubmit = async (values: z.infer<typeof StaffFormValidation>) => {
@@ -268,7 +269,7 @@ const StaffProfile = () => {
       }
     } catch (error) {
       console.log(error);
-      showToast(toast, "Registration", "error", "Error updating Staff data");
+      showToast(toast, "Registration", "error", "Error registering Staff ");
     } finally {
       setIsLoading(false);
     }
@@ -315,7 +316,7 @@ const StaffProfile = () => {
         onCancel={() => setIsDeleteStaffModalOpen(false)}
         isLoading={deleteLoader}
         title="Confirm Action"
-        message="Are you sure you want to delete this staff's Profile?"
+        message="Are you sure you want to delete this staff's profile? Please note that only staff records can be deleted, and once deleted, the staff member will no longer be able to sign up using this email."
       />
 
       <ConfirmationModal

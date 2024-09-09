@@ -71,66 +71,73 @@ export const AddRevenueValidation = z.object({
   desc: nameSchema,
 });
 
-export const StaffFormValidation = z.object({
-  firstName: nameSchema,
-  lastName: nameSchema,
+export const StaffFormValidation = z
+  .object({
+    confirmPassword: nameSchema,
+    firstName: nameSchema,
+    lastName: nameSchema,
+    email: emailSchema,
+    phone: phoneSchema,
+    middleName: nameSchema.optional(),
+    birthDate: z.coerce.date(),
+    gender: z.enum(["Male", "Female", "Other"]),
+    maritialStatus: z.enum(["Single", "Married", "Other"]),
+    address: z
+      .string()
+      .min(5, "Address must be at least 5 characters")
+      .max(500, "Address must be at most 500 characters"),
+    occupation: z.enum([
+      "Administrator",
+      "Doctor",
+      "Psychiatric Physician",
+      "Professional Care Officer",
+      "Chef",
+      "IT Officer",
+      "Security",
+      "Cleaner",
+      "Manager",
+      "Others",
+    ]),
+    accessRole: z.enum(["No Access", "Viewer", "Editor", "Admin"]),
+    staffImage: z.union([z.string(), z.custom<File[]>()]).optional(),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .max(32, "Password must be at most 32 characters long")
+      .refine(
+        (password) => /[a-z]/.test(password),
+        "Password must contain at least one lowercase letter"
+      )
+      .refine(
+        (password) => /[A-Z]/.test(password),
+        "Password must contain at least one uppercase letter"
+      )
+      .refine(
+        (password) => /[0-9]/.test(password),
+        "Password must contain at least one number"
+      )
+      .refine(
+        (password) => /[@$!%*?&]/.test(password),
+        "Password must contain at least one special character"
+      ),
 
-  email: emailSchema,
-  phone: phoneSchema,
-  middleName: nameSchema.optional(),
-  birthDate: z.coerce.date(),
-  gender: z.enum(["Male", "Female", "Other"]),
-  maritialStatus: z.enum(["Single", "Married", "Other"]),
-  address: z
-    .string()
-    .min(5, "Address must be at least 5 characters")
-    .max(500, "Address must be at most 500 characters"),
-  occupation: z.enum([
-    "Administrator",
-    "Doctor",
-    "Psychiatric Physician",
-    "Professional Care Officer",
-    "Chef",
-    "Security",
-    "Cleaner",
-    "Manager",
-    "Others",
-  ]),
-  accessRole: z.enum(["No Access", "Viewer", "Editor", "Admin"]),
-  staffImage: z.union([z.string(), z.custom<File[]>()]).optional(),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters long")
-    .max(32, "Password must be at most 32 characters long")
-    .refine(
-      (password) => /[a-z]/.test(password),
-      "Password must contain at least one lowercase letter"
-    )
-    .refine(
-      (password) => /[A-Z]/.test(password),
-      "Password must contain at least one uppercase letter"
-    )
-    .refine(
-      (password) => /[0-9]/.test(password),
-      "Password must contain at least one number"
-    )
-    .refine(
-      (password) => /[@$!%*?&]/.test(password),
-      "Password must contain at least one special character"
-    ),
+    // db
+    logs: z
+      .array(
+        z.object({
+          updatedBy: z.string(),
+          updatedAt: z.coerce.date(),
+        })
+      )
+      .optional(),
+    updatedAt: z.coerce.date().optional(),
+    createdAt: z.coerce.date().optional(),
+  })
 
-  // db
-  logs: z
-    .array(
-      z.object({
-        updatedBy: z.string(),
-        updatedAt: z.coerce.date(),
-      })
-    )
-    .optional(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional(),
-});
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 // Patient Form Validation
 export const PatientFormValidation = UserFormValidation.extend({

@@ -225,6 +225,20 @@ const BasicInformations = ({ form, userId }: Props) => {
             iconAlt="user"
           />
         )}
+
+        
+{values.accessRole !== "No Access" && !userId && (
+          <CustomFormField
+            control={form.control}
+            fieldType={FormFieldType.INPUT}
+            readOnly={userId ? true : false}
+            name="confirmPassword"
+            label="Confirm Staff Password"
+            placeholder="***********"
+            iconSrc={Key}
+            iconAlt="user"
+          />
+        )}
       </section>
     </div>
   );

@@ -2,11 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
 import { doc, onSnapshot } from "firebase/firestore";
 import {
-  logout,
   setCredentials,
   setIsAuthenticated,
 } from "../redux/features/authSlice";
@@ -15,7 +14,6 @@ import { auth, db } from "@/config/firebase";
 
 interface AuthContextProps {
   profile: any;
-  logoutt: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -29,7 +27,7 @@ function AuthProvider({ children }: { children: any }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const docRef = doc(db, "users", user.uid);
+        const docRef = doc(db, "staffs", user.uid);
 
         const unsubscribeSnapshot = onSnapshot(docRef, (snapshot) => {
           if (snapshot.exists()) {
@@ -58,21 +56,10 @@ function AuthProvider({ children }: { children: any }) {
     return () => unsubscribe();
   }, [auth]);
 
-  /**
-   * Function to handle user logout.
-   */
-  const logoutt = async () => {
-    await signOut(auth);
-    dispatch(logout());
-  };
-
-  // Provide the authentication context value to the wrapped components
   return (
     <AuthContext.Provider
       value={{
         profile,
-
-        logoutt,
       }}
     >
       {children}
