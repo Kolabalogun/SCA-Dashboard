@@ -19,7 +19,7 @@ import {
   Timestamp,
   deleteDoc,
 } from "firebase/firestore";
-import { createApp, createAuth, db } from "@/config/firebase";
+import { createAppUserConfig, db } from "@/config/firebase";
 import { ArrowLeft, Trash2Icon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import SubmitButton from "@/components/common/SubmitButton";
@@ -29,8 +29,8 @@ import { fetchFirestoreData, uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
 import showToast from "@/components/common/Toast";
 import BasicInformations from "@/components/dashboard/staffsRegistration/basicInformations";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { deleteApp } from "firebase/app";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { deleteApp, initializeApp } from "firebase/app";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import Loader from "@/components/common/Loader";
 import { useAppContext } from "@/contexts/AppContext";
@@ -223,15 +223,21 @@ const StaffProfile = () => {
 
           try {
             if (values.accessRole !== "No Access") {
+              const createApp = initializeApp(
+                createAppUserConfig,
+                `"createAppUser-"${values.firstName}-${values.lastName}`
+              );
+              const createAuth = getAuth(createApp);
+
               await createUserWithEmailAndPassword(
                 createAuth,
                 values.email,
                 values.password
               );
-            }
 
-            // Dispose of the separate app instance
-            await deleteApp(createApp);
+              // Dispose of the separate app instance
+              await deleteApp(createApp);
+            }
           } catch (error) {
             console.error("Error registering staff:", error);
           }

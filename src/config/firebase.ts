@@ -23,6 +23,6 @@ export const db = getFirestore(app);
 export const storage = getStorage(app);
 
 // Create a separate app for user creation
-const createAppUserConfig = { ...firebaseConfig };
-export const createApp = initializeApp(createAppUserConfig, "createAppUser");
-export const createAuth = getAuth(createApp);
+export const createAppUserConfig = { ...firebaseConfig };
+// export const createApp = initializeApp(createAppUserConfig, "createAppUser");
+// export const createAuth = getAuth(createApp);
