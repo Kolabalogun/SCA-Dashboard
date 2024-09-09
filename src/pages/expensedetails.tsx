@@ -97,7 +97,7 @@ const ExpenseDetails = () => {
 
   return (
     <div className="container    flex flex-col  ">
-      <div className="flex flex-col  space-y-14">
+      <div className="flex flex-col mb-10   space-y-14">
         <main>
           <section className="w-full space-y-4 mb-8">
             <h1 className="header ">Expenses Details</h1>

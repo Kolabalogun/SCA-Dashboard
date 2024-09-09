@@ -15,8 +15,6 @@ const Patients = () => {
 
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  console.log(isLoading);
-
   async function fetchPatients() {
     const patientsRef = collection(db, "patients");
     setLoading(true);

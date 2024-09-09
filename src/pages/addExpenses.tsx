@@ -134,7 +134,7 @@ const AddExpenses = () => {
         message="Are you sure you want to add payment?"
       />
       <Form {...form}>
-        <div className="flex flex-col  space-y-14">
+        <div className="flex flex-col mb-10   space-y-14">
           <main>
             <section className="w-full space-y-4 mb-8">
               <h1 className="header ">Hi there 👋</h1>

@@ -17,9 +17,10 @@ import {
   query,
   where,
   Timestamp,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
-import { ArrowLeft, ArrowRight, ListIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, ListIcon, Trash2Icon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   BasicInformations,
@@ -51,6 +52,9 @@ const PatientProfile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
   const { adminData, getAdminContent } = useAppContext();
+  const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
+  const [isDeletePatientModalOpen, setIsDeletePatientModalOpen] =
+    useState(false);
 
   useEffect(() => {
     scrollToTop();
@@ -163,7 +167,7 @@ const PatientProfile = () => {
 
         const docRef = doc(db, "patients", userId);
         await updateDoc(docRef, patientPayload);
-
+        setIsModalOpen(false);
         showToast(
           toast,
           "Patient",
@@ -219,8 +223,10 @@ const PatientProfile = () => {
 
           const adminRef = doc(db, "admin", "adminDoc");
 
+          const newPatientsNo = parseInt(adminData?.totalPatients) + 1;
+
           await updateDoc(adminRef, {
-            totalPatients: parseInt(adminData?.totalPatients) + 1,
+            totalPatients: newPatientsNo,
           });
 
           showToast(
@@ -311,6 +317,36 @@ const PatientProfile = () => {
     }
   };
 
+  const handleDeletePatient = async () => {
+    setIsDeleteLoading(true);
+    try {
+      if (userId) {
+        const docRef = doc(db, "patients", userId);
+        await deleteDoc(docRef);
+
+        // Update Admin Doc
+
+        const adminRef = doc(db, "admin", "adminDoc");
+
+        const newPatientNo = parseInt(adminData?.totalPatients) - 1;
+
+        await updateDoc(adminRef, {
+          totalPatients: newPatientNo,
+        });
+        getAdminContent();
+
+        setIsDeletePatientModalOpen(false);
+        showToast(toast, "SCA", "warning", "Patient deleted successfully");
+        navigate("/dashboard/patients");
+      }
+    } catch (error) {
+      console.log(error);
+      showToast(toast, "SCA", "error", "Error deleting Patient profile");
+    } finally {
+      setIsDeleteLoading(false);
+    }
+  };
+
   if (loading) return <Loader />;
 
   return (
@@ -327,8 +363,18 @@ const PatientProfile = () => {
         isLoading={isLoading}
       />
 
+      {/* Delete  */}
+      <ConfirmationModal
+        isOpen={isDeletePatientModalOpen}
+        onConfirm={handleDeletePatient}
+        onCancel={() => setIsDeletePatientModalOpen(false)}
+        isLoading={deleteLoader}
+        title="Confirm Action"
+        message="Are you sure you want to delete this Patient's Profile?"
+      />
+
       <Form {...form}>
-        <div className="flex flex-col  space-y-14">
+        <div className="flex flex-col mb-10  space-y-14">
           <main>
             <section className="w-full space-y-4 mb-8">
               <h1 className="header ">
@@ -422,6 +468,16 @@ const PatientProfile = () => {
                   <ListIcon size={18} />
                 </Button>
               )}
+            </div>
+
+            <div className="my-8">
+              <Button
+                type="button"
+                className="bg-red-800 gap-2"
+                onClick={() => setIsDeletePatientModalOpen(true)}
+              >
+                Delete Patient's Profile <Trash2Icon className="h-5" />
+              </Button>
             </div>
           </main>
         </div>

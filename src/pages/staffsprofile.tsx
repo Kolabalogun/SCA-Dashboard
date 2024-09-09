@@ -249,8 +249,10 @@ const StaffProfile = () => {
 
           const adminRef = doc(db, "admin", "adminDoc");
 
+          const newStaffNo = parseInt(adminData?.totalStaffs) + 1;
+
           await updateDoc(adminRef, {
-            totalStaffs: parseInt(adminData?.totalStaffs) + 1,
+            totalStaffs: newStaffNo,
           });
 
           showToast(
@@ -283,8 +285,10 @@ const StaffProfile = () => {
 
         const adminRef = doc(db, "admin", "adminDoc");
 
+        const newStaffNo = parseInt(adminData?.totalStaffs) - 1;
+
         await updateDoc(adminRef, {
-          totalStaffs: parseInt(adminData?.totalStaffs) - 1,
+          totalStaffs: newStaffNo,
         });
         getAdminContent();
 
@@ -323,7 +327,7 @@ const StaffProfile = () => {
         message="Are you sure you want to edit this staff's Profile?"
       />
       <Form {...form}>
-        <div className="flex flex-col  space-y-14">
+        <div className="flex flex-col mb-10  space-y-14">
           <main>
             <section className="w-full space-y-4 mb-8">
               <h1 className="header ">
