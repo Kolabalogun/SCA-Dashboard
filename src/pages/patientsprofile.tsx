@@ -36,6 +36,7 @@ import showToast from "@/components/common/Toast";
 import LogsInformations from "@/components/dashboard/patientsRegistration/logsInformations";
 import { AccessRole } from "@/types/types";
 import Loader from "@/components/common/Loader";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 const PatientProfile = () => {
   const toast = useToast();
@@ -45,9 +46,8 @@ const PatientProfile = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [patient, setPatient] = useState<any>(null);
   const [patientDocId, setPatientDocId] = useState<any>(null);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const [step, setStep] = useState(1);
 
   useEffect(() => {
@@ -303,6 +303,18 @@ const PatientProfile = () => {
 
   return (
     <div className="container    flex flex-col  ">
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onConfirm={form.handleSubmit(onSubmit)}
+        onCancel={() => setIsModalOpen(false)}
+        title="Confirm Deletion"
+        message={`Are you sure you want to ${
+          userId ? "edit" : "register"
+        } this patient?`}
+        isLoading={isLoading}
+      />
+
       <Form {...form}>
         <div className="flex flex-col  space-y-14">
           <main>
@@ -318,7 +330,14 @@ const PatientProfile = () => {
             </section>
 
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={
+                step === 1
+                  ? (e: any) => {
+                      e.preventDefault();
+                      setIsModalOpen(true);
+                    }
+                  : form.handleSubmit(onSubmit)
+              }
               className="flex-1 space-y-12"
             >
               <section className="space-y-4">

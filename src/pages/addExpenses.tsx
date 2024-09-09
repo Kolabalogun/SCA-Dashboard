@@ -24,6 +24,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { useAppContext } from "@/contexts/AppContext";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 const AddExpenses = () => {
   const toast = useToast();
@@ -61,7 +62,6 @@ const AddExpenses = () => {
           "You don't have access to perform this action"
         );
 
-      console.log(values);
       const { receipt, patient, amount } = values;
 
       if (!amount)
@@ -120,8 +120,19 @@ const AddExpenses = () => {
     }
   };
 
+  const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
+
   return (
     <div className="container    flex flex-col  ">
+      {/* Confirmation Modals */}
+      <ConfirmationModal
+        isOpen={isAddPaymentModalOpen}
+        onConfirm={form.handleSubmit(onSubmit)}
+        onCancel={() => setIsAddPaymentModalOpen(false)}
+        isLoading={isLoading}
+        title="Confirm Payment"
+        message="Are you sure you want to add payment?"
+      />
       <Form {...form}>
         <div className="flex flex-col  space-y-14">
           <main>
@@ -131,7 +142,11 @@ const AddExpenses = () => {
             </section>
 
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={(e: any) => {
+                e.preventDefault();
+
+                setIsAddPaymentModalOpen(true);
+              }}
               className="flex-1 space-y-12"
             >
               <AddRevenueForm form={form} type="expenses" />

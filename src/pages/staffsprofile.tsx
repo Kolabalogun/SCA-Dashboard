@@ -39,16 +39,15 @@ import Loader from "@/components/common/Loader";
 
 const StaffProfile = () => {
   const toast = useToast();
-
   const navigate = useNavigate();
-
   const { user } = useSelector((state: any) => state.auth);
   const { id: userId } = useParams();
-
   const [Staff, setStaff] = useState<any>(null);
-
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchLoading, setIsFetchLoading] = useState(false);
+  const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
+  const [isDeleteStaffModalOpen, setIsDeleteStaffModalOpen] = useState(false);
+  const [isEditStaffModalOpen, setIsEditStaffModalOpen] = useState(false);
 
   const [step, setStep] = useState(1);
 
@@ -185,6 +184,7 @@ const StaffProfile = () => {
           "success",
           "Staff Data successfully updated"
         );
+        setIsEditStaffModalOpen(false);
       } else {
         console.log(values);
 
@@ -234,10 +234,6 @@ const StaffProfile = () => {
 
             // Dispose of the separate app instance
             await deleteApp(createApp);
-
-            console.log(
-              "Staff successfully registered without signing them in."
-            );
           } catch (error) {
             console.error("Error registering staff:", error);
           }
@@ -273,9 +269,6 @@ const StaffProfile = () => {
     }
   };
 
-  const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
-  const [isDeleteStaffModalOpen, setIsDeleteStaffModalOpen] = useState(false);
-
   const handleDeleteStaff = async () => {
     setIsDeleteLoading(true);
     try {
@@ -308,6 +301,15 @@ const StaffProfile = () => {
         title="Confirm Action"
         message="Are you sure you want to delete this staff's Profile?"
       />
+
+      <ConfirmationModal
+        isOpen={isEditStaffModalOpen}
+        onConfirm={form.handleSubmit(onSubmit)}
+        onCancel={() => setIsEditStaffModalOpen(false)}
+        isLoading={isLoading}
+        title="Confirm Action"
+        message="Are you sure you want to edit this staff's Profile?"
+      />
       <Form {...form}>
         <div className="flex flex-col  space-y-14">
           <main>
@@ -325,7 +327,15 @@ const StaffProfile = () => {
             </section>
 
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={
+                userId
+                  ? (e: any) => {
+                      e.preventDefault();
+
+                      setIsEditStaffModalOpen(true);
+                    }
+                  : form.handleSubmit(onSubmit)
+              }
               className="flex-1 space-y-12"
             >
               <BasicInformations userId={userId} form={form} />

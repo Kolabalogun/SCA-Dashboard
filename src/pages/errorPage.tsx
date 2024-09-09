@@ -1,18 +1,16 @@
- 
-
 const ErrorPage = () => {
   return (
-    <div className="flex flex-col justify-center inter space-y-6 items-center h-screen bg-gray-50">
+    <div className="flex flex-col justify-center inter space-y-6 items-center h-screen  ">
       <div className="flex gap-4 items-center">
         <h1 className="text-lg font-bold  ">404</h1>
         <div className="h-full w-[1px] bg-fade"></div>
         <h2 className="text-lg font-semibold  ">Oops!</h2>
       </div>
-      <p className="text-xs mt-2 text-gray-700 text-center max-w-lg">
+      <p className="text-xs mt-2 text-gray-200 text-center max-w-lg">
         It's not your fault... or maybe the developer is just a bit crappy. Or
         who knows, maybe it *is* your fault, and you're the crappy one.
       </p>
-      <p className="text-xs mt-4 text-gray-500">
+      <p className="text-xs mt-4 text-gray-200">
         Either way, let's get you back on track.
       </p>
       <div className="flex gap-12">

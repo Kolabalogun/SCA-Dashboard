@@ -74,7 +74,7 @@ export const AddRevenueValidation = z.object({
 export const StaffFormValidation = z.object({
   firstName: nameSchema,
   lastName: nameSchema,
-  room: nameSchema,
+
   email: emailSchema,
   phone: phoneSchema,
   middleName: nameSchema.optional(),
@@ -135,6 +135,7 @@ export const StaffFormValidation = z.object({
 // Patient Form Validation
 export const PatientFormValidation = UserFormValidation.extend({
   birthDate: z.coerce.date(),
+  room: nameSchema,
   gender: z.enum(["Male", "Female", "Other"]),
   maritialStatus: z.enum(["Single", "Married", "Other"]),
   relativeMaritialStatus: z.enum(["Single", "Married", "Other"]),
