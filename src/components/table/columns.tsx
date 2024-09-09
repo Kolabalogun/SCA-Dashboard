@@ -202,7 +202,15 @@ export const revenueColumns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className=" font-bold text-green-700 ">₦{appointment?.amount}</p>
+        <p
+          className={` font-bold ${
+            appointment?.id.includes("expenses")
+              ? "text-red-500"
+              : "text-green-700 "
+          }`}
+        >
+          ₦{appointment?.amount}
+        </p>
       );
     },
   },
@@ -221,10 +229,16 @@ function RevenueActionsCell({ appointment }: { appointment: any }) {
 
   return (
     <button
-      onClick={() => navigate(`/dashboard/revenue/${appointment?.id}`)}
+      onClick={() =>
+        navigate(
+          `/dashboard/${
+            appointment?.id.includes("expenses") ? "expense" : "revenue"
+          }/${appointment?.id}`
+        )
+      }
       className="cursor-pointer"
     >
-      <p className="text-14-medium text-green-500">View Profile</p>
+      <p className="text-14-medium text-green-500">View Details</p>
     </button>
   );
 }

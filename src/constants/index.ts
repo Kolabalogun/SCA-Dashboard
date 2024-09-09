@@ -142,6 +142,17 @@ export const RevenueTypeOptions = [
   "Others",
 ];
 
+export const ExpensesTypeOptions = [
+  "Salary",
+  "Medical Supplies",
+  "Utilities",
+  "Building Maintenance and Operations",
+  "Research and Development",
+  "Waste Management",
+  "Food",
+  "Others",
+];
+
 export const IdentificationTypes = [
   "Birth Certificate",
   "Driver's License",

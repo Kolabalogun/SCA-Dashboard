@@ -127,14 +127,14 @@ const AddExpenses = () => {
           <main>
             <section className="w-full space-y-4 mb-8">
               <h1 className="header ">Hi there 👋</h1>
-              <p className="text-dark-700">Enter Income Informations</p>
+              <p className="text-dark-700">Enter Expense Informations</p>
             </section>
 
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex-1 space-y-12"
             >
-              <AddRevenueForm form={form} />
+              <AddRevenueForm form={form} type="expenses" />
 
               <SubmitButton isLoading={isLoading}>Submit</SubmitButton>
             </form>

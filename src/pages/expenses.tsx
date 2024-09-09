@@ -57,9 +57,9 @@ const Expenses = () => {
         <div className="">
           <Button
             onClick={() => navigate("/dashboard/add-expense")}
-            className="bg-red-700 text-white"
+            className="bg-red-800 text-white"
           >
-            Add
+            Add Expense
           </Button>
         </div>
       </section>

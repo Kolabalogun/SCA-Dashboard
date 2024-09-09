@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import Loader from "@/components/common/Loader";
 import showToast from "@/components/common/toast";
 import { Button } from "@/components/ui/button";
 import { db } from "@/config/firebase";
@@ -21,13 +22,13 @@ const RevenueDetails = () => {
   const navigate = useNavigate();
   const { adminData, getAdminContent } = useAppContext();
   const { id: docId } = useParams();
+  const [loading, setIsLoading] = useState<any>(null);
 
   const [revenue, setRevenue] = useState<any>(null);
 
-  console.log(revenue);
-
   useEffect(() => {
     const getRevenueDoc = async () => {
+      setIsLoading(true);
       try {
         const res = await fetchFirestoreData<any>("revenue", docId);
 
@@ -52,6 +53,8 @@ const RevenueDetails = () => {
       } catch (error) {
         console.log("Error fetching Revenue document:", error);
         showToast(toast, "SCA", "error", "Error fetching Revenue document");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -127,6 +130,8 @@ const RevenueDetails = () => {
       showToast(toast, "SCA", "error", "Error deleting revenue");
     }
   };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="container    flex flex-col  ">

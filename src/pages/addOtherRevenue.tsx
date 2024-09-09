@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import SubmitButton from "@/components/common/SubmitButton";
 import AddRevenueForm from "@/components/dashboard/revenue/form";

@@ -1,4 +1,3 @@
-/* eslint-disable no-constant-binary-expression */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useEffect, useState } from "react";
@@ -36,18 +35,15 @@ import { useToast } from "@chakra-ui/react";
 import showToast from "@/components/common/toast";
 import LogsInformations from "@/components/dashboard/patientsRegistration/logsInformations";
 import { AccessRole } from "@/types/types";
+import Loader from "@/components/common/Loader";
 
 const PatientProfile = () => {
   const toast = useToast();
-
   const navigate = useNavigate();
-
   const { user } = useSelector((state: any) => state.auth);
-
   const { id: userId } = useParams();
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [patient, setPatient] = useState<any>(null);
-
   const [patientDocId, setPatientDocId] = useState<any>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -72,6 +68,7 @@ const PatientProfile = () => {
 
   useEffect(() => {
     const getPatientDoc = async () => {
+      setLoading(true);
       try {
         const res = await fetchFirestoreData<any>("patients", userId);
 
@@ -115,8 +112,6 @@ const PatientProfile = () => {
               }))
             : logsTimestamp;
 
-          console.log(dateOfAdmission);
-
           // Use 'const' for 'others' since it's not reassigned
           const patientData = {
             dateOfAdmission,
@@ -135,6 +130,8 @@ const PatientProfile = () => {
         }
       } catch (error) {
         console.log("Error fetching patient document:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -172,7 +169,6 @@ const PatientProfile = () => {
           "Patient Data successfully updated"
         );
       } else {
-        console.log(values);
         const { email, identificationDocument, name } = values;
 
         let fileUrl = "";
@@ -216,8 +212,6 @@ const PatientProfile = () => {
           const docRef = await addDoc(collection(db, "patients"), patient);
 
           setPatientDocId(docRef.id);
-
-          console.log(docRef);
 
           showToast(
             toast,
@@ -304,6 +298,8 @@ const PatientProfile = () => {
       setIsLoading(false);
     }
   };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="container    flex flex-col  ">

@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import Loader from "@/components/common/Loader";
 import showToast from "@/components/common/toast";
 import { Button } from "@/components/ui/button";
 import { db } from "@/config/firebase";
@@ -22,12 +23,13 @@ const ExpenseDetails = () => {
   const { adminData, getAdminContent } = useAppContext();
   const { id: docId } = useParams();
 
-  const [expenses, setExpenses] = useState<any>(null);
+  const [loading, setIsLoading] = useState<boolean>(false);
 
-  console.log(expenses);
+  const [expenses, setExpenses] = useState<any>(null);
 
   useEffect(() => {
     const getExpensesDoc = async () => {
+      setIsLoading(true);
       try {
         const res = await fetchFirestoreData<any>("expenses", docId);
 
@@ -52,6 +54,8 @@ const ExpenseDetails = () => {
       } catch (error) {
         console.log("Error fetching expenses document:", error);
         showToast(toast, "SCA", "error", "Error fetching expenses document");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -88,6 +92,8 @@ const ExpenseDetails = () => {
       showToast(toast, "SCA", "error", "Error deleting Expenses");
     }
   };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="container    flex flex-col  ">

@@ -61,11 +61,11 @@ p {
   position: absolute;
   inset: 0px;
   border-radius: 50%;
-  border: 5px solid #fff;
+  border: 5px solid #07652a;
   animation: prixClipFix 2s linear infinite;
 }
 .loader::after {
-  border-color: #0d642d;
+  border-color: #fff;
   animation: prixClipFix 2s linear infinite, rotate 0.5s linear infinite reverse;
   inset: 6px;
 }

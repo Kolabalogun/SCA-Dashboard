@@ -1,6 +1,6 @@
 const Loader = () => {
   return (
-    <div className="h-screen flex justify-center items-center">
+    <div className="h-[80vh] flex justify-center items-center">
       <span className="loader"></span>
     </div>
   );

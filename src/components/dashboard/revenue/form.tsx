@@ -5,42 +5,51 @@ import CustomFormField from "@/components/common/CustomFormField";
 import { FileUploader } from "@/components/common/FileUploader";
 import { FormControl } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
-import { RevenueTypeOptions } from "@/constants";
+import { RevenueTypeOptions, ExpensesTypeOptions } from "@/constants";
 import { FormFieldType } from "@/types/types";
 import { UseFormReturn } from "react-hook-form";
 
 type Props = {
   form: UseFormReturn<any>;
+  type?: string;
 };
 
-const AddRevenueForm = ({ form }: Props) => {
+const AddRevenueForm = ({ form, type }: Props) => {
   return (
     <div className="space-y-9">
       <section className="space-y-6">
         <div className="mb-9 space-y-1">
-          <h2 className="sub-header">Revenue Informations</h2>
+          <h2 className="sub-header">
+            {type ? "Expense" : "Revenue"} Informations
+          </h2>
         </div>
 
         <CustomFormField
           fieldType={FormFieldType.SELECT}
           control={form.control}
           name="type"
-          label="Type of Revenue"
-          placeholder="Select type of Revenue"
+          label={`Type of ${type ? "Expense" : "Revenue"}`}
+          placeholder={`Select type of ${type ? "Expense" : "Revenue"}`}
         >
-          {RevenueTypeOptions.map((type, i) => (
-            <SelectItem key={type + i} value={type}>
-              {type}
-            </SelectItem>
-          ))}
+          {!type
+            ? RevenueTypeOptions.map((type, i) => (
+                <SelectItem key={type + i} value={type}>
+                  {type}
+                </SelectItem>
+              ))
+            : ExpensesTypeOptions.map((type, i) => (
+                <SelectItem key={type + i} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
         </CustomFormField>
 
         <CustomFormField
           fieldType={FormFieldType.INPUT}
           control={form.control}
           name="patient"
-          label="From"
-          placeholder="Enter revenue source"
+          label={`${type ? "Paid to" : "From"}`}
+          placeholder={`Enter ${type ? "expense" : "revenue"} source`}
         />
 
         <CustomFormField
