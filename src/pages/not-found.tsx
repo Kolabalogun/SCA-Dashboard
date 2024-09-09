@@ -10,7 +10,7 @@ const NotFound = () => {
         Looks like you've stumbled upon a page that doesn't exist. Maybe the URL
         is incorrect, or the page was removed.
       </p>
-      <p className="text-xs mt-4 text-gray-400">
+      <p className="text-xs mt-4 text-gray-200">
         Don't worry, let's get you back to where you belong.
       </p>
       <div className="flex gap-12">

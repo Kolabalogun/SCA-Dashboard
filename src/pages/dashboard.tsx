@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
 
 import { columns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/DataTable";

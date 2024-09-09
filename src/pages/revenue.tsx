@@ -7,7 +7,7 @@ import {
 } from "@/assets/images";
 import { StatCard } from "@/components/common/StatCard";
 import TableLoader from "@/components/common/TableLoader";
-import showToast from "@/components/common/toast";
+import showToast from "@/components/common/Toast";
 import { revenueColumns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/DataTable";
 import { Button } from "@/components/ui/button";

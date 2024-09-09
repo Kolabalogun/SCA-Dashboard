@@ -14,7 +14,7 @@ import { FormFieldType } from "@/types/types";
 import SubmitButton from "../common/SubmitButton";
 import { email, Key } from "@/assets/icons";
 import { useToast } from "@chakra-ui/react";
-import showToast from "../common/toast";
+import showToast from "../common/Toast";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);

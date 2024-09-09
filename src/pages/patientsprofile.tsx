@@ -32,7 +32,7 @@ import { PatientFormDefaultValues } from "@/constants";
 import { useSelector } from "react-redux";
 import { fetchFirestoreData, uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
-import showToast from "@/components/common/toast";
+import showToast from "@/components/common/Toast";
 import LogsInformations from "@/components/dashboard/patientsRegistration/logsInformations";
 import { AccessRole } from "@/types/types";
 import Loader from "@/components/common/Loader";

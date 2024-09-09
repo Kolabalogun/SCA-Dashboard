@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Loader from "@/components/common/Loader";
-import showToast from "@/components/common/toast";
+import showToast from "@/components/common/Toast";
 import { Button } from "@/components/ui/button";
 import { db } from "@/config/firebase";
 import { useAppContext } from "@/contexts/AppContext";

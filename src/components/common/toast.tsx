@@ -12,7 +12,6 @@ const showToast = (
     description,
     status: status,
     duration: 5000,
-    // variant: "left-accent",
     isClosable: true,
     containerStyle: {
       fontSize: "12px",

@@ -5,13 +5,13 @@ import { getStorage } from "firebase/storage";
 
 // Firebase configuration object with environment variables
 export const firebaseConfig = {
-  apiKey: "AIzaSyCPz3mZSa6lmF_ncCuu6Ck8DPp7twMeTaY",
-  authDomain: "shayofunmicareagency-928eb.firebaseapp.com",
-  projectId: "shayofunmicareagency-928eb",
-  storageBucket: "shayofunmicareagency-928eb.appspot.com",
-  messagingSenderId: "781408685273",
-  appId: "1:781408685273:web:de1b2fef68ad17f41b02c8",
-  measurementId: "G-ESCSB8KG5B",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize the Firebase app with the configuration
@@ -24,5 +24,5 @@ export const storage = getStorage(app);
 
 // Create a separate app for user creation
 const createAppUserConfig = { ...firebaseConfig };
-export const createApp = initializeApp(createAppUserConfig, "createAppUser"); // Name the new app instance
+export const createApp = initializeApp(createAppUserConfig, "createAppUser");
 export const createAuth = getAuth(createApp);

@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { AddRevenueDefaultValues } from "@/constants";
-import showToast from "@/components/common/toast";
+import showToast from "@/components/common/Toast";
 import { AccessRole } from "@/types/types";
 import { uploadFileToStorage } from "@/lib/firebase";
 import {

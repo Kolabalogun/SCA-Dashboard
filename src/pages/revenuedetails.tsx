@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Loader from "@/components/common/Loader";
-import showToast from "@/components/common/toast";
+import showToast from "@/components/common/Toast";
 import { Button } from "@/components/ui/button";
 import { db } from "@/config/firebase";
 import { useAppContext } from "@/contexts/AppContext";
@@ -15,6 +15,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
+import ConfirmationModal from "@/components/common/ConfirmationModal";
+
 const RevenueDetails = () => {
   const toast = useToast();
   const { user } = useSelector((state: any) => state.auth);
@@ -22,8 +24,9 @@ const RevenueDetails = () => {
   const navigate = useNavigate();
   const { adminData, getAdminContent } = useAppContext();
   const { id: docId } = useParams();
-  const [loading, setIsLoading] = useState<any>(null);
-
+  const [loading, setIsLoading] = useState<boolean>(false);
+  const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [revenue, setRevenue] = useState<any>(null);
 
   useEffect(() => {
@@ -31,21 +34,14 @@ const RevenueDetails = () => {
       setIsLoading(true);
       try {
         const res = await fetchFirestoreData<any>("revenue", docId);
-
         if (res) {
           const { createdAt: createdAtTimestamp, ...others } = res;
-
           const createdAt =
             createdAtTimestamp instanceof Timestamp
               ? createdAtTimestamp.toDate()
               : createdAtTimestamp;
 
-          // Use 'const' for 'others' since it's not reassigned
-          const revenueData = {
-            createdAt,
-            ...others,
-          };
-
+          const revenueData = { createdAt, ...others };
           setRevenue(revenueData);
         } else {
           console.log("No Revenue document found");
@@ -65,80 +61,71 @@ const RevenueDetails = () => {
   }, [docId]);
 
   const handleDeleteRevenue = async (id: string, amount: number) => {
+    setIsDeleteLoading(true);
     try {
-      // Get Patient Documemt
-
       const res = await fetchFirestoreData<any>(
         "patients",
         revenue?.patientDocId
       );
-
       if (res) {
-        // Filter out the payment to be deleted
         const updatedPayments = res?.paymentHistory.filter(
           (payment: any) => payment.id !== id
         );
 
-        // Update the patient document's payment history
         if (revenue?.patientDocId) {
           const patientRef = doc(db, "patients", revenue?.patientDocId);
-          await updateDoc(patientRef, {
-            paymentHistory: updatedPayments,
-          });
+          await updateDoc(patientRef, { paymentHistory: updatedPayments });
         }
       }
 
-      // Delete the corresponding revenue document
-
       const revenueDocRef = doc(db, "revenue", revenue?.id);
-
       await deleteDoc(revenueDocRef);
 
-      // Deduct the payment amount from totalRevenue
       if (adminData?.totalRevenue) {
         const updatedRevenue = parseInt(adminData.totalRevenue) - amount;
-
         const adminDocRef = doc(db, "admin", "adminDoc");
 
         if (revenue?.type === "Patient Admission") {
           const updatedPatientRevenue =
             parseInt(adminData.patientAdmissionRevenue) - amount;
-
           await updateDoc(adminDocRef, {
             patientAdmissionRevenue: updatedPatientRevenue,
           });
         } else {
           const updatedOtherRevenue = parseInt(adminData.otherRevenue) - amount;
-
-          await updateDoc(adminDocRef, {
-            otherRevenue: updatedOtherRevenue,
-          });
+          await updateDoc(adminDocRef, { otherRevenue: updatedOtherRevenue });
         }
 
-        await updateDoc(adminDocRef, {
-          totalRevenue: updatedRevenue,
-        });
+        await updateDoc(adminDocRef, { totalRevenue: updatedRevenue });
       }
 
       showToast(toast, "SCA", "warning", "Revenue deleted successfully");
-
       getAdminContent();
-
       navigate("/dashboard/revenue");
     } catch (error) {
       console.log(error);
       showToast(toast, "SCA", "error", "Error deleting revenue");
+    } finally {
+      setIsDeleteLoading(false);
     }
+  };
+
+  const openDeleteModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsModalOpen(false);
   };
 
   if (loading) return <Loader />;
 
   return (
-    <div className="container    flex flex-col  ">
-      <div className="flex flex-col  space-y-14">
+    <div className="container flex flex-col">
+      <div className="flex flex-col space-y-14">
         <main>
           <section className="w-full space-y-4 mb-8">
-            <h1 className="header ">Revenue Details</h1>
+            <h1 className="header">Revenue Details</h1>
             <p className="text-dark-700">Revenue ID: {revenue?.id}</p>
           </section>
 
@@ -148,7 +135,7 @@ const RevenueDetails = () => {
               className="space-y-4 flex flex-col border border-[#363a3d] rounded-lg p-4"
             >
               <div className="flex justify-between items-center">
-                <p className="text-sm capitalize text-[#7682ad] ">
+                <p className="text-sm capitalize text-[#7682ad]">
                   ID: {revenue?.id}
                 </p>
                 <p className="text-sm">
@@ -156,38 +143,39 @@ const RevenueDetails = () => {
                 </p>
               </div>
 
-              <div className="  items-center flex gap-2">
-                <p className="text-sm">Pevenue Approved By: </p>
+              <div className="items-center flex gap-2">
+                <p className="text-sm">Revenue Approved By:</p>
                 <p className="text-sm">
-                  {revenue?.paymentRegisteredBy || revenue?.registeredBy}{" "}
+                  {revenue?.paymentRegisteredBy || revenue?.registeredBy}
                 </p>
               </div>
 
               {revenue?.stayPeriod && (
                 <div className="space-y-2">
-                  <p className="text-sm">Admission Period: </p>
-                  <p>{revenue?.stayPeriods} </p>
+                  <p className="text-sm">Admission Period:</p>
+                  <p>{revenue?.stayPeriods}</p>
                 </div>
               )}
+
               <div className="space-y-2">
-                <p className="text-sm">Amount Received: </p>
-                <p>₦{parseInt(revenue?.amount)?.toLocaleString()} </p>
+                <p className="text-sm">Amount Received:</p>
+                <p>₦{parseInt(revenue?.amount)?.toLocaleString()}</p>
               </div>
 
               <div className="space-y-2">
-                <p className="text-sm">Payment Description: </p>
-                <p>{revenue?.desc} </p>
+                <p className="text-sm">Payment Description:</p>
+                <p>{revenue?.desc}</p>
               </div>
 
               <div className="flex my-2 items-center justify-between">
                 {revenue?.receipt && (
-                  <div className=" ">
+                  <div>
                     <Button
                       type="button"
                       className="bg-blue-700"
                       onClick={() => window.open(revenue?.receipt, "_blank")}
                     >
-                      View Reciept
+                      View Receipt
                     </Button>
                   </div>
                 )}
@@ -196,9 +184,7 @@ const RevenueDetails = () => {
                   <Button
                     type="button"
                     className="bg-red-800 gap-2"
-                    onClick={() =>
-                      handleDeleteRevenue(revenue.id, revenue.amount)
-                    }
+                    onClick={openDeleteModal}
                   >
                     Delete <Trash2Icon className="h-5" />
                   </Button>
@@ -208,6 +194,16 @@ const RevenueDetails = () => {
           </section>
         </main>
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onConfirm={() => handleDeleteRevenue(revenue.id, revenue.amount)}
+        onCancel={closeDeleteModal}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this revenue?"
+        isLoading={deleteLoader}
+      />
     </div>
   );
 };

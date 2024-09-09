@@ -1,5 +1,3 @@
-"use client";
-
 import { combineReducers } from "redux";
 
 import authReducer from "./features/authSlice";

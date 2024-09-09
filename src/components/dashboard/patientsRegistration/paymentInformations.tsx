@@ -14,7 +14,6 @@ import { Banknote, Trash2Icon } from "lucide-react";
 import { Naira } from "@/assets/icons";
 import { uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
-import showToast from "@/components/common/toast";
 import {
   collection,
   deleteDoc,
@@ -26,6 +25,8 @@ import {
 import { db } from "@/config/firebase";
 import { useSelector } from "react-redux";
 import { useAppContext } from "@/contexts/AppContext";
+import showToast from "@/components/common/Toast";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 type Props = {
   form: UseFormReturn<any>;
@@ -38,6 +39,12 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
   const { adminData, getAdminContent } = useAppContext();
   const { paymentReceived, paymentHistory, paymentReceipt, name, stayPeriods } =
     form.getValues();
+  const [isLoading, setIsLoading] = useState(false);
+  const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
+  const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
+  const [isDeletePaymentModalOpen, setIsDeletePaymentModalOpen] =
+    useState(false);
+  const [paymentToDelete, setPaymentToDelete] = useState<any>(null);
 
   useWatch({
     control: form.control,
@@ -58,8 +65,6 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
   useEffect(() => {
     getAdminContent();
   }, []);
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleAddPayment = async (e: any) => {
     e.preventDefault();
@@ -98,8 +103,6 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       };
 
       const newPaymentHistory = [...paymentHistoryy, newPayment];
-
-      form.setValue("paymentHistory", newPaymentHistory);
 
       // For Revenue Addition
 
@@ -147,6 +150,9 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       }
 
       showToast(toast, "Payment", "success", "Payment added successfully");
+      form.setValue("paymentHistory", newPaymentHistory);
+
+      setIsAddPaymentModalOpen(false);
       getAdminContent();
     } catch (error) {
       console.log(error);
@@ -161,19 +167,17 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
   };
 
   const handleDeletePayment = async (id: string, paymentAmount: number) => {
+    setIsDeleteLoading(true);
     try {
       // Filter out the payment to be deleted
       const updatedPayments = paymentHistory.filter(
         (payment: any) => payment.id !== id
       );
-
-      form.setValue("paymentHistory", updatedPayments);
-
       // Update the patient document's payment history
       if (patientDocId) {
         const patientRef = doc(db, "patients", patientDocId);
         await updateDoc(patientRef, {
-          paymentHistory: updatedPayments, // Save the updated payment history without the deleted payment
+          paymentHistory: updatedPayments,
         });
       }
 
@@ -197,15 +201,52 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
         });
       }
 
-      showToast(toast, "Payment", "success", "Payment deleted successfully");
+      form.setValue("paymentHistory", updatedPayments);
+
+      showToast(toast, "Payment", "warning", "Payment deleted successfully");
+      setIsDeletePaymentModalOpen(false);
     } catch (error) {
       console.log(error);
       showToast(toast, "Payment", "error", "Error deleting payment");
+    } finally {
+      setIsDeleteLoading(false);
     }
+  };
+
+  const confirmDeletePayment = (payment: any) => {
+    setPaymentToDelete(payment);
+    setIsDeletePaymentModalOpen(true);
+  };
+
+  const confirmAddPayment = () => {
+    setIsAddPaymentModalOpen(true);
   };
 
   return (
     <div className="space-y-9">
+      {/* Confirmation Modals */}
+      <ConfirmationModal
+        isOpen={isAddPaymentModalOpen}
+        onConfirm={handleAddPayment}
+        onCancel={() => setIsAddPaymentModalOpen(false)}
+        isLoading={isLoading}
+        title="Confirm Payment"
+        message="Are you sure you want to add this payment?"
+      />
+
+      <ConfirmationModal
+        isOpen={isDeletePaymentModalOpen}
+        onConfirm={() =>
+          handleDeletePayment(
+            paymentToDelete?.id,
+            paymentToDelete?.paymentReceived
+          )
+        }
+        onCancel={() => setIsDeletePaymentModalOpen(false)}
+        isLoading={deleteLoader}
+        title="Delete Payment"
+        message="Are you sure you want to delete this payment?"
+      />
       <section className="space-y-6">
         {/* Payment History */}
         {paymentHistory && paymentHistory.length > 0 && (
@@ -268,9 +309,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
                     <Button
                       type="button"
                       className="bg-red-800 gap-2"
-                      onClick={() =>
-                        handleDeletePayment(payment.id, payment.paymentReceived)
-                      }
+                      onClick={() => confirmDeletePayment(payment)}
                     >
                       Delete <Trash2Icon className="h-5" />
                     </Button>
@@ -345,7 +384,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
         <section>
           <Button
             type="button"
-            onClick={handleAddPayment}
+            onClick={confirmAddPayment}
             disabled={isLoading}
             className="flex bg-green-700 items-center gap-2"
           >
@@ -353,7 +392,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
               <p>Loading...</p>
             ) : (
               <p>{paymentHistory?.length ? "Add New Payment" : "Save"}</p>
-            )}{" "}
+            )}
             <Banknote />
           </Button>
         </section>
