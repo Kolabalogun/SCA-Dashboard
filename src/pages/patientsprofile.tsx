@@ -37,6 +37,7 @@ import LogsInformations from "@/components/dashboard/patientsRegistration/logsIn
 import { AccessRole } from "@/types/types";
 import Loader from "@/components/common/Loader";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { useAppContext } from "@/contexts/AppContext";
 
 const PatientProfile = () => {
   const toast = useToast();
@@ -49,6 +50,7 @@ const PatientProfile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const { adminData, getAdminContent } = useAppContext();
 
   useEffect(() => {
     scrollToTop();
@@ -213,12 +215,22 @@ const PatientProfile = () => {
 
           setPatientDocId(docRef.id);
 
+          // Update Admin Doc
+
+          const adminRef = doc(db, "admin", "adminDoc");
+
+          await updateDoc(adminRef, {
+            totalPatients: parseInt(adminData?.totalPatients) + 1,
+          });
+
           showToast(
             toast,
             "Registration",
             "success",
             "Patient successfully Registered"
           );
+          getAdminContent();
+          setIsModalOpen(true);
           setStep(2);
           setIsLoading(false);
         } else if (step === 2) {

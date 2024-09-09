@@ -22,24 +22,23 @@ import {
 import { createApp, createAuth, db } from "@/config/firebase";
 import { ArrowLeft, Trash2Icon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import SubmitButton from "@/components/common/SubmitButton";
-
 import { StaffFormDefaultValues } from "@/constants";
 import { useSelector } from "react-redux";
 import { fetchFirestoreData, uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
 import showToast from "@/components/common/Toast";
-
 import BasicInformations from "@/components/dashboard/staffsRegistration/basicInformations";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { deleteApp } from "firebase/app";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import Loader from "@/components/common/Loader";
+import { useAppContext } from "@/contexts/AppContext";
 
 const StaffProfile = () => {
   const toast = useToast();
   const navigate = useNavigate();
+  const { adminData, getAdminContent } = useAppContext();
   const { user } = useSelector((state: any) => state.auth);
   const { id: userId } = useParams();
   const [Staff, setStaff] = useState<any>(null);
@@ -186,8 +185,6 @@ const StaffProfile = () => {
         );
         setIsEditStaffModalOpen(false);
       } else {
-        console.log(values);
-
         let fileUrl = "";
 
         if (staffImage && staffImage.length > 0) {
@@ -246,9 +243,15 @@ const StaffProfile = () => {
             logs: [],
           };
 
-          const docRef = await addDoc(collection(db, "staffs"), Staff);
+          await addDoc(collection(db, "staffs"), Staff);
 
-          console.log(docRef);
+          // Update Admin Doc
+
+          const adminRef = doc(db, "admin", "adminDoc");
+
+          await updateDoc(adminRef, {
+            totalStaffs: parseInt(adminData?.totalStaffs) + 1,
+          });
 
           showToast(
             toast,
@@ -256,7 +259,7 @@ const StaffProfile = () => {
             "success",
             "Staff successfully Registered"
           );
-
+          getAdminContent();
           navigate("/dashboard/staffs");
           setIsLoading(false);
         }
@@ -275,6 +278,15 @@ const StaffProfile = () => {
       if (userId) {
         const docRef = doc(db, "staffs", userId);
         await deleteDoc(docRef);
+
+        // Update Admin Doc
+
+        const adminRef = doc(db, "admin", "adminDoc");
+
+        await updateDoc(adminRef, {
+          totalStaffs: parseInt(adminData?.totalStaffs) - 1,
+        });
+        getAdminContent();
 
         setIsDeleteStaffModalOpen(false);
         showToast(toast, "SCA", "warning", "Staff deleted successfully");

@@ -13,8 +13,8 @@ import {
 // Define the types for your context state
 interface AdminData {
   totalRevenue: number | string | any;
-  totalPatients: number;
-  totalStaffs: number;
+  totalPatients: number | string | any;
+  totalStaffs: number | string | any;
   totalExpenses: number | string | any;
   totalVisitors: number;
   patientAdmissionRevenue: number | string | any;
