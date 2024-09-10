@@ -39,6 +39,7 @@ import { AccessRole } from "@/types/types";
 import Loader from "@/components/common/Loader";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { useAppContext } from "@/contexts/AppContext";
+import { sendEmail } from "@/services/email";
 
 const PatientProfile = () => {
   const toast = useToast();
@@ -184,6 +185,7 @@ const PatientProfile = () => {
   }, [userId, form]);
 
   const { logs } = form.getValues();
+
   const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
     setIsLoading(true);
 
@@ -281,6 +283,15 @@ const PatientProfile = () => {
           };
 
           await setDoc(activitesRef, data);
+
+          const emailData = {
+            email: user.email,
+            subject: `Patient Registration for ${name}`,
+            message: `You carried out Patient registration for ${name}  `,
+          };
+
+          const message = await sendEmail(emailData);
+          console.log("Email sent successfully:", message);
 
           showToast(
             toast,
