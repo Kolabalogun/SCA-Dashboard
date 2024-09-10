@@ -1,11 +1,13 @@
 require("dotenv").config();
 const express = require("express");
 const transporter = require("./config/smtp");
-
 const cors = require("cors");
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+// Middleware to parse JSON bodies
+app.use(express.json());
 
 app.use(
   cors({
