@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useToast } from "@chakra-ui/react";
 import {
   ChartCandlestick,
@@ -7,7 +6,6 @@ import {
   Landmark,
   LogOut,
   Menu,
-  Settings,
   Users,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -78,11 +76,11 @@ const Sidebar = () => {
       title: "Expenses",
       link: "/dashboard/expenses",
     },
-    {
-      icon: <Settings size={20} />,
-      title: "Settings",
-      link: "/dashboard/settings",
-    },
+    // {
+    //   icon: <Settings size={20} />,
+    //   title: "Settings",
+    //   link: "/dashboard/settings",
+    // },
   ];
 
   return (

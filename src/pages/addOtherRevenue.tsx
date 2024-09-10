@@ -119,7 +119,7 @@ const AddOtherRevenue = () => {
         type: "Revenue",
         desc: `New Revenue from ${values?.type} amounting to ₦${parseInt(
           values?.amount as string
-        )?.toLocaleString()}. `,
+        )?.toLocaleString()} from ${values?.patient} . `,
       };
 
       const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
@@ -133,7 +133,9 @@ const AddOtherRevenue = () => {
           values?.type
         } amounting to ₦${parseInt(
           values?.amount as string
-        )?.toLocaleString()}. Description: ${values.desc}.`,
+        )?.toLocaleString()} from ${values?.patient}. Description: ${
+          values.desc || "N/A"
+        }.`,
       };
 
       const adminEmailData = {
@@ -143,7 +145,9 @@ const AddOtherRevenue = () => {
           user?.firstName
         } ${user?.lastName} amounting to ₦${parseInt(
           values?.amount as string
-        )?.toLocaleString()}. Description: ${values.desc}.`,
+        )?.toLocaleString()} from ${values?.patient}. Description: ${
+          values.desc || "N/A"
+        }.`,
       };
 
       const message = await sendEmail(emailData);

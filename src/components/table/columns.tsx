@@ -1,8 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Doctors } from "@/constants";
-
 import { formatDateTime } from "@/utils/formatDateTime";
 import { useNavigate } from "react-router-dom";
 
@@ -47,20 +45,11 @@ export const columns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
 
-      const doctor = Doctors.find(
-        (doctor) => doctor.name === appointment?.primaryPhysician
-      );
-
       return (
         <div className="flex items-center gap-3">
-          <img
-            src={doctor?.image}
-            alt="doctor"
-            width={100}
-            height={100}
-            className="size-8"
-          />
-          <p className="whitespace-nowrap">Dr. {doctor?.name}</p>
+          <p className="whitespace-nowrap">
+            Dr. {appointment?.primaryPhysician}
+          </p>
         </div>
       );
     },

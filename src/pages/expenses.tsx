@@ -67,7 +67,7 @@ const Expenses = () => {
         <StatCard
           type="pending"
           count={`₦${adminData?.totalExpenses?.toLocaleString() || 0}`}
-          label="Total Expenses"
+          label="Total Expenditure"
           icon={ExpensesIcon}
         />
       </section>

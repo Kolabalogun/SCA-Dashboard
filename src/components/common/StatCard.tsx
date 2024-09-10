@@ -24,7 +24,11 @@ export const StatCard = ({ count = 0, label, icon, type }: StatCardProps) => {
           alt="appointments"
           className="size-8 w-fit bg-transparent"
         />
-        <h2 className="text-32-bold bg-transparent text-white">
+        <h2
+          className={`text-32-bold bg-transparent ${
+            label === "Total Expenditure" ? "text-[#fb0000] " : "text-white"
+          } `}
+        >
           {count?.toLocaleString()}
         </h2>
       </div>

@@ -116,7 +116,7 @@ const AddExpenses = () => {
         type: "Expenses",
         desc: `New Expenses cost ₦${parseInt(
           values?.amount as string
-        )?.toLocaleString()} on ${values?.type}. `,
+        )?.toLocaleString()} on ${values?.type} paid to ${values.patient}. `,
       };
 
       await setDoc(activitesRef, dataa);
@@ -126,7 +126,9 @@ const AddExpenses = () => {
         subject: `New Expenses on ${values?.type} `,
         message: `You carried out New Expenses cost ₦${parseInt(
           values?.amount as string
-        )?.toLocaleString()} on ${values?.type}. Description: ${values.desc}  `,
+        )?.toLocaleString()} on ${values?.type}. Paid to ${
+          values.patient
+        }. Description: ${values.desc}  `,
       };
 
       const adminEmailData = {
@@ -136,7 +138,9 @@ const AddExpenses = () => {
           values?.amount as string
         )?.toLocaleString()} on ${values?.type} performed by ${
           user?.firstName
-        } ${user?.lastName}.   Description: ${values.desc} `,
+        } ${user?.lastName}. Paid to ${values.patient}. Description: ${
+          values.desc
+        } `,
       };
 
       const message = await sendEmail(emailData);
