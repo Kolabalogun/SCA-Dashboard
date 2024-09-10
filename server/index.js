@@ -1,5 +1,6 @@
 const express = require("express");
-const nodemailer = require("nodemailer");
+const transporter = require("../config/smtp");
+
 const cors = require("cors");
 require("dotenv").config();
 
@@ -18,25 +19,32 @@ app.post("/send-email", async (req, res) => {
   const { email, subject, message } = req.body;
 
   try {
-    let transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: parseInt(process.env.EMAIL_PORT, 10),
-      secure: process.env.EMAIL_SECURE === "true",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // let transporter = nodemailer.createTransport({
+    //   host: process.env.EMAIL_HOST,
+    //   port: parseInt(process.env.EMAIL_PORT, 10),
+    //   secure: process.env.EMAIL_SECURE === "true",
+    //   auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASS,
+    //   },
+    // });
 
-    let mailOptions = {
-      from: process.env.FROM_EMAIL,
-      to: email,
-      subject: subject,
+    // let mailOptions = {
+    //   from: process.env.FROM_EMAIL,
+    //   to: email,
+    //   subject: subject,
+    //   text: message,
+    // };
+
+    // await transporter.sendMail(mailOptions);
+
+    await transporter.sendMail({
+      from: process.env.FROM_EMAIL, // Sender's email address
+      to: email, // Recipient's email address
+      subject,
       text: message,
-    };
-
-    await transporter.sendMail(mailOptions);
-
+    });
+    console.log("Email sent successfully");
     res
       .status(200)
       .json({ success: true, message: "Email sent successfully!" });
