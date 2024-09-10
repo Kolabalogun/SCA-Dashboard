@@ -13,11 +13,11 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import ConfirmationModal from "../common/ConfirmationModal";
 import { useState } from "react";
-import showToast from "../common/Toast";
 import { signOut } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { logout } from "@/redux/features/authSlice";
 import { useDispatch } from "react-redux";
+import showToast from "../common/Toast";
 
 const Sidebar = () => {
   const toast = useToast();
