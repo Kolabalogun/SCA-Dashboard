@@ -18,30 +18,32 @@ app.use(
 );
 
 app.post("/send-email", async (req, res) => {
-  const { email, subject, message } = req.body;
+  const { emails, subject, message } = req.body;
 
-  console.log({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: process.env.EMAIL_SECURE,
-  });
+  if (!emails || emails.length === 0 || !subject || !message) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing required fields" });
+  }
 
   try {
-    await transporter.sendMail({
-      from: process.env.FROM_EMAIL,
-      to: email,
-      subject,
-      text: message,
-    });
-    console.log("Email sent successfully");
+    for (const email of emails) {
+      await transporter.sendMail({
+        from: process.env.FROM_EMAIL,
+        to: email,
+        subject,
+        text: message,
+      });
+      console.log(`Email sent to ${email} successfully`);
+    }
     res
       .status(200)
-      .json({ success: true, message: "Email sent successfully!" });
+      .json({ success: true, message: "Emails sent successfully!" });
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error sending emails:", error);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to send email",
+      message: error.message || "Failed to send emails",
       stack: error.stack,
     });
   }

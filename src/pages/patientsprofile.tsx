@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -49,6 +50,7 @@ const PatientProfile = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [patient, setPatient] = useState<any>(null);
   const [staffs, setStaffs] = useState<any>([]);
+  const [admins, setAdmins] = useState<any>([]);
   const [patientDocId, setPatientDocId] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,6 +71,20 @@ const PatientProfile = () => {
     });
   };
 
+  useEffect(() => {
+    if (staffs.length > 0) {
+      const filteredStaff = staffs.filter(
+        (staff: { occupation: string }) => staff.occupation === "Administrator"
+      );
+
+      const filteredStaffAdminEmails = filteredStaff.map(
+        (staff: { email: string }) => staff.email
+      );
+
+      setAdmins(filteredStaffAdminEmails);
+    }
+  }, [staffs]);
+
   const form = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
     defaultValues: PatientFormDefaultValues,
@@ -85,6 +101,7 @@ const PatientProfile = () => {
         where("occupation", "in", [
           "Professional Care Officer",
           "Psychiatric Physician",
+          "Administrator",
         ])
       );
 
@@ -285,13 +302,21 @@ const PatientProfile = () => {
           await setDoc(activitesRef, data);
 
           const emailData = {
-            email: "kolabalogunibrahim@gmail.com",
-            subject: `Patient Registration for `,
-            message: `You carried out Patient registration for   `,
+            emails: [user?.email],
+            subject: `Patient Registration for ${name} `,
+            message: `You carried out Patient registration for ${name}  `,
+          };
+
+          const adminEmailData = {
+            emails: admins,
+            subject: `New Patient Registration for ${name} `,
+            message: `Patient Registration for ${name} performed by ${user?.firstName} ${user?.lastName}`,
           };
 
           const message = await sendEmail(emailData);
+          const adminMessage = await sendEmail(adminEmailData);
           console.log("Email sent successfully:", message);
+          console.log("Admin Email sent successfully:", adminMessage);
 
           showToast(
             toast,
@@ -300,7 +325,7 @@ const PatientProfile = () => {
             "Patient successfully Registered"
           );
           getAdminContent();
-          setIsModalOpen(true);
+          setIsModalOpen(false);
           setStep(2);
           setIsLoading(false);
         } else if (step === 2) {

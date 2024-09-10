@@ -1,18 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import axios from "axios";
 
 export const sendEmail = async (emailData: any) => {
   try {
     const response = await axios.post(
       "https://scaemailserver.vercel.app/send-email",
-      emailData,
+      {
+        emails: emailData.emails,
+        subject: emailData.subject,
+        message: emailData.message,
+      },
       {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        timeout: 10000, // Adjust timeout if needed
+        timeout: 10000,
       }
     );
     return response.data.message;
