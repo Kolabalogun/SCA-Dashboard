@@ -5,7 +5,7 @@ export { default as email } from "./email.svg";
 export { default as Close } from "./close.svg";
 export { default as Arrow } from "./arrow.svg";
 export { default as Calender } from "./calendar.svg";
-export { default as cancelled } from "./Cancelled.svg";
+export { default as cancelled } from "./cancelled.svg";
 export { default as Check } from "./check.svg";
 export { default as Key } from "./key.svg";
 export { default as Loader } from "./loader.svg";
