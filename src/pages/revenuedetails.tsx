@@ -9,20 +9,29 @@ import { fetchFirestoreData } from "@/lib/firebase";
 import { AccessRole } from "@/types/types";
 import { formatDate } from "@/utils/formatJSDate";
 import { useToast } from "@chakra-ui/react";
-import { deleteDoc, doc, Timestamp, updateDoc } from "firebase/firestore";
+import {
+  deleteDoc,
+  doc,
+  serverTimestamp,
+  setDoc,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { Trash2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { sendEmail } from "@/services/email";
 
 const RevenueDetails = () => {
   const toast = useToast();
   const { user } = useSelector((state: any) => state.auth);
 
   const navigate = useNavigate();
-  const { adminData, getAdminContent } = useAppContext();
+  const { adminData, getAdminContent, adminEmails, fetchStaffs } =
+    useAppContext();
   const { id: docId } = useParams();
   const [loading, setIsLoading] = useState<boolean>(false);
   const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
@@ -58,6 +67,7 @@ const RevenueDetails = () => {
       getRevenueDoc();
       getAdminContent();
     }
+    fetchStaffs();
   }, [docId]);
 
   const handleDeleteRevenue = async (id: string, amount: number) => {
@@ -98,6 +108,59 @@ const RevenueDetails = () => {
 
         await updateDoc(adminDocRef, { totalRevenue: updatedRevenue });
       }
+
+      const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
+
+      // Update Activity
+      const dataa = {
+        title: "Expenses Deletion",
+        activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+        createdAt: serverTimestamp(),
+        formDate: new Date().toISOString(),
+        type: "Deletion",
+        desc: `Expense with ID: ${revenue?.id}, titled "${
+          revenue?.desc
+        }" and amounting to ₦${parseInt(
+          revenue?.amount
+        )?.toLocaleString()} was deleted by ${user?.firstName} ${
+          user?.lastName
+        }. Initially, this payment was approved by ${
+          revenue?.paymentRegisteredBy || revenue?.registeredBy
+        } on ${formatDate(revenue?.formDate) || "N/A"}`,
+      };
+
+      await setDoc(activitesRef, dataa);
+
+      const emailData = {
+        emails: [user?.email],
+        subject: `You just deleted an Expenses for ${revenue?.type} `,
+        message: `Expense with ID: ${revenue?.id}, titled "${
+          revenue?.desc
+        }" and amounting to ₦${parseInt(
+          revenue?.amount
+        )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
+          revenue?.paymentRegisteredBy || revenue?.registeredBy
+        } on ${formatDate(revenue?.formDate) || "N/A"}`,
+      };
+
+      const adminEmailData = {
+        emails: adminEmails,
+        subject: `New Expenses for ${revenue?.type} `,
+        message: `Expense with ID: ${revenue?.id}, titled "${
+          revenue?.desc
+        }" and amounting to ₦${parseInt(
+          revenue?.amount
+        )?.toLocaleString()} was deleted by ${user?.firstName} ${
+          user?.lastName
+        }. Initially, this payment was approved by ${
+          revenue?.paymentRegisteredBy || revenue?.registeredBy
+        } on ${formatDate(revenue?.formDate) || "N/A"}`,
+      };
+
+      const message = await sendEmail(emailData);
+      const adminMessage = await sendEmail(adminEmailData);
+      console.log("Email sent successfully:", message);
+      console.log("Admin Email sent successfully:", adminMessage);
 
       showToast(toast, "SCA", "warning", "Revenue deleted successfully");
       getAdminContent();

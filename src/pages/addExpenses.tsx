@@ -25,17 +25,20 @@ import {
 import { db } from "@/config/firebase";
 import { useAppContext } from "@/contexts/AppContext";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { sendEmail } from "@/services/email";
 
 const AddExpenses = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { user } = useSelector((state: any) => state.auth);
-  const { adminData, getAdminContent } = useAppContext();
+  const { adminData, getAdminContent, adminEmails, fetchStaffs } =
+    useAppContext();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     scrollToTop();
     getAdminContent();
+    fetchStaffs();
   }, []);
 
   const scrollToTop = () => {
@@ -52,6 +55,8 @@ const AddExpenses = () => {
 
   const onSubmit = async (values: z.infer<typeof AddRevenueValidation>) => {
     setIsLoading(true);
+
+    const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
 
     try {
       if (user?.role === AccessRole.Viewer)
@@ -100,6 +105,35 @@ const AddExpenses = () => {
           totalExpenses: newExpenses,
         });
       }
+
+      // Update Activity
+      const dataa = {
+        title: "New Expenses",
+        activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+        createdAt: serverTimestamp(),
+        formDate: new Date().toISOString(),
+        type: "Expenses",
+        desc: `New Expenses for ${values?.type} performed by ${user?.firstName} ${user?.lastName}. `,
+      };
+
+      await setDoc(activitesRef, dataa);
+
+      const emailData = {
+        emails: [user?.email],
+        subject: `New Expenses for ${values?.type} `,
+        message: `You carried out New Expenses for ${values?.type}. Description: ${values.desc}  `,
+      };
+
+      const adminEmailData = {
+        emails: adminEmails,
+        subject: `New Expenses for ${values?.type} `,
+        message: `New Expenses for ${values?.type} performed by ${user?.firstName} ${user?.lastName}.   Description: ${values.desc} `,
+      };
+
+      const message = await sendEmail(emailData);
+      const adminMessage = await sendEmail(adminEmailData);
+      console.log("Email sent successfully:", message);
+      console.log("Admin Email sent successfully:", adminMessage);
 
       showToast(
         toast,

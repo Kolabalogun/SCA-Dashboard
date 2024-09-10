@@ -1,5 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -18,6 +18,7 @@ import {
   where,
   Timestamp,
   deleteDoc,
+  setDoc,
 } from "firebase/firestore";
 import { createAppUserConfig, db } from "@/config/firebase";
 import { ArrowLeft, Trash2Icon } from "lucide-react";
@@ -34,11 +35,13 @@ import { deleteApp, initializeApp } from "firebase/app";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import Loader from "@/components/common/Loader";
 import { useAppContext } from "@/contexts/AppContext";
+import { sendEmail } from "@/services/email";
 
 const StaffProfile = () => {
   const toast = useToast();
   const navigate = useNavigate();
-  const { adminData, getAdminContent } = useAppContext();
+  const { adminData, getAdminContent, adminEmails, fetchStaffs } =
+    useAppContext();
   const { user } = useSelector((state: any) => state.auth);
   const { id: userId } = useParams();
   const [Staff, setStaff] = useState<any>(null);
@@ -52,6 +55,17 @@ const StaffProfile = () => {
 
   useEffect(() => {
     scrollToTop();
+    const awaitFetchStaff = async () => {
+      setIsFetchLoading(true);
+      try {
+        await fetchStaffs();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsFetchLoading(false);
+      }
+    };
+    awaitFetchStaff();
   }, []);
 
   const scrollToTop = () => {
@@ -146,6 +160,9 @@ const StaffProfile = () => {
   const onSubmit = async (values: z.infer<typeof StaffFormValidation>) => {
     setIsLoading(true);
     const { email, staffImage, firstName, lastName } = values;
+
+    const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
+
     try {
       if (user?.role === "user")
         return showToast(
@@ -177,6 +194,35 @@ const StaffProfile = () => {
 
         const docRef = doc(db, "staffs", userId);
         await updateDoc(docRef, StaffPayload);
+
+        const data = {
+          title: "Staff Profile Update",
+          activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+          createdAt: serverTimestamp(),
+          formDate: new Date().toISOString(),
+          type: "Staff Profile Update",
+
+          desc: `Staff Profile Update for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
+        };
+
+        await setDoc(activitesRef, data);
+
+        const emailData = {
+          emails: [user?.email],
+          subject: `Staff Profile Update for ${user?.firstName} ${user?.lastName} `,
+          message: `You carried out Staff Profile Update for ${user?.firstName} ${user?.lastName}  `,
+        };
+
+        const adminEmailData = {
+          emails: adminEmails,
+          subject: `New Staff Profile Update for ${user?.firstName} ${user?.lastName} `,
+          message: `Staff Profile Update for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
+        };
+
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
 
         showToast(
           toast,
@@ -262,6 +308,37 @@ const StaffProfile = () => {
             totalStaffs: newStaffNo,
           });
 
+          //  Update Activities
+
+          const data = {
+            title: "Staff Registration",
+            activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+            createdAt: serverTimestamp(),
+            formDate: new Date().toISOString(),
+            type: "Staff Registration",
+
+            desc: `Staff Registration for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
+          };
+
+          await setDoc(activitesRef, data);
+
+          const emailData = {
+            emails: [user?.email],
+            subject: `Staff Registration for ${user?.firstName} ${user?.lastName} `,
+            message: `You carried out Staff registration for ${user?.firstName} ${user?.lastName}  `,
+          };
+
+          const adminEmailData = {
+            emails: adminEmails,
+            subject: `New Staff Registration for ${user?.firstName} ${user?.lastName} `,
+            message: `Staff Registration for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
+          };
+
+          const message = await sendEmail(emailData);
+          const adminMessage = await sendEmail(adminEmailData);
+          console.log("Email sent successfully:", message);
+          console.log("Admin Email sent successfully:", adminMessage);
+
           showToast(
             toast,
             "Registration",
@@ -273,6 +350,7 @@ const StaffProfile = () => {
           setIsLoading(false);
         }
       }
+      fetchStaffs();
     } catch (error) {
       console.log(error);
       showToast(toast, "Registration", "error", "Error registering Staff ");

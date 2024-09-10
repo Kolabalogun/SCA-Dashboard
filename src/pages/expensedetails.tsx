@@ -6,10 +6,18 @@ import { Button } from "@/components/ui/button";
 import { db } from "@/config/firebase";
 import { useAppContext } from "@/contexts/AppContext";
 import { fetchFirestoreData } from "@/lib/firebase";
+import { sendEmail } from "@/services/email";
 import { AccessRole } from "@/types/types";
 import { formatDate } from "@/utils/formatJSDate";
 import { useToast } from "@chakra-ui/react";
-import { deleteDoc, doc, Timestamp, updateDoc } from "firebase/firestore";
+import {
+  deleteDoc,
+  doc,
+  serverTimestamp,
+  setDoc,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { Trash2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -20,7 +28,8 @@ const ExpenseDetails = () => {
   const { user } = useSelector((state: any) => state.auth);
 
   const navigate = useNavigate();
-  const { adminData, getAdminContent } = useAppContext();
+  const { adminData, getAdminContent, adminEmails, fetchStaffs } =
+    useAppContext();
   const { id: docId } = useParams();
 
   const [loading, setIsLoading] = useState<boolean>(false);
@@ -63,6 +72,7 @@ const ExpenseDetails = () => {
       getExpensesDoc();
       getAdminContent();
     }
+    fetchStaffs();
   }, [docId]);
 
   const handleDeleteExpenses = async (id: string, amount: number) => {
@@ -81,6 +91,59 @@ const ExpenseDetails = () => {
           totalExpenses: updatedExpenses,
         });
       }
+
+      const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
+
+      // Update Activity
+      const dataa = {
+        title: "Expenses Deletion",
+        activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+        createdAt: serverTimestamp(),
+        formDate: new Date().toISOString(),
+        type: "Deletion",
+        desc: `Expense with ID: ${expenses?.id}, titled "${
+          expenses?.desc
+        }" and amounting to ₦${parseInt(
+          expenses?.amount
+        )?.toLocaleString()} was deleted by ${user?.firstName} ${
+          user?.lastName
+        }. Initially, this payment was approved by ${
+          expenses?.paymentRegisteredBy || expenses?.registeredBy
+        } on ${formatDate(expenses?.formDate) || "N/A"}`,
+      };
+
+      await setDoc(activitesRef, dataa);
+
+      const emailData = {
+        emails: [user?.email],
+        subject: `You just deleted an Expenses for ${expenses?.type} `,
+        message: `Expense with ID: ${expenses?.id}, titled "${
+          expenses?.desc
+        }" and amounting to ₦${parseInt(
+          expenses?.amount
+        )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
+          expenses?.paymentRegisteredBy || expenses?.registeredBy
+        } on ${formatDate(expenses?.formDate) || "N/A"}`,
+      };
+
+      const adminEmailData = {
+        emails: adminEmails,
+        subject: `New Expenses for ${expenses?.type} `,
+        message: `Expense with ID: ${expenses?.id}, titled "${
+          expenses?.desc
+        }" and amounting to ₦${parseInt(
+          expenses?.amount
+        )?.toLocaleString()} was deleted by ${user?.firstName} ${
+          user?.lastName
+        }. Initially, this payment was approved by ${
+          expenses?.paymentRegisteredBy || expenses?.registeredBy
+        } on ${formatDate(expenses?.formDate) || "N/A"}`,
+      };
+
+      const message = await sendEmail(emailData);
+      const adminMessage = await sendEmail(adminEmailData);
+      console.log("Email sent successfully:", message);
+      console.log("Admin Email sent successfully:", adminMessage);
 
       showToast(toast, "SCA", "warning", "Expense deleted successfully");
 
@@ -119,7 +182,7 @@ const ExpenseDetails = () => {
               </div>
 
               <div className="  items-center flex gap-2">
-                <p className="text-sm">Pevenue Approved By: </p>
+                <p className="text-sm">Payment Approved By: </p>
                 <p className="text-sm">
                   {expenses?.paymentRegisteredBy || expenses?.registeredBy}
                 </p>

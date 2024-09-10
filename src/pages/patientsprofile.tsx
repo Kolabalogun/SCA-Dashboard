@@ -18,7 +18,6 @@ import {
   where,
   Timestamp,
   deleteDoc,
-  orderBy,
   setDoc,
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
@@ -49,19 +48,35 @@ const PatientProfile = () => {
   const { id: userId } = useParams();
   const [loading, setLoading] = useState<boolean>(false);
   const [patient, setPatient] = useState<any>(null);
-  const [staffs, setStaffs] = useState<any>([]);
-  const [admins, setAdmins] = useState<any>([]);
   const [patientDocId, setPatientDocId] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
-  const { adminData, getAdminContent } = useAppContext();
+  const {
+    adminData,
+    getAdminContent,
+    professionalCareOfficers,
+    adminEmails,
+    fetchStaffs,
+  } = useAppContext();
   const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
   const [isDeletePatientModalOpen, setIsDeletePatientModalOpen] =
     useState(false);
 
   useEffect(() => {
     scrollToTop();
+
+    const awaitFetchStaff = async () => {
+      setLoading(true);
+      try {
+        await fetchStaffs();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    awaitFetchStaff();
   }, []);
 
   const scrollToTop = () => {
@@ -71,59 +86,10 @@ const PatientProfile = () => {
     });
   };
 
-  useEffect(() => {
-    if (staffs.length > 0) {
-      const filteredStaff = staffs.filter(
-        (staff: { occupation: string }) => staff.occupation === "Administrator"
-      );
-
-      const filteredStaffAdminEmails = filteredStaff.map(
-        (staff: { email: string }) => staff.email
-      );
-
-      setAdmins(filteredStaffAdminEmails);
-    }
-  }, [staffs]);
-
   const form = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
     defaultValues: PatientFormDefaultValues,
   });
-
-  async function fetchStaffs() {
-    const staffsRef = collection(db, "staffs");
-    setLoading(true);
-
-    try {
-      const q = query(
-        staffsRef,
-        orderBy("createdAt", "desc"),
-        where("occupation", "in", [
-          "Professional Care Officer",
-          "Psychiatric Physician",
-          "Administrator",
-        ])
-      );
-
-      const querySnapshot = await getDocs(q);
-      const staffs = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setStaffs(staffs);
-    } catch (error) {
-      console.error("Error fetching staffs:", error);
-      setStaffs([]);
-      showToast(
-        toast,
-        "Registration",
-        "error",
-        "Error fetching Primary care professionals"
-      );
-    } finally {
-      setLoading(false);
-    }
-  }
 
   useEffect(() => {
     const getPatientDoc = async () => {
@@ -197,14 +163,15 @@ const PatientProfile = () => {
     if (userId) {
       getPatientDoc();
     }
-
-    fetchStaffs();
   }, [userId, form]);
 
   const { logs } = form.getValues();
 
   const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
     setIsLoading(true);
+    const { email, identificationDocument, name } = values;
+
+    const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
 
     try {
       if (user?.role === AccessRole.Viewer)
@@ -223,6 +190,38 @@ const PatientProfile = () => {
 
         const docRef = doc(db, "patients", userId);
         await updateDoc(docRef, patientPayload);
+
+        //  Update Activities
+
+        const data = {
+          title: "Patient Profile Update",
+          activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+          createdAt: serverTimestamp(),
+          formDate: new Date().toISOString(),
+          type: "Patient Edit",
+
+          desc: `Patient Profile Update for ${name} performed by ${user?.firstName} ${user?.lastName}`,
+        };
+
+        await setDoc(activitesRef, data);
+
+        const emailData = {
+          emails: [user?.email],
+          subject: `Patient Profile Update for ${name} `,
+          message: `You carried out Patient Profile Update for ${name}  `,
+        };
+
+        const adminEmailData = {
+          emails: adminEmails,
+          subject: `New Patient Profile Update for ${name} `,
+          message: `Patient Profile Update for ${name} performed by ${user?.firstName} ${user?.lastName}`,
+        };
+
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
+
         setIsModalOpen(false);
         showToast(
           toast,
@@ -231,8 +230,6 @@ const PatientProfile = () => {
           "Patient Data successfully updated"
         );
       } else {
-        const { email, identificationDocument, name } = values;
-
         let fileUrl = "";
 
         if (identificationDocument && identificationDocument.length > 0) {
@@ -285,9 +282,7 @@ const PatientProfile = () => {
             totalPatients: newPatientsNo,
           });
 
-          //  Upadte Activities
-
-          const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
+          //  Update Activities
 
           const data = {
             title: "Patient Registration",
@@ -308,7 +303,7 @@ const PatientProfile = () => {
           };
 
           const adminEmailData = {
-            emails: admins,
+            emails: adminEmails,
             subject: `New Patient Registration for ${name} `,
             message: `Patient Registration for ${name} performed by ${user?.firstName} ${user?.lastName}`,
           };
@@ -513,9 +508,15 @@ const PatientProfile = () => {
               </section>
 
               {step === 1 ? (
-                <BasicInformations staffs={staffs} form={form} />
+                <BasicInformations
+                  staffs={professionalCareOfficers}
+                  form={form}
+                />
               ) : step === 2 ? (
-                <MedicalInformations staffs={staffs} form={form} />
+                <MedicalInformations
+                  staffs={professionalCareOfficers}
+                  form={form}
+                />
               ) : step === 4 && userId ? (
                 <LogsInformations form={form} />
               ) : (
@@ -559,15 +560,17 @@ const PatientProfile = () => {
               )}
             </div>
 
-            <div className="my-8">
-              <Button
-                type="button"
-                className="bg-red-800 gap-2"
-                onClick={() => setIsDeletePatientModalOpen(true)}
-              >
-                Delete Patient's Profile <Trash2Icon className="h-5" />
-              </Button>
-            </div>
+            {userId && (
+              <div className="my-8">
+                <Button
+                  type="button"
+                  className="bg-red-800 gap-2"
+                  onClick={() => setIsDeletePatientModalOpen(true)}
+                >
+                  Delete Patient's Profile <Trash2Icon className="h-5" />
+                </Button>
+              </div>
+            )}
           </main>
         </div>
       </Form>

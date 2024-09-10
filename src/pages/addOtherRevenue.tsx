@@ -25,17 +25,20 @@ import {
 import { db } from "@/config/firebase";
 import { useAppContext } from "@/contexts/AppContext";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { sendEmail } from "@/services/email";
 
 const AddOtherRevenue = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { user } = useSelector((state: any) => state.auth);
-  const { adminData, getAdminContent } = useAppContext();
+  const { adminData, getAdminContent, adminEmails, fetchStaffs } =
+    useAppContext();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     scrollToTop();
     getAdminContent();
+    fetchStaffs();
   }, []);
 
   const scrollToTop = () => {
@@ -105,6 +108,37 @@ const AddOtherRevenue = () => {
           otherRevenue: newOtherRevenue,
         });
       }
+
+      // Update Activity
+      const dataa = {
+        title: "New Revenue",
+        activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+        createdAt: serverTimestamp(),
+        formDate: new Date().toISOString(),
+        type: "Revenue",
+        desc: `New Revenue for ${values?.type} performed by ${user?.firstName} ${user?.lastName}. `,
+      };
+
+      const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
+
+      await setDoc(activitesRef, dataa);
+
+      const emailData = {
+        emails: [user?.email],
+        subject: `New Revenue for ${values?.type} `,
+        message: `You added a New Revenue for ${values?.type}. Description: ${values.desc}  `,
+      };
+
+      const adminEmailData = {
+        emails: adminEmails,
+        subject: `New Revenue for ${values?.type} `,
+        message: `New Revenue added for ${values?.type} performed by ${user?.firstName} ${user?.lastName}.   Description: ${values.desc} `,
+      };
+
+      const message = await sendEmail(emailData);
+      const adminMessage = await sendEmail(adminEmailData);
+      console.log("Email sent successfully:", message);
+      console.log("Admin Email sent successfully:", adminMessage);
 
       showToast(toast, "Registration", "success", "Revenue successfully Added");
       getAdminContent();
