@@ -98,6 +98,7 @@ const ExpenseDetails = () => {
       const dataa = {
         title: "Expenses Deletion",
         activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+        activtyCarriedOutEmailBy: `${user?.email}`,
         createdAt: serverTimestamp(),
         formDate: new Date().toISOString(),
         type: "Deletion",

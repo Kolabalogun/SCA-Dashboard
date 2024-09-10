@@ -19,6 +19,17 @@ body {
   font-family: "Plus Jakarta Sans", sans-serif;
 }
 
+.bb {
+  background-image: url("/src/assets/images/appointments-b.png");
+  /* height: 100px; */
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 10px;
+  padding: 16px;
+}
+
 img,
 p {
   background-color: transparent;

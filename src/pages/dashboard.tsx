@@ -1,48 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { columns } from "@/components/table/columns";
-import { DataTable } from "@/components/table/DataTable";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
-import { db } from "@/config/firebase";
 import { useSelector } from "react-redux";
 import { useAppContext } from "@/contexts/AppContext";
-import { useEffect, useState } from "react";
 import { StatCard } from "@/components/common/StatCard";
 import { ExpensesIcon, PatientsIcon, Revenue, Staff } from "@/assets/images";
-import TableLoader from "@/components/common/TableLoader";
+
+import Activities from "@/components/dashboard/activities";
 
 const Dashboard = () => {
   const { user } = useSelector((state: any) => state.auth);
 
   const { adminData } = useAppContext();
-
-  const [patients, setPatients] = useState<any>([]);
-
-  const [isLoading, setLoading] = useState<boolean>(false);
-
-  async function fetchPatients() {
-    const patientsRef = collection(db, "patients");
-    setLoading(true);
-
-    try {
-      const q = query(patientsRef, orderBy("createdAt", "desc"), limit(10));
-      const querySnapshot = await getDocs(q);
-      const patients = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPatients(patients);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching patients:", error);
-      setPatients([]);
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchPatients();
-  }, []);
 
   return (
     <div className=" flex flex-col space-y-14">
@@ -79,11 +47,7 @@ const Dashboard = () => {
           />
         </section>
 
-        {isLoading ? (
-          <TableLoader />
-        ) : (
-          <DataTable columns={columns} data={patients || []} />
-        )}
+        <Activities />
       </main>
     </div>
   );

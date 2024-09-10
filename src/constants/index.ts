@@ -148,6 +148,7 @@ export const RevenueTypeOptions = [
 export const ExpensesTypeOptions = [
   "Salary",
   "Medical Supplies",
+  "Fuel",
   "Utilities",
   "Building Maintenance and Operations",
   "Research and Development",

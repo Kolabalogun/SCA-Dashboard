@@ -198,6 +198,7 @@ const StaffProfile = () => {
         const data = {
           title: "Staff Profile Update",
           activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+          activtyCarriedOutEmailBy: `${user?.email}`,
           createdAt: serverTimestamp(),
           formDate: new Date().toISOString(),
           type: "Staff Profile Update",
@@ -313,6 +314,7 @@ const StaffProfile = () => {
           const data = {
             title: "Staff Registration",
             activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+            activtyCarriedOutEmailBy: `${user?.email}`,
             createdAt: serverTimestamp(),
             formDate: new Date().toISOString(),
             type: "Staff Registration",

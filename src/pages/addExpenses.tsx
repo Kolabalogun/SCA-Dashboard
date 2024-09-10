@@ -110,6 +110,7 @@ const AddExpenses = () => {
       const dataa = {
         title: "New Expenses",
         activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+        activtyCarriedOutEmailBy: `${user?.email}`,
         createdAt: serverTimestamp(),
         formDate: new Date().toISOString(),
         type: "Expenses",

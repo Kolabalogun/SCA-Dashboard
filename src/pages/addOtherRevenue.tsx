@@ -113,6 +113,7 @@ const AddOtherRevenue = () => {
       const dataa = {
         title: "New Revenue",
         activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+        activtyCarriedOutEmailBy: `${user?.email}`,
         createdAt: serverTimestamp(),
         formDate: new Date().toISOString(),
         type: "Revenue",

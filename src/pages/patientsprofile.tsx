@@ -196,6 +196,7 @@ const PatientProfile = () => {
         const data = {
           title: "Patient Profile Update",
           activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+          activtyCarriedOutEmailBy: `${user?.email}`,
           createdAt: serverTimestamp(),
           formDate: new Date().toISOString(),
           type: "Patient Edit",
@@ -287,6 +288,7 @@ const PatientProfile = () => {
           const data = {
             title: "Patient Registration",
             activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+            activtyCarriedOutEmailBy: `${user?.email}`,
             createdAt: serverTimestamp(),
             formDate: new Date().toISOString(),
             type: "Patient Admission",

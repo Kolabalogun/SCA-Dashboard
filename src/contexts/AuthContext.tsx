@@ -39,7 +39,7 @@ function AuthProvider({ children }: { children: any }) {
           const docSnap = querySnapshot.docs[0];
           const userData = docSnap.data();
 
-          const { createdAt, updatedAt, ...restUserData } = userData;
+          const { createdAt, updatedAt, birthDate, ...restUserData } = userData;
 
           setProfile(restUserData);
           dispatch(setCredentials(restUserData));
