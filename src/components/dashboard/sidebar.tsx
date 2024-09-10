@@ -17,7 +17,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { logout } from "@/redux/features/authSlice";
 import { useDispatch } from "react-redux";
-import showToast from "../common/Toast";
+import showToast from "../common/toast";
 
 const Sidebar = () => {
   const toast = useToast();

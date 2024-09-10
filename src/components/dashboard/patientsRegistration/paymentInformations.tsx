@@ -25,7 +25,7 @@ import {
 import { db } from "@/config/firebase";
 import { useSelector } from "react-redux";
 import { useAppContext } from "@/contexts/AppContext";
-import showToast from "@/components/common/Toast";
+import showToast from "@/components/common/toast";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 type Props = {

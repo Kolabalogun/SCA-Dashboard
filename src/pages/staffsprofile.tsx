@@ -27,7 +27,7 @@ import { StaffFormDefaultValues } from "@/constants";
 import { useSelector } from "react-redux";
 import { fetchFirestoreData, uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
-import showToast from "@/components/common/Toast";
+import showToast from "@/components/common/toast";
 import BasicInformations from "@/components/dashboard/staffsRegistration/basicInformations";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { deleteApp, initializeApp } from "firebase/app";
