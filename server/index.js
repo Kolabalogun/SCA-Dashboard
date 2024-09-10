@@ -6,10 +6,11 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(express.json());
 app.use(
   cors({
     origin: "https://scadashboard.netlify.app",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
   })
 );
 
@@ -41,12 +42,10 @@ app.post("/send-email", async (req, res) => {
       .json({ success: true, message: "Email sent successfully!" });
   } catch (error) {
     console.error("Error sending email:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: error.message || "Failed to send email",
-      });
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to send email",
+    });
   }
 });
 

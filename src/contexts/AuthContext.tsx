@@ -3,7 +3,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import {
   setCredentials,
   setIsAuthenticated,
@@ -26,32 +33,34 @@ function AuthProvider({ children }: { children: any }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const docRef = doc(db, "staffs", user.uid);
+        // Query the 'staffs' collection to find a document with the user's email
+        const q = query(
+          collection(db, "staffs"),
+          where("email", "==", user.email)
+        );
 
-        const unsubscribeSnapshot = onSnapshot(docRef, (snapshot) => {
-          if (snapshot.exists()) {
-            const userData = snapshot.data();
+        const querySnapshot = await getDocs(q);
 
-            const { createdAt, updatedAt, ...restUserData } = userData;
+        if (!querySnapshot.empty) {
+          // Assuming there's only one document per email
+          const docSnap = querySnapshot.docs[0];
+          const userData = docSnap.data();
 
-            setProfile(restUserData);
-            dispatch(setCredentials(restUserData));
-            dispatch(setIsAuthenticated(true));
-          } else {
-            dispatch(setIsAuthenticated(false));
-          }
-        });
+          const { createdAt, updatedAt, ...restUserData } = userData;
 
-        // Cleanup the snapshot listener on component unmount or when user signs out
-        return () => unsubscribeSnapshot();
+          setProfile(restUserData);
+          dispatch(setCredentials(restUserData));
+          dispatch(setIsAuthenticated(true));
+        } else {
+          dispatch(setIsAuthenticated(false));
+        }
       } else {
         // User is signed out
-        // dispatch(setCredentials(null));
         dispatch(setIsAuthenticated(false));
       }
     });
 
-    // Cleanup the auth state change listener on component unmount
+    // Cleanup the auth listener on component unmount
     return () => unsubscribe();
   }, [auth]);
 
