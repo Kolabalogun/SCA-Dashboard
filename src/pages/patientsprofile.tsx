@@ -18,6 +18,7 @@ import {
   Timestamp,
   deleteDoc,
   orderBy,
+  setDoc,
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { ArrowLeft, ArrowRight, ListIcon, Trash2Icon } from "lucide-react";
@@ -264,6 +265,22 @@ const PatientProfile = () => {
           await updateDoc(adminRef, {
             totalPatients: newPatientsNo,
           });
+
+          //  Upadte Activities
+
+          const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
+
+          const data = {
+            title: "Patient Registration",
+            activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+            createdAt: serverTimestamp(),
+            formDate: new Date().toISOString(),
+            type: "Patient Admission",
+
+            desc: `Patient Registration for ${name} performed by ${user?.firstName} ${user?.lastName}`,
+          };
+
+          await setDoc(activitesRef, data);
 
           showToast(
             toast,
