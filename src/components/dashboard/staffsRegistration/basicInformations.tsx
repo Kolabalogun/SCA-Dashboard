@@ -43,7 +43,9 @@ const BasicInformations = ({ form, userId }: Props) => {
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
-            readOnly={userId && user && user?.role !== AccessRole.Admin && true}
+            readOnly={
+              userId && user && user?.accessRole !== AccessRole.Admin && true
+            }
             control={form.control}
             name="firstName"
             label="First Name"
@@ -59,11 +61,15 @@ const BasicInformations = ({ form, userId }: Props) => {
             placeholder="Stewart"
             iconSrc={User}
             iconAlt="user"
-            readOnly={userId && user && user?.role !== AccessRole.Admin && true}
+            readOnly={
+              userId && user && user?.accessRole !== AccessRole.Admin && true
+            }
           />
           <CustomFormField
             fieldType={FormFieldType.INPUT}
-            readOnly={userId && user && user?.role !== AccessRole.Admin && true}
+            readOnly={
+              userId && user && user?.accessRole !== AccessRole.Admin && true
+            }
             control={form.control}
             name="lastName"
             label="Last Name"
@@ -105,7 +111,9 @@ const BasicInformations = ({ form, userId }: Props) => {
           <CustomFormField
             fieldType={FormFieldType.SKELETON}
             control={form.control}
-            disabled={userId && user && user?.role !== AccessRole.Admin && true}
+            disabled={
+              userId && user && user?.accessRole !== AccessRole.Admin && true
+            }
             name="maritialStatus"
             label="Maritial Status"
             renderSkeleton={(field) => {
@@ -135,7 +143,9 @@ const BasicInformations = ({ form, userId }: Props) => {
             fieldType={FormFieldType.SKELETON}
             control={form.control}
             name="gender"
-            disabled={userId && user && user?.role !== AccessRole.Admin && true}
+            disabled={
+              userId && user && user?.accessRole !== AccessRole.Admin && true
+            }
             label="Gender"
             renderSkeleton={(field) => (
               <FormControl>
@@ -163,7 +173,9 @@ const BasicInformations = ({ form, userId }: Props) => {
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
-            readOnly={userId && user && user?.role !== AccessRole.Admin && true}
+            readOnly={
+              userId && user && user?.accessRole !== AccessRole.Admin && true
+            }
             control={form.control}
             name="address"
             label="Address"
@@ -226,8 +238,7 @@ const BasicInformations = ({ form, userId }: Props) => {
           />
         )}
 
-        
-{values.accessRole !== "No Access" && !userId && (
+        {values.accessRole !== "No Access" && !userId && (
           <CustomFormField
             control={form.control}
             fieldType={FormFieldType.INPUT}

@@ -164,7 +164,7 @@ const StaffProfile = () => {
     const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
 
     try {
-      if (user?.role === "user")
+      if (user?.accessRole === "user")
         return showToast(
           toast,
           "Access Denied",

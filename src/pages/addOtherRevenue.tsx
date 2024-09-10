@@ -57,7 +57,7 @@ const AddOtherRevenue = () => {
     setIsLoading(true);
 
     try {
-      if (user?.role === AccessRole.Viewer)
+      if (user?.accessRole === AccessRole.Viewer)
         return showToast(
           toast,
           "Access Denied",

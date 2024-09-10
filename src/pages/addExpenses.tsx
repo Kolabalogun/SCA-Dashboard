@@ -59,7 +59,7 @@ const AddExpenses = () => {
     const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
 
     try {
-      if (user?.role === AccessRole.Viewer)
+      if (user?.accessRole === AccessRole.Viewer)
         return showToast(
           toast,
           "Access Denied",

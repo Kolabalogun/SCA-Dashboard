@@ -249,7 +249,7 @@ const RevenueDetails = () => {
                   </div>
                 )}
 
-                {user && user?.role === AccessRole.Admin && (
+                {user && user?.accessRole === AccessRole.Admin && (
                   <Button
                     type="button"
                     className="bg-red-800 gap-2"
