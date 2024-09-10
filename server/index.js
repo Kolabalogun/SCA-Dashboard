@@ -1,5 +1,5 @@
 const express = require("express");
-const transporter = require("../config/smtp");
+const transporter = require("./config/smtp");
 
 const cors = require("cors");
 require("dotenv").config();
@@ -17,6 +17,11 @@ app.use(
 
 app.post("/send-email", async (req, res) => {
   const { email, subject, message } = req.body;
+  if (!email || !subject || !message) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing required fields" });
+  }
 
   try {
     // let transporter = nodemailer.createTransport({
