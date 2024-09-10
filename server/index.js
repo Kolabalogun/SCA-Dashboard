@@ -8,7 +8,11 @@ const port = process.env.PORT || 5000;
 
 // Middleware to parse JSON data and enable CORS
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://scadashboard.netlify.app",
+  })
+);
 
 // Create the email route
 app.post("/send-email", async (req, res) => {
@@ -20,6 +24,7 @@ app.post("/send-email", async (req, res) => {
       //   service: "Gmail", // or any other email service
       host: process.env.EMAIL_HOST, // e.g., EMAIL.yourdomain.com
       port: process.env.EMAIL_PORT, // e.g., 587 or 465
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER, // Your email address
         pass: process.env.EMAIL_PASS, // Your email password
