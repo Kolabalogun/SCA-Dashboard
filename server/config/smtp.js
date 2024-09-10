@@ -1,12 +1,12 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST, // e.g., EMAIL.yourdomain.com
-  port: process.env.EMAIL_PORT, // e.g., 587 or 465
-  secure: process.env.EMAIL_SECURE === "true", // true for port 465, false for port 587
+  host: process.env.EMAIL_HOST, // Should be 'mail.shayofunmicareagency.net'
+  port: 465, // Should be 465
+  secure: true, // Should be true
   auth: {
-    user: process.env.EMAIL_USER, // Your EMAIL username
-    pass: process.env.EMAIL_PASS, // Your EMAIL password
+    user: process.env.EMAIL_USER, // Your email address
+    pass: process.env.EMAIL_PASS, // Your email password
   },
 });
 
