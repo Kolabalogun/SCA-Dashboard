@@ -27,15 +27,20 @@ const Dashboard = () => {
             label="Total Patients"
             icon={PatientsIcon}
           />
+
           <StatCard
             type="pending"
-            count={adminData?.totalRevenue || 0}
+            count={`₦${parseInt(
+              adminData?.totalRevenue || 0
+            )?.toLocaleString()}`}
             label="Total Revenue"
             icon={Revenue}
           />
           <StatCard
             type="cancelled"
-            count={adminData?.totalExpenses || 0}
+            count={`₦${parseInt(
+              adminData?.totalExpenses || 0
+            )?.toLocaleString()}`}
             label="Total Expenditure"
             icon={ExpensesIcon}
           />

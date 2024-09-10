@@ -200,7 +200,7 @@ const PatientProfile = () => {
           createdAt: serverTimestamp(),
           formDate: new Date().toISOString(),
           type: "Profile Update",
-          desc: `Patient Profile Update for ${name} performed by ${user?.firstName} ${user?.lastName}`,
+          desc: `Patient Profile Update for ${name}  `,
         };
 
         await setDoc(activitesRef, data);

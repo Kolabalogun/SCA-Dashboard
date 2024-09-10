@@ -114,21 +114,29 @@ const AddExpenses = () => {
         createdAt: serverTimestamp(),
         formDate: new Date().toISOString(),
         type: "Expenses",
-        desc: `New Expenses for ${values?.type} performed by ${user?.firstName} ${user?.lastName}. `,
+        desc: `New Expenses cost ₦${parseInt(
+          values?.amount as string
+        )?.toLocaleString()} on ${values?.type}. `,
       };
 
       await setDoc(activitesRef, dataa);
 
       const emailData = {
         emails: [user?.email],
-        subject: `New Expenses for ${values?.type} `,
-        message: `You carried out New Expenses for ${values?.type}. Description: ${values.desc}  `,
+        subject: `New Expenses on ${values?.type} `,
+        message: `You carried out New Expenses cost ₦${parseInt(
+          values?.amount as string
+        )?.toLocaleString()} on ${values?.type}. Description: ${values.desc}  `,
       };
 
       const adminEmailData = {
         emails: adminEmails,
-        subject: `New Expenses for ${values?.type} `,
-        message: `New Expenses for ${values?.type} performed by ${user?.firstName} ${user?.lastName}.   Description: ${values.desc} `,
+        subject: `New Expenses on ${values?.type} `,
+        message: `New Expenses cost ₦${parseInt(
+          values?.amount as string
+        )?.toLocaleString()} on ${values?.type} performed by ${
+          user?.firstName
+        } ${user?.lastName}.   Description: ${values.desc} `,
       };
 
       const message = await sendEmail(emailData);
@@ -149,7 +157,7 @@ const AddExpenses = () => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
-      showToast(toast, "Registration", "error", "Error updating income data");
+      showToast(toast, "Registration", "error", "Error updating expense data");
     } finally {
       setIsLoading(false);
     }

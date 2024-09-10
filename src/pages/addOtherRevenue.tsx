@@ -117,7 +117,9 @@ const AddOtherRevenue = () => {
         createdAt: serverTimestamp(),
         formDate: new Date().toISOString(),
         type: "Revenue",
-        desc: `New Revenue for ${values?.type} performed by ${user?.firstName} ${user?.lastName}. `,
+        desc: `New Revenue from ${values?.type} amounting to ₦${parseInt(
+          values?.amount as string
+        )?.toLocaleString()}. `,
       };
 
       const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
@@ -126,14 +128,22 @@ const AddOtherRevenue = () => {
 
       const emailData = {
         emails: [user?.email],
-        subject: `New Revenue for ${values?.type} `,
-        message: `You added a New Revenue for ${values?.type}. Description: ${values.desc}  `,
+        subject: `New Revenue from ${values?.type} `,
+        message: `You added a New Revenue from ${
+          values?.type
+        } amounting to ₦${parseInt(
+          values?.amount as string
+        )?.toLocaleString()}. Description: ${values.desc}.`,
       };
 
       const adminEmailData = {
         emails: adminEmails,
-        subject: `New Revenue for ${values?.type} `,
-        message: `New Revenue added for ${values?.type} performed by ${user?.firstName} ${user?.lastName}.   Description: ${values.desc} `,
+        subject: `New Revenue from ${values?.type} `,
+        message: `New Revenue added from ${values?.type} performed by ${
+          user?.firstName
+        } ${user?.lastName} amounting to ₦${parseInt(
+          values?.amount as string
+        )?.toLocaleString()}. Description: ${values.desc}.`,
       };
 
       const message = await sendEmail(emailData);

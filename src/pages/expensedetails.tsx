@@ -117,7 +117,7 @@ const ExpenseDetails = () => {
 
       const emailData = {
         emails: [user?.email],
-        subject: `You just deleted an Expenses for ${expenses?.type} `,
+        subject: `You just deleted an Expenses on ${expenses?.type} `,
         message: `Expense with ID: ${expenses?.id}, titled "${
           expenses?.desc
         }" and amounting to ₦${parseInt(

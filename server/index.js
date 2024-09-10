@@ -9,11 +9,25 @@ const port = process.env.PORT || 5000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Allowed CORS Origin
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://scadashboard.netlify.app",
+];
+
+// CORS Middleware
 app.use(
   cors({
-    origin: "https://scadashboard.netlify.app",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 

@@ -202,7 +202,7 @@ const StaffProfile = () => {
           createdAt: serverTimestamp(),
           formDate: new Date().toISOString(),
           type: "Profile Update",
-          desc: `Staff Profile Update for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
+          desc: `Staff Profile Update for ${firstName} ${lastName}. Staff Role is set to ${values?.accessRole}`,
         };
 
         await setDoc(activitesRef, data);
@@ -317,8 +317,7 @@ const StaffProfile = () => {
             createdAt: serverTimestamp(),
             formDate: new Date().toISOString(),
             type: "Staff Registration",
-
-            desc: `Staff Registration for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
+            desc: `Staff Registration for ${firstName} ${lastName}. Staff Role is set to ${values?.accessRole}`,
           };
 
           await setDoc(activitesRef, data);

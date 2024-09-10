@@ -113,14 +113,14 @@ const RevenueDetails = () => {
 
       // Update Activity
       const dataa = {
-        title: "Expenses Deletion",
+        title: "Revenue Deletion",
         activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
         activtyCarriedOutEmailBy: `${user?.email}`,
 
         createdAt: serverTimestamp(),
         formDate: new Date().toISOString(),
         type: "Deletion",
-        desc: `Expense with ID: ${revenue?.id}, titled "${
+        desc: `Revenue with ID: ${revenue?.id}, titled "${
           revenue?.desc
         }" and amounting to ₦${parseInt(
           revenue?.amount
@@ -135,8 +135,12 @@ const RevenueDetails = () => {
 
       const emailData = {
         emails: [user?.email],
-        subject: `You just deleted an Expenses for ${revenue?.type} `,
-        message: `Expense with ID: ${revenue?.id}, titled "${
+        subject: `You just deleted a Revenue on ${
+          revenue?.type
+        } amounting to ₦${parseInt(
+          revenue?.amount as string
+        )?.toLocaleString()}.`,
+        message: `Revenue with ID: ${revenue?.id}, titled "${
           revenue?.desc
         }" and amounting to ₦${parseInt(
           revenue?.amount
@@ -147,8 +151,8 @@ const RevenueDetails = () => {
 
       const adminEmailData = {
         emails: adminEmails,
-        subject: `New Expenses for ${revenue?.type} `,
-        message: `Expense with ID: ${revenue?.id}, titled "${
+        subject: `New Revenue for ${revenue?.type} `,
+        message: `Revenue with ID: ${revenue?.id}, titled "${
           revenue?.desc
         }" and amounting to ₦${parseInt(
           revenue?.amount
