@@ -201,8 +201,7 @@ const StaffProfile = () => {
           activtyCarriedOutEmailBy: `${user?.email}`,
           createdAt: serverTimestamp(),
           formDate: new Date().toISOString(),
-          type: "Staff Profile Update",
-
+          type: "Profile Update",
           desc: `Staff Profile Update for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
         };
 

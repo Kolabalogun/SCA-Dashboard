@@ -199,8 +199,7 @@ const PatientProfile = () => {
           activtyCarriedOutEmailBy: `${user?.email}`,
           createdAt: serverTimestamp(),
           formDate: new Date().toISOString(),
-          type: "Patient Edit",
-
+          type: "Profile Update",
           desc: `Patient Profile Update for ${name} performed by ${user?.firstName} ${user?.lastName}`,
         };
 

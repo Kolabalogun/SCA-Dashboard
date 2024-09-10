@@ -20,8 +20,6 @@ const Activities = () => {
   const toast = useToast();
   const { user } = useSelector((state: any) => state.auth);
   const [activities, setActivities] = useState<any[]>();
-  console.log(activities);
-  console.log(user?.accessRole);
 
   const [loading, setIsLoading] = useState<boolean>(false);
 
@@ -82,7 +80,11 @@ const Activities = () => {
                   className={`text-14-medium ${
                     activity?.type === "Patient Admission"
                       ? "text-[#16dcfa] "
-                      : ""
+                      : activity?.type === "Profile Update"
+                      ? "text-[#f5d23e] "
+                      : activity?.type === "Expenses"
+                      ? "text-[#fa1228] "
+                      : "text-[#2fd163]"
                   }  `}
                 >
                   {activity?.type}{" "}
