@@ -1,7 +1,7 @@
 export { default as Naira } from "./naira.svg";
 export { default as User } from "./user.svg";
 
-export { default as email } from "./Email.svg";
+export { default as email } from "./email.svg";
 export { default as Close } from "./close.svg";
 export { default as Arrow } from "./arrow.svg";
 export { default as Calender } from "./calendar.svg";
