@@ -17,7 +17,7 @@ app.post("/send-email", async (req, res) => {
   try {
     // Setup transporter with your email service credentials
     let transporter = nodemailer.createTransport({
-      service: "Gmail", // or any other email service
+      //   service: "Gmail", // or any other email service
       host: process.env.EMAIL_HOST, // e.g., EMAIL.yourdomain.com
       port: process.env.EMAIL_PORT, // e.g., 587 or 465
       auth: {

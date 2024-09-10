@@ -6,7 +6,7 @@ import axios from "axios";
 export const sendEmail = async (emailData: any) => {
   try {
     const response = await axios.post(
-      "https://scaemailserver.vercel.app/",
+      "https://scaemailserver.vercel.app",
       emailData
     );
     return response.data.message;

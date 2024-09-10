@@ -285,9 +285,9 @@ const PatientProfile = () => {
           await setDoc(activitesRef, data);
 
           const emailData = {
-            email: user.email,
-            subject: `Patient Registration for ${name}`,
-            message: `You carried out Patient registration for ${name}  `,
+            email: "kolabalogunibrahim@gmail.com",
+            subject: `Patient Registration for `,
+            message: `You carried out Patient registration for   `,
           };
 
           const message = await sendEmail(emailData);
