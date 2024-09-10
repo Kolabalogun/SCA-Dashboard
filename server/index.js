@@ -6,7 +6,6 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middleware to parse JSON data and enable CORS
 app.use(express.json());
 app.use(
   cors({
@@ -14,32 +13,27 @@ app.use(
   })
 );
 
-// Create the email route
 app.post("/send-email", async (req, res) => {
   const { email, subject, message } = req.body;
 
   try {
-    // Setup transporter with your email service credentials
     let transporter = nodemailer.createTransport({
-      //   service: "Gmail", // or any other email service
-      host: process.env.EMAIL_HOST, // e.g., EMAIL.yourdomain.com
-      port: process.env.EMAIL_PORT, // e.g., 587 or 465
-      secure: true,
+      host: process.env.EMAIL_HOST,
+      port: parseInt(process.env.EMAIL_PORT, 10),
+      secure: process.env.EMAIL_SECURE === "true",
       auth: {
-        user: process.env.EMAIL_USER, // Your email address
-        pass: process.env.EMAIL_PASS, // Your email password
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
-    // Define the email options
     let mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.FROM_EMAIL,
       to: email,
       subject: subject,
       text: message,
     };
 
-    // Send the email
     await transporter.sendMail(mailOptions);
 
     res
@@ -47,7 +41,12 @@ app.post("/send-email", async (req, res) => {
       .json({ success: true, message: "Email sent successfully!" });
   } catch (error) {
     console.error("Error sending email:", error);
-    res.status(500).json({ success: false, message: error });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: error.message || "Failed to send email",
+      });
   }
 });
 
