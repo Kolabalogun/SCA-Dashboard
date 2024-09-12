@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useToast } from "@chakra-ui/react";
 import {
   ChartCandlestick,
@@ -16,10 +17,13 @@ import { auth } from "@/config/firebase";
 import { logout } from "@/redux/features/authSlice";
 import { useDispatch } from "react-redux";
 import showToast from "../common/toast";
+import { useSelector } from "react-redux";
+import { AccessRole } from "@/types/types";
 
 const Sidebar = () => {
   const toast = useToast();
   const { pathname } = useLocation();
+  const { user } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +49,7 @@ const Sidebar = () => {
     }
   };
 
-  const links = [
+  const viewerLinks = [
     {
       icon: <HomeIcon size={20} />,
       title: "Home",
@@ -56,11 +60,26 @@ const Sidebar = () => {
       title: "Patients",
       link: "/dashboard/patients",
     },
-    // {
-    //   icon: <Users size={20} />,
-    //   title: "Doctors",
-    //   link: "/dashboard/profile",
-    // },
+
+    {
+      icon: <Contact size={20} />,
+      title: "Staffs",
+      link: "/dashboard/staffs",
+    },
+  ];
+
+  const otherslinks = [
+    {
+      icon: <HomeIcon size={20} />,
+      title: "Home",
+      link: "/dashboard",
+    },
+    {
+      icon: <Users size={20} />,
+      title: "Patients",
+      link: "/dashboard/patients",
+    },
+
     {
       icon: <Contact size={20} />,
       title: "Staffs",
@@ -76,12 +95,13 @@ const Sidebar = () => {
       title: "Expenses",
       link: "/dashboard/expenses",
     },
-    // {
-    //   icon: <Settings size={20} />,
-    //   title: "Settings",
-    //   link: "/dashboard/settings",
-    // },
   ];
+
+  const links =
+    user?.accessRole === AccessRole.Admin ||
+    user?.accessRole === AccessRole.Editor
+      ? otherslinks
+      : viewerLinks;
 
   return (
     <>

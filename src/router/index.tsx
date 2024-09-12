@@ -1,4 +1,5 @@
-import { UnAuthenticated, Protected } from "@/components/auth";
+import { UnAuthenticated, Protected, AccessRole } from "@/components/auth";
+import { AccessRoleEnum } from "@/components/auth/accessRole";
 import {
   ErrorPage,
   Login,
@@ -6,7 +7,6 @@ import {
   NotFound,
   Patients,
   PatientProfile,
-  Success,
   StaffProfile,
   Revenue,
   RevenueDetails,
@@ -19,7 +19,6 @@ import {
 } from "@/pages";
 
 import { createBrowserRouter } from "react-router-dom";
-
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -38,7 +37,6 @@ const routes = createBrowserRouter([
       </UnAuthenticated>
     ),
   },
-
   {
     path: "/dashboard",
     element: (
@@ -53,61 +51,113 @@ const routes = createBrowserRouter([
       },
       {
         path: "/dashboard/register-patient",
-        element: <PatientProfile />,
+        element: (
+          <AccessRole
+            allowedRoles={[
+              AccessRoleEnum.Admin,
+              AccessRoleEnum.Editor,
+              AccessRoleEnum.Viewer,
+              AccessRoleEnum.PatientEditor,
+            ]}
+          >
+            <PatientProfile />
+          </AccessRole>
+        ),
       },
       {
         path: "/dashboard/register-staff",
-        element: <StaffProfile />,
+        element: (
+          <AccessRole allowedRoles={[AccessRoleEnum.Admin]}>
+            <StaffProfile />
+          </AccessRole>
+        ),
       },
       {
         path: "/dashboard/patients",
-        element: <Patients />,
+        element: (
+          <AccessRole
+            allowedRoles={[
+              AccessRoleEnum.Admin,
+              AccessRoleEnum.Editor,
+              AccessRoleEnum.Viewer,
+              AccessRoleEnum.PatientEditor,
+            ]}
+          >
+            <Patients />
+          </AccessRole>
+        ),
       },
       {
         path: "/dashboard/staffs",
-        element: <Staffs />,
+        element: (
+          <AccessRole allowedRoles={[AccessRoleEnum.Admin]}>
+            <Staffs />
+          </AccessRole>
+        ),
       },
       {
         path: "/dashboard/revenue",
-        element: <Revenue />,
+        element: (
+          <AccessRole
+            allowedRoles={[AccessRoleEnum.Admin, AccessRoleEnum.Editor]}
+          >
+            <Revenue />
+          </AccessRole>
+        ),
       },
       {
         path: "/dashboard/expenses",
-        element: <Expenses />,
+        element: (
+          <AccessRole allowedRoles={[AccessRoleEnum.Admin]}>
+            <Expenses />
+          </AccessRole>
+        ),
       },
       {
         path: "/dashboard/add-revenue",
-        element: <AddOtherRevenue />,
+        element: (
+          <AccessRole
+            allowedRoles={[AccessRoleEnum.Admin, AccessRoleEnum.Editor]}
+          >
+            <AddOtherRevenue />
+          </AccessRole>
+        ),
       },
       {
         path: "/dashboard/add-expense",
-        element: <AddExpenses />,
+        element: (
+          <AccessRole
+            allowedRoles={[AccessRoleEnum.Admin, AccessRoleEnum.Editor]}
+          >
+            <AddExpenses />
+          </AccessRole>
+        ),
       },
       {
         path: "/dashboard/revenue/:id",
-        element: <RevenueDetails />,
+        element: (
+          <AccessRole
+            allowedRoles={[AccessRoleEnum.Admin, AccessRoleEnum.Editor]}
+          >
+            <RevenueDetails />
+          </AccessRole>
+        ),
       },
       {
         path: "/dashboard/expense/:id",
-        element: <ExpenseDetails />,
+        element: (
+          <AccessRole allowedRoles={[AccessRoleEnum.Admin]}>
+            <ExpenseDetails />
+          </AccessRole>
+        ),
       },
       {
-        path: "/dashboard/patient/:id",
-        element: <PatientProfile />,
-      },
-      {
-        path: "/dashboard/staff/:id",
-        element: <StaffProfile />,
-      },
-      {
-        path: "/dashboard/success/:id",
-        element: <Success />,
+        path: "*",
+        element: <NotFound />,
       },
     ],
     errorElement: <ErrorPage />,
   },
-
-  { path: "*", element: <NotFound /> },
 ]);
 
 export default routes;

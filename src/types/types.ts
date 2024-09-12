@@ -12,5 +12,6 @@ export enum AccessRole {
   No_Access = "No Access",
   Viewer = "Viewer",
   Editor = "Editor",
+  PatientEditor = "PatientEditor",
   Admin = "Admin",
 }

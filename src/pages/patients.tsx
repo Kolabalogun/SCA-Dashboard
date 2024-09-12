@@ -4,13 +4,15 @@ import { columns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/DataTable";
 import { Button } from "@/components/ui/button";
 import { db } from "@/config/firebase";
+import { AccessRole } from "@/types/types";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Patients = () => {
   const navigate = useNavigate();
-
+  const { user } = useSelector((state: any) => state.auth);
   const [patients, setPatients] = useState<any>([]);
 
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -45,15 +47,17 @@ const Patients = () => {
           <h1 className="header">Patients</h1>
           <p className="text-dark-700">All Patients Records</p>
         </div>
-
-        <div className="">
-          <Button
-            onClick={() => navigate("/dashboard/register-patient")}
-            className="bg-green-700 text-white"
-          >
-            Add New Patient
-          </Button>
-        </div>
+        {(user?.accessRole === AccessRole.Admin ||
+          user?.accessRole === AccessRole.Editor) && (
+          <div className="">
+            <Button
+              onClick={() => navigate("/dashboard/register-patient")}
+              className="bg-green-700 text-white"
+            >
+              Add New Patient
+            </Button>
+          </div>
+        )}
       </section>
       {isLoading ? (
         <TableLoader />
