@@ -6,7 +6,7 @@ import CustomFormField from "@/components/common/CustomFormField";
 import { FileUploader } from "@/components/common/FileUploader";
 import { FormControl } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
-import { FormFieldType } from "@/types/types";
+import { AccessRole, FormFieldType } from "@/types/types";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { stayPeriods as stayPeriodsData } from "@/constants";
 import { Button } from "@/components/ui/button";
@@ -65,6 +65,10 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
   useEffect(() => {
     getAdminContent();
   }, []);
+
+  console.log(patientDocId);
+
+  console.log(form.formState.errors);
 
   const handleAddPayment = async (e: any) => {
     e.preventDefault();
@@ -143,7 +147,12 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       }
 
       if (patientDocId) {
-        const patientPayload = form.getValues();
+        const patientPayload = {
+          ...form.getValues(),
+
+          paymentHistory: newPaymentHistory,
+        };
+
         const patientRef = doc(db, "patients", patientDocId);
 
         await updateDoc(patientRef, patientPayload);
@@ -259,9 +268,9 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
                   className="space-y-4 flex flex-col border border-[#363a3d] rounded-lg p-4"
                 >
                   <div className="flex justify-between items-center">
-                    <p className="text-sm capitalize text-[#7682ad] ">
+                    {/* <p className="text-sm capitalize text-[#7682ad] ">
                       ID: {payment?.id}
-                    </p>
+                    </p> */}
                     <p className="text-sm">
                       Date: {formatDate(payment?.formDate) || "N/A"}{" "}
                     </p>
@@ -306,13 +315,15 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
                       </div>
                     )}
 
-                    <Button
-                      type="button"
-                      className="bg-red-800 gap-2"
-                      onClick={() => confirmDeletePayment(payment)}
-                    >
-                      Delete <Trash2Icon className="h-5" />
-                    </Button>
+                    {user && user?.accessRole === AccessRole.Admin && (
+                      <Button
+                        type="button"
+                        className="bg-red-800 gap-2"
+                        onClick={() => confirmDeletePayment(payment)}
+                      >
+                        Delete <Trash2Icon className="h-5" />
+                      </Button>
+                    )}
                   </div>
                 </li>
               ))}

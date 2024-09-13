@@ -32,6 +32,7 @@ const Activities = () => {
 
       if (
         user?.accessRole === AccessRole.Admin ||
+        user?.accessRole === AccessRole.Editor ||
         user?.accessRole === AccessRole.Viewer
       ) {
         q = query(activitiesRef, orderBy("createdAt", "desc"), limit(10));

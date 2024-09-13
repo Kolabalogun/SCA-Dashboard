@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { email, Key, User } from "@/assets/icons";
@@ -12,8 +13,10 @@ import {
   AccessRoles,
   maritialStatusOptions,
   StaffOccupations,
+  StaffStatusOption,
 } from "@/constants";
 import { AccessRole, FormFieldType } from "@/types/types";
+import { useEffect } from "react";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { useSelector } from "react-redux";
 
@@ -23,22 +26,30 @@ type Props = {
 };
 
 const BasicInformations = ({ form, userId }: Props) => {
-  useWatch({
-    control: form.control,
-    name: "accessRole",
-  });
-
   const { user } = useSelector((state: any) => state.auth);
 
   const values = form.getValues();
 
+  const { status } = values;
+
+  useWatch({
+    control: form.control,
+    name: "accessRole",
+  });
+  useWatch({
+    control: form.control,
+    name: "status",
+  });
+
+  useEffect(() => {
+    if (status !== "Active") {
+      form.setValue("accessRole", "No Access");
+    }
+  }, [status]);
+
   return (
     <div className="space-y-9">
       <section className="space-y-6">
-        {/* <div className="mb-9 space-y-1">
-          <h2 className="sub-header">Personal Information</h2>
-        </div> */}
-
         {/* NAME */}
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
@@ -197,7 +208,7 @@ const BasicInformations = ({ form, userId }: Props) => {
           </CustomFormField>
         </div>
 
-        <div className="">
+        <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.SELECT}
             control={form.control}
@@ -206,6 +217,20 @@ const BasicInformations = ({ form, userId }: Props) => {
             placeholder="Select Access Role"
           >
             {AccessRoles.map((type, i) => (
+              <SelectItem key={type + i} value={type}>
+                {type}
+              </SelectItem>
+            ))}
+          </CustomFormField>
+
+          <CustomFormField
+            fieldType={FormFieldType.SELECT}
+            control={form.control}
+            name="status"
+            label="Current Status"
+            placeholder="Select Current Status"
+          >
+            {StaffStatusOption.map((type, i) => (
               <SelectItem key={type + i} value={type}>
                 {type}
               </SelectItem>

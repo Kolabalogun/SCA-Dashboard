@@ -8,7 +8,7 @@ export const columns = [
   {
     header: "#",
     cell: ({ row }: { row: any }) => {
-      return <p className="text-14-medium ">{row.index + 1}</p>;
+      return <p className="text-14-medium py-2 ">{row.index + 1}</p>;
     },
   },
   {

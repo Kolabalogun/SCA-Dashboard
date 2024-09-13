@@ -68,6 +68,19 @@ const Sidebar = () => {
     },
   ];
 
+  const patientEditorLinks = [
+    {
+      icon: <HomeIcon size={20} />,
+      title: "Home",
+      link: "/dashboard",
+    },
+    {
+      icon: <Users size={20} />,
+      title: "Patients",
+      link: "/dashboard/patients",
+    },
+  ];
+
   const otherslinks = [
     {
       icon: <HomeIcon size={20} />,
@@ -101,6 +114,8 @@ const Sidebar = () => {
     user?.accessRole === AccessRole.Admin ||
     user?.accessRole === AccessRole.Editor
       ? otherslinks
+      : user?.accessRole === AccessRole.PatientEditor
+      ? patientEditorLinks
       : viewerLinks;
 
   return (

@@ -208,7 +208,7 @@ const RevenueDetails = () => {
                   ID: {revenue?.id}
                 </p>
                 <p className="text-sm">
-                  Date: {formatDate(revenue?.formDate) || "N/A"}
+                  Date: {formatDate(revenue?.createdAt) || "N/A"}
                 </p>
               </div>
 

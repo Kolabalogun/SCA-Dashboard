@@ -30,6 +30,8 @@ export const StaffFormDefaultValues = {
   password: "",
   confirmPassword: "",
   staffImage: [],
+  status: "Active",
+
   // db
   logs: [],
   updatedAt: new Date(Date.now()),
@@ -135,6 +137,14 @@ export const StaffOccupations = [
   "Cleaner",
   "Others",
   "Manager",
+];
+
+export const StaffStatusOption = [
+  "Active",
+  "On Leave",
+  "Released",
+  "Sacked",
+  "Others",
 ];
 
 export const RevenueTypeOptions = [

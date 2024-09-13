@@ -67,7 +67,9 @@ const routes = createBrowserRouter([
       {
         path: "/dashboard/register-staff",
         element: (
-          <AccessRole allowedRoles={[AccessRoleEnum.Admin]}>
+          <AccessRole
+            allowedRoles={[AccessRoleEnum.Admin, AccessRoleEnum.Editor]}
+          >
             <StaffProfile />
           </AccessRole>
         ),

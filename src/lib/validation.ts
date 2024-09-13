@@ -76,6 +76,7 @@ export const StaffFormValidation = z
     confirmPassword: nameSchema,
     firstName: nameSchema,
     lastName: nameSchema,
+    status: nameSchema,
     email: emailSchema,
     phone: phoneSchema,
     middleName: nameSchema.optional(),
@@ -206,7 +207,7 @@ export const PatientFormValidation = UserFormValidation.extend({
   paymentHistory: z
     .array(
       z.object({
-        id: z.string(),
+        // id: z.string(),
         paymentReceived: z.union([z.string(), z.number()]).optional(),
         formDate: z.string(),
         stayPeriods: z.string(),

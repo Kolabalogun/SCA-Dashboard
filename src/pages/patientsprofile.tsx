@@ -521,7 +521,10 @@ const PatientProfile = () => {
               ) : step === 4 && userId ? (
                 <LogsInformations form={form} />
               ) : (
-                <PaymentInformations form={form} patientDocId={patientDocId} />
+                <PaymentInformations
+                  form={form}
+                  patientDocId={patientDocId || userId}
+                />
               )}
 
               {step !== 4 && user?.accessRole !== AccessRole.Viewer && (
