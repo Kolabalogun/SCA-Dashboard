@@ -34,12 +34,12 @@ const AddRevenueForm = ({ form, type }: Props) => {
           {!type
             ? RevenueTypeOptions.map((type, i) => (
                 <SelectItem key={type + i} value={type}>
-                  {type}
+                  <p className="text-white">{type}</p>
                 </SelectItem>
               ))
             : ExpensesTypeOptions.map((type, i) => (
                 <SelectItem key={type + i} value={type}>
-                  {type}
+                  <p className="text-white">{type}</p>
                 </SelectItem>
               ))}
         </CustomFormField>

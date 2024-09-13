@@ -40,6 +40,7 @@ import Loader from "@/components/common/Loader";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { useAppContext } from "@/contexts/AppContext";
 import { sendEmail } from "@/services/email";
+import MedicalReports from "@/components/dashboard/patientsRegistration/medicalReports";
 
 const PatientProfile = () => {
   const toast = useToast();
@@ -91,6 +92,8 @@ const PatientProfile = () => {
     defaultValues: PatientFormDefaultValues,
   });
 
+  console.log(patient);
+
   useEffect(() => {
     const getPatientDoc = async () => {
       setLoading(true);
@@ -105,6 +108,7 @@ const PatientProfile = () => {
             dateOfAdmission: dateOfAdmissionTimestamp,
             birthDate: birthDateTimestamp,
             logs: logsTimestamp,
+            medicalReports: medicalReportsTimestamp,
             ...others
           } = res;
 
@@ -137,13 +141,29 @@ const PatientProfile = () => {
               }))
             : logsTimestamp;
 
+          // Convert timestamps inside medicalReports if medicalReports are an array
+          const medicalReports = Array.isArray(medicalReportsTimestamp)
+            ? medicalReportsTimestamp.map((log: any) => ({
+                ...log,
+                createdAt:
+                  log.createdAt instanceof Timestamp
+                    ? log.createdAt.toDate()
+                    : log.createdAt,
+                reportDate:
+                  log.reportDate instanceof Timestamp
+                    ? log.reportDate.toDate()
+                    : log.reportDate,
+              }))
+            : medicalReportsTimestamp;
+
           // Use 'const' for 'others' since it's not reassigned
           const patientData = {
             dateOfAdmission,
             birthDate,
             updatedAt,
             createdAt,
-            logs, // Include converted logs
+            logs,
+            medicalReports,
             ...others,
           };
 
@@ -192,18 +212,19 @@ const PatientProfile = () => {
         await updateDoc(docRef, patientPayload);
 
         //  Update Activities
+        if (step !== 4) {
+          const data = {
+            title: "Patient Profile Update",
+            activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+            activtyCarriedOutEmailBy: `${user?.email}`,
+            createdAt: serverTimestamp(),
+            formDate: new Date().toISOString(),
+            type: "Profile Update",
+            desc: `Patient Profile Update for ${name}  `,
+          };
 
-        const data = {
-          title: "Patient Profile Update",
-          activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
-          activtyCarriedOutEmailBy: `${user?.email}`,
-          createdAt: serverTimestamp(),
-          formDate: new Date().toISOString(),
-          type: "Profile Update",
-          desc: `Patient Profile Update for ${name}  `,
-        };
-
-        await setDoc(activitesRef, data);
+          await setDoc(activitesRef, data);
+        }
 
         const emailData = {
           emails: [user?.email],
@@ -222,7 +243,6 @@ const PatientProfile = () => {
         // console.log("Email sent successfully:", message);
         // console.log("Admin Email sent successfully:", adminMessage);
 
-        setIsModalOpen(false);
         showToast(
           toast,
           "Patient",
@@ -321,40 +341,8 @@ const PatientProfile = () => {
             "Patient successfully Registered"
           );
           getAdminContent();
-          setIsModalOpen(false);
+
           setStep(2);
-          setIsLoading(false);
-        } else if (step === 2) {
-          // This block is for step 2 of patient registration
-
-          const logs = [
-            ...(values.logs || []),
-            {
-              updatedBy: `${user?.firstName} ${user?.lastName}`,
-              updatedAt: new Date(Date.now()),
-            },
-          ];
-          const patientPayload = {
-            ...values,
-            updatedAt: serverTimestamp(),
-            logs,
-          };
-
-          if (patientDocId) {
-            const docRef = doc(db, "patients", patientDocId);
-            await updateDoc(docRef, patientPayload);
-
-            showToast(
-              toast,
-              "Registration",
-              "success",
-              "Patient Data updated successfully"
-            );
-            setStep(3);
-          } else {
-            setStep(1);
-          }
-
           setIsLoading(false);
         } else {
           const logs = [
@@ -386,7 +374,11 @@ const PatientProfile = () => {
               "success",
               "Patient Data updated successfully"
             );
-            navigate(`/dashboard/success/${values.name}`);
+            if (step !== 5) {
+              setStep(step + 1);
+            } else {
+              navigate(`/dashboard/success/${values.name}`);
+            }
           } else {
             setStep(1);
           }
@@ -399,6 +391,7 @@ const PatientProfile = () => {
       showToast(toast, "Registration", "error", "Error updating patient data");
     } finally {
       setIsLoading(false);
+      setIsModalOpen(false);
     }
   };
 
@@ -488,11 +481,11 @@ const PatientProfile = () => {
                   <h1 className="sub-header">
                     {step === 1
                       ? "Basic Informations"
-                      : step === 2 && "Medical Informations 🩺"}
+                      : step === 3 && "Medical Informations 🩺"}
                   </h1>
                 ) : (
                   <h1 className="sub-header">
-                    {step === 2 && "Medical Informations 🩺"}{" "}
+                    {step === 3 && "Medical Informations 🩺"}{" "}
                   </h1>
                 )}
                 {userId && step !== 4 && (
@@ -500,9 +493,9 @@ const PatientProfile = () => {
                     {userId && "Edit"}{" "}
                     {step === 1
                       ? "Patient"
-                      : step === 2
+                      : step === 3
                       ? "Medical"
-                      : step === 3 && "Payment"}{" "}
+                      : step === 2 && "Payment"}{" "}
                     Informations.
                   </p>
                 )}
@@ -514,22 +507,27 @@ const PatientProfile = () => {
                   form={form}
                 />
               ) : step === 2 ? (
+                <PaymentInformations
+                  form={form}
+                  patientDocId={patientDocId || userId}
+                />
+              ) : step === 5 && userId ? (
+                <LogsInformations form={form} />
+              ) : step === 3 ? (
                 <MedicalInformations
                   staffs={professionalCareOfficers}
                   form={form}
                 />
-              ) : step === 4 && userId ? (
-                <LogsInformations form={form} />
               ) : (
-                <PaymentInformations
+                <MedicalReports
                   form={form}
                   patientDocId={patientDocId || userId}
                 />
               )}
 
-              {step !== 4 && user?.accessRole !== AccessRole.Viewer && (
+              {step !== 5 && user?.accessRole !== AccessRole.Viewer && (
                 <SubmitButton isLoading={isLoading}>
-                  {userId ? "Submit" : step === 1 ? "Continue" : "Submit"}
+                  {userId ? "Submit" : step !== 4 ? "Continue" : "Submit"}
                 </SubmitButton>
               )}
             </form>
@@ -543,7 +541,7 @@ const PatientProfile = () => {
                   <ArrowLeft /> Go Back
                 </Button>
               )}
-              {step < 3 && userId && (
+              {step < 4 && userId && (
                 <Button
                   className="flex bg-blue-700 items-center gap-2 "
                   onClick={() => setStep(step + 1)}
@@ -553,7 +551,7 @@ const PatientProfile = () => {
                 </Button>
               )}
 
-              {step === 3 && userId && logs && logs?.length > 0 && (
+              {step === 4 && userId && logs && logs?.length > 0 && (
                 <Button
                   className="flex bg-blue-700 items-center gap-2 "
                   onClick={() => setStep(step + 1)}

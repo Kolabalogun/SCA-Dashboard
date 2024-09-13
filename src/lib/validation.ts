@@ -201,6 +201,19 @@ export const PatientFormValidation = UserFormValidation.extend({
   tertiaryEducation: z.string().optional(),
   vocationalEducation: z.string().optional(),
 
+  title: z.string().optional(),
+  report: z.string().optional(),
+  reportFile: z.custom<File[]>().optional(),
+  medicalReports: z
+    .array(
+      z.object({
+        title: z.string(),
+        report: z.string(),
+        reportDate: z.coerce.date(),
+      })
+    )
+    .optional(),
+
   dateOfAdmission: z.coerce.date().optional(),
   stayPeriods: z.string().optional(),
   paymentReceived: z.union([z.string(), z.number()]).optional(),

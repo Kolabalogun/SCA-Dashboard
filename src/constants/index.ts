@@ -83,6 +83,13 @@ export const PatientFormDefaultValues = {
   newMedication: "",
   rehabilitationRecommendation: "",
 
+  // Medical Reports
+  medicalReports: [],
+  reportFile: [],
+  title: "",
+  report: "",
+  reportDate: new Date(Date.now()),
+
   // Identification
   identificationType: "Birth Certificate",
   identificationNumber: "",

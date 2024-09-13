@@ -66,10 +66,6 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
     getAdminContent();
   }, []);
 
-  console.log(patientDocId);
-
-  console.log(form.formState.errors);
-
   const handleAddPayment = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
@@ -243,6 +239,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
         message="Are you sure you want to add this payment?"
       />
 
+      {/* Delete Modal  */}
       <ConfirmationModal
         isOpen={isDeletePaymentModalOpen}
         onConfirm={() =>
@@ -353,7 +350,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
           >
             {stayPeriodsData.map((type: string, i) => (
               <SelectItem key={type + i} value={type}>
-                {type}
+                <p className="text-white">{type}</p>
               </SelectItem>
             ))}
           </CustomFormField>

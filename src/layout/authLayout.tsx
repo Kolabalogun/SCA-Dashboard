@@ -9,7 +9,7 @@ type Props = {
 
 const AuthLayout = ({ children }: Props) => {
   return (
-    <div className="flex h-screen max-h-screen">
+    <div className="flex h-screen text-white max-h-screen">
       <section className="remove-scrollbar container my-auto">
         <div className="sub-container max-w-[496px] ">
           <div className="flex gap-4 items-center flex-row mb-12 ">

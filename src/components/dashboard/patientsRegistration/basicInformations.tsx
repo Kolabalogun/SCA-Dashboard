@@ -298,7 +298,7 @@ const BasicInformations = ({ form, staffs }: Props) => {
         >
           {IdentificationTypes.map((type, i) => (
             <SelectItem key={type + i} value={type}>
-              {type}
+              <p className="text-white">{type}</p>
             </SelectItem>
           ))}
         </CustomFormField>
@@ -345,7 +345,7 @@ const BasicInformations = ({ form, staffs }: Props) => {
                   alt="doctor"
                   className="rounded-full border border-dark-500"
                 />
-                <p>{`${doctor?.firstName} ${doctor?.lastName}`}</p>
+                <p className="text-white">{`${doctor?.firstName} ${doctor?.lastName}`}</p>
               </div>
             </SelectItem>
           ))}

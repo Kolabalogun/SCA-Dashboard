@@ -35,7 +35,7 @@ const ConfirmationModal = ({
         <DialogFooter>
           <Button
             disabled={isLoading}
-            className="bg-red-600"
+            className="bg-red-600 text-white"
             onClick={onConfirm}
           >
             {isLoading ? "Loading..." : "Confirm"}
