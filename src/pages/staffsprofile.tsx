@@ -36,6 +36,7 @@ import ConfirmationModal from "@/components/common/ConfirmationModal";
 import Loader from "@/components/common/Loader";
 import { useAppContext } from "@/contexts/AppContext";
 import { sendEmail } from "@/services/email";
+import { AccessRole } from "@/types/types";
 
 const StaffProfile = () => {
   const toast = useToast();
@@ -441,20 +442,22 @@ const StaffProfile = () => {
             >
               <BasicInformations userId={userId} form={form} />
 
-              {step !== 4 && (
+              {step !== 4 && user?.accessRole !== AccessRole.Viewer && (
                 <SubmitButton isLoading={isLoading}>Submit</SubmitButton>
               )}
             </form>
 
-            <div className="my-8">
-              <Button
-                type="button"
-                className="bg-red-800 gap-2"
-                onClick={() => setIsDeleteStaffModalOpen(true)}
-              >
-                Delete Staff's Profile <Trash2Icon className="h-5" />
-              </Button>
-            </div>
+            {userId && user?.accessRole === AccessRole.Admin && (
+              <div className="my-8">
+                <Button
+                  type="button"
+                  className="bg-red-800 gap-2"
+                  onClick={() => setIsDeleteStaffModalOpen(true)}
+                >
+                  Delete Staff's Profile <Trash2Icon className="h-5" />
+                </Button>
+              </div>
+            )}
 
             <div className="mt-8 flex gap-5 justify-between   ">
               {step !== 1 && (

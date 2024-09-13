@@ -88,10 +88,45 @@ const routes = createBrowserRouter([
         ),
       },
       {
+        path: "/dashboard/patient/:id",
+        element: (
+          <AccessRole
+            allowedRoles={[
+              AccessRoleEnum.Admin,
+              AccessRoleEnum.Editor,
+              AccessRoleEnum.Viewer,
+              AccessRoleEnum.PatientEditor,
+            ]}
+          >
+            <PatientProfile />
+          </AccessRole>
+        ),
+      },
+      {
         path: "/dashboard/staffs",
         element: (
-          <AccessRole allowedRoles={[AccessRoleEnum.Admin]}>
+          <AccessRole
+            allowedRoles={[
+              AccessRoleEnum.Admin,
+              AccessRoleEnum.Editor,
+              AccessRoleEnum.Viewer,
+            ]}
+          >
             <Staffs />
+          </AccessRole>
+        ),
+      },
+      {
+        path: "/dashboard/staff/:id",
+        element: (
+          <AccessRole
+            allowedRoles={[
+              AccessRoleEnum.Admin,
+              AccessRoleEnum.Editor,
+              AccessRoleEnum.Viewer,
+            ]}
+          >
+            <StaffProfile />
           </AccessRole>
         ),
       },
@@ -108,7 +143,9 @@ const routes = createBrowserRouter([
       {
         path: "/dashboard/expenses",
         element: (
-          <AccessRole allowedRoles={[AccessRoleEnum.Admin]}>
+          <AccessRole
+            allowedRoles={[AccessRoleEnum.Admin, AccessRoleEnum.Editor]}
+          >
             <Expenses />
           </AccessRole>
         ),
@@ -146,7 +183,9 @@ const routes = createBrowserRouter([
       {
         path: "/dashboard/expense/:id",
         element: (
-          <AccessRole allowedRoles={[AccessRoleEnum.Admin]}>
+          <AccessRole
+            allowedRoles={[AccessRoleEnum.Admin, AccessRoleEnum.Editor]}
+          >
             <ExpenseDetails />
           </AccessRole>
         ),

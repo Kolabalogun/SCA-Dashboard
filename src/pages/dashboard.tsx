@@ -6,6 +6,7 @@ import { StatCard } from "@/components/common/StatCard";
 import { ExpensesIcon, PatientsIcon, Revenue, Staff } from "@/assets/images";
 
 import Activities from "@/components/dashboard/activities";
+import { AccessRole } from "@/types/types";
 
 const Dashboard = () => {
   const { user } = useSelector((state: any) => state.auth);
@@ -28,22 +29,26 @@ const Dashboard = () => {
             icon={PatientsIcon}
           />
 
-          <StatCard
-            type="pending"
-            count={`₦${parseInt(
-              adminData?.totalRevenue || 0
-            )?.toLocaleString()}`}
-            label="Total Revenue"
-            icon={Revenue}
-          />
-          <StatCard
-            type="cancelled"
-            count={`₦${parseInt(
-              adminData?.totalExpenses || 0
-            )?.toLocaleString()}`}
-            label="Total Expenditure"
-            icon={ExpensesIcon}
-          />
+          {AccessRole.Admin === user?.accessRole && (
+            <>
+              <StatCard
+                type="pending"
+                count={`₦${parseInt(
+                  adminData?.totalRevenue || 0
+                )?.toLocaleString()}`}
+                label="Total Revenue"
+                icon={Revenue}
+              />
+              <StatCard
+                type="cancelled"
+                count={`₦${parseInt(
+                  adminData?.totalExpenses || 0
+                )?.toLocaleString()}`}
+                label="Total Expenditure"
+                icon={ExpensesIcon}
+              />
+            </>
+          )}
           <StatCard
             type="cancelled"
             count={adminData?.totalStaffs || 0}

@@ -217,10 +217,10 @@ const PatientProfile = () => {
           message: `Patient Profile Update for ${name} performed by ${user?.firstName} ${user?.lastName}`,
         };
 
-        const message = await sendEmail(emailData);
-        const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
-        console.log("Admin Email sent successfully:", adminMessage);
+        // const message = await sendEmail(emailData);
+        // const adminMessage = await sendEmail(adminEmailData);
+        // console.log("Email sent successfully:", message);
+        // console.log("Admin Email sent successfully:", adminMessage);
 
         setIsModalOpen(false);
         showToast(
@@ -309,10 +309,10 @@ const PatientProfile = () => {
             message: `Patient Registration for ${name} performed by ${user?.firstName} ${user?.lastName}`,
           };
 
-          const message = await sendEmail(emailData);
-          const adminMessage = await sendEmail(adminEmailData);
-          console.log("Email sent successfully:", message);
-          console.log("Admin Email sent successfully:", adminMessage);
+          // const message = await sendEmail(emailData);
+          // const adminMessage = await sendEmail(adminEmailData);
+          // console.log("Email sent successfully:", message);
+          // console.log("Admin Email sent successfully:", adminMessage);
 
           showToast(
             toast,
@@ -524,7 +524,7 @@ const PatientProfile = () => {
                 <PaymentInformations form={form} patientDocId={patientDocId} />
               )}
 
-              {step !== 4 && (
+              {step !== 4 && user?.accessRole !== AccessRole.Viewer && (
                 <SubmitButton isLoading={isLoading}>
                   {userId ? "Submit" : step === 1 ? "Continue" : "Submit"}
                 </SubmitButton>
@@ -561,7 +561,7 @@ const PatientProfile = () => {
               )}
             </div>
 
-            {userId && (
+            {userId && user?.accessRole === AccessRole.Admin && (
               <div className="my-8">
                 <Button
                   type="button"

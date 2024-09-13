@@ -13,15 +13,18 @@ import { DataTable } from "@/components/table/DataTable";
 import { Button } from "@/components/ui/button";
 import { db } from "@/config/firebase";
 import { useAppContext } from "@/contexts/AppContext";
+import { AccessRole } from "@/types/types";
 import { useToast } from "@chakra-ui/react";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Revenue = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const { adminData } = useAppContext();
+  const { user } = useSelector((state: any) => state.auth);
   const [revenueData, setRevenueData] = useState<any>([]);
 
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -67,29 +70,31 @@ const Revenue = () => {
           </Button>
         </div>
       </section>
-      <section className="admin-stat">
-        <StatCard
-          type="pending"
-          count={`₦${adminData?.totalRevenue?.toLocaleString() || 0}`}
-          label="Total Revenue"
-          icon={RevenueIcon}
-        />
-        <StatCard
-          type="appointments"
-          count={`₦${
-            adminData?.patientAdmissionRevenue?.toLocaleString() || 0
-          }`}
-          label="Income from Patients Admissions"
-          icon={PatientsIcon}
-        />
+      {AccessRole.Admin === user?.accessRole && (
+        <section className="admin-stat">
+          <StatCard
+            type="pending"
+            count={`₦${adminData?.totalRevenue?.toLocaleString() || 0}`}
+            label="Total Revenue"
+            icon={RevenueIcon}
+          />
+          <StatCard
+            type="appointments"
+            count={`₦${
+              adminData?.patientAdmissionRevenue?.toLocaleString() || 0
+            }`}
+            label="Income from Patients Admissions"
+            icon={PatientsIcon}
+          />
 
-        <StatCard
-          type="cancelled"
-          count={`₦${adminData?.otherRevenue?.toLocaleString() || 0}`}
-          label="Other Revenue"
-          icon={ExpensesIcon}
-        />
-      </section>
+          <StatCard
+            type="cancelled"
+            count={`₦${adminData?.otherRevenue?.toLocaleString() || 0}`}
+            label="Other Revenue"
+            icon={ExpensesIcon}
+          />
+        </section>
+      )}
 
       {isLoading ? (
         <TableLoader />

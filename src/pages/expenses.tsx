@@ -9,9 +9,11 @@ import { DataTable } from "@/components/table/DataTable";
 import { Button } from "@/components/ui/button";
 import { db } from "@/config/firebase";
 import { useAppContext } from "@/contexts/AppContext";
+import { AccessRole } from "@/types/types";
 import { useToast } from "@chakra-ui/react";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Expenses = () => {
@@ -19,7 +21,7 @@ const Expenses = () => {
   const toast = useToast();
   const { adminData } = useAppContext();
   const [expensesData, setExpensesData] = useState<any>([]);
-
+  const { user } = useSelector((state: any) => state.auth);
   const [isLoading, setLoading] = useState<boolean>(false);
 
   async function fetchExpensesData() {
@@ -63,14 +65,23 @@ const Expenses = () => {
           </Button>
         </div>
       </section>
-      <section className="admin-stat">
-        <StatCard
-          type="pending"
-          count={`₦${adminData?.totalExpenses?.toLocaleString() || 0}`}
-          label="Total Expenditure"
-          icon={ExpensesIcon}
-        />
-      </section>
+      {AccessRole.Admin === user?.accessRole && (
+        <section className="admin-stat">
+          <StatCard
+            type="pending"
+            count={`₦${adminData?.totalExpenses?.toLocaleString() || 0}`}
+            label="Total Expenditure"
+            icon={ExpensesIcon}
+          />
+
+          <StatCard
+            type="pending"
+            count={`₦${0}`}
+            label="Expenditure For this month - September 2024"
+            icon={ExpensesIcon}
+          />
+        </section>
+      )}
 
       {isLoading ? (
         <TableLoader />
