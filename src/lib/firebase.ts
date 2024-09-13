@@ -5,14 +5,12 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Upload the file to Firebase Storage
 export const uploadFileToStorage = async (
+  path: string,
   file: any,
   name: string
 ): Promise<string> => {
   const storage = getStorage();
-  const storageRef = ref(
-    storage,
-    `identificationDocuments/${name}/${file.name}`
-  );
+  const storageRef = ref(storage, `${path}/${name}/${file.name}`);
 
   // Upload the file to Firebase Storage
   await uploadBytes(storageRef, file);

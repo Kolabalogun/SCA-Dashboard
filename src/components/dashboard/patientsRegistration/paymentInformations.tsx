@@ -37,7 +37,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
   const toast = useToast();
   const { user } = useSelector((state: any) => state.auth);
   const { adminData, getAdminContent } = useAppContext();
-  const { paymentReceived, paymentHistory, paymentReceipt, name, stayPeriods } =
+  const { paymentReceived, paymentHistory, name, stayPeriods } =
     form.getValues();
   const [isLoading, setIsLoading] = useState(false);
   const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
@@ -66,6 +66,8 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
     getAdminContent();
   }, []);
 
+  console.log(form.getValues());
+
   const handleAddPayment = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
@@ -79,7 +81,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
           "error",
           "Payment Amount can't be 0"
         );
-
+      const { paymentReceipt, ...others } = form.getValues();
       const paymentHistoryy = paymentHistory || [];
 
       let paymentReceiptFileUrl = "";
@@ -87,6 +89,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       if (paymentReceipt && paymentReceipt.length > 0) {
         // Upload the first file to Firebase Storage and get its URL
         paymentReceiptFileUrl = await uploadFileToStorage(
+          "paymentReceipt",
           paymentReceipt[0],
           name
         );
@@ -144,7 +147,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
 
       if (patientDocId) {
         const patientPayload = {
-          ...form.getValues(),
+          ...others,
 
           paymentHistory: newPaymentHistory,
         };

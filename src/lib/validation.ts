@@ -209,7 +209,6 @@ export const PatientFormValidation = UserFormValidation.extend({
       z.object({
         title: z.string(),
         report: z.string(),
-        reportDate: z.coerce.date(),
       })
     )
     .optional(),

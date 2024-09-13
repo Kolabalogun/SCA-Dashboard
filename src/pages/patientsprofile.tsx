@@ -64,6 +64,8 @@ const PatientProfile = () => {
   const [isDeletePatientModalOpen, setIsDeletePatientModalOpen] =
     useState(false);
 
+  console.log(patient);
+
   useEffect(() => {
     scrollToTop();
 
@@ -92,8 +94,6 @@ const PatientProfile = () => {
     defaultValues: PatientFormDefaultValues,
   });
 
-  console.log(patient);
-
   useEffect(() => {
     const getPatientDoc = async () => {
       setLoading(true);
@@ -108,9 +108,15 @@ const PatientProfile = () => {
             dateOfAdmission: dateOfAdmissionTimestamp,
             birthDate: birthDateTimestamp,
             logs: logsTimestamp,
-            medicalReports: medicalReportsTimestamp,
+
+            reportDate: reportDateTimestamp,
+            report: reportDetails,
+            title: titleDetails,
             ...others
           } = res;
+
+          const report = reportDetails ? "" : reportDetails;
+          const title = titleDetails ? "" : titleDetails;
 
           // Convert Firestore _Timestamps to JavaScript Dates
           const dateOfAdmission =
@@ -130,6 +136,11 @@ const PatientProfile = () => {
               ? updatedAtTimestamp.toDate()
               : updatedAtTimestamp;
 
+          const reportDate =
+            reportDateTimestamp instanceof Timestamp
+              ? reportDateTimestamp.toDate()
+              : reportDateTimestamp;
+
           // Convert timestamps inside logs if logs are an array
           const logs = Array.isArray(logsTimestamp)
             ? logsTimestamp.map((log: any) => ({
@@ -141,21 +152,6 @@ const PatientProfile = () => {
               }))
             : logsTimestamp;
 
-          // Convert timestamps inside medicalReports if medicalReports are an array
-          const medicalReports = Array.isArray(medicalReportsTimestamp)
-            ? medicalReportsTimestamp.map((log: any) => ({
-                ...log,
-                createdAt:
-                  log.createdAt instanceof Timestamp
-                    ? log.createdAt.toDate()
-                    : log.createdAt,
-                reportDate:
-                  log.reportDate instanceof Timestamp
-                    ? log.reportDate.toDate()
-                    : log.reportDate,
-              }))
-            : medicalReportsTimestamp;
-
           // Use 'const' for 'others' since it's not reassigned
           const patientData = {
             dateOfAdmission,
@@ -163,7 +159,10 @@ const PatientProfile = () => {
             updatedAt,
             createdAt,
             logs,
-            medicalReports,
+
+            reportDate,
+            title,
+            report,
             ...others,
           };
 
