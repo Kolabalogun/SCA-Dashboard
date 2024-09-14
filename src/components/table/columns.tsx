@@ -20,11 +20,15 @@ export const columns = [
     },
   },
   {
-    accessorKey: "status",
-    header: "Room",
+    accessorKey: "patientStatus",
+    header: "Status",
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
-      return <p className="text-14-medium capitalize ">{appointment?.room}</p>;
+      return (
+        <p className="text-14-medium capitalize ">
+          {appointment?.patientStatus}
+        </p>
+      );
     },
   },
   {

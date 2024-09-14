@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import { useAppContext } from "@/contexts/AppContext";
 import showToast from "@/components/common/toast";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { sendEmail } from "@/services/email";
 
 type Props = {
   form: UseFormReturn<any>;
@@ -36,7 +37,7 @@ type Props = {
 const PaymentInformations = ({ form, patientDocId }: Props) => {
   const toast = useToast();
   const { user } = useSelector((state: any) => state.auth);
-  const { adminData, getAdminContent } = useAppContext();
+  const { adminData, getAdminContent, adminEmails } = useAppContext();
   const { paymentReceived, paymentHistory, name, stayPeriods } =
     form.getValues();
   const [isLoading, setIsLoading] = useState(false);
@@ -65,8 +66,6 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
   useEffect(() => {
     getAdminContent();
   }, []);
-
-  console.log(form.getValues());
 
   const handleAddPayment = async (e: any) => {
     e.preventDefault();
@@ -155,10 +154,37 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
         const patientRef = doc(db, "patients", patientDocId);
 
         await updateDoc(patientRef, patientPayload);
-      }
 
-      showToast(toast, "Payment", "success", "Payment added successfully");
-      form.setValue("paymentHistory", newPaymentHistory);
+        const emailData = {
+          emails: [user?.email],
+          subject: `New Revenue from Patient Admission `,
+          message: `You added a New Revenue from Patient Admission amounting to ₦${parseInt(
+            paymentReceived as string
+          )?.toLocaleString()} from ${name}. Stay Periods: ${
+            stayPeriods || "N/A"
+          }.`,
+        };
+
+        const adminEmailData = {
+          emails: adminEmails,
+          subject: `New Revenue from Patient Admission `,
+          message: `New Revenue added from Patient Admission performed by ${
+            user?.firstName
+          } ${user?.lastName} amounting to ₦${parseInt(
+            paymentReceived as string
+          )?.toLocaleString()} from ${name}. Stay Periods: ${
+            stayPeriods || "N/A"
+          }.`,
+        };
+
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
+
+        showToast(toast, "Payment", "success", "Payment added successfully");
+        form.setValue("paymentHistory", newPaymentHistory);
+      }
 
       setIsAddPaymentModalOpen(false);
       getAdminContent();

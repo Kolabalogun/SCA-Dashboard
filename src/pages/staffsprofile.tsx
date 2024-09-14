@@ -184,6 +184,7 @@ const StaffProfile = () => {
           if (staffImage && staffImage.length > 0) {
             // Upload the first file to Firebase Storage and get its URL
             fileUrl = await uploadFileToStorage(
+              "staffs",
               staffImage[0],
               `${firstName}-${lastName}`
             );
@@ -238,6 +239,7 @@ const StaffProfile = () => {
         if (staffImage && staffImage.length > 0) {
           // Upload the first file to Firebase Storage and get its URL
           fileUrl = await uploadFileToStorage(
+            "staffs",
             staffImage[0],
             `${firstName}-${lastName}`
           );
@@ -419,13 +421,12 @@ const StaffProfile = () => {
               <h1 className="header ">
                 {userId ? `${Staff?.firstName}'s Profile` : "Hi there 👋"}
               </h1>
-              {!userId && (
-                <p className="text-dark-700">
-                  {userId
-                    ? `Edit ${Staff?.name} Profile `
-                    : "Get started with Staff's Registration."}
-                </p>
-              )}
+
+              <p className="text-dark-700">
+                {userId
+                  ? `Edit ${Staff?.firstName} Profile: ID: ${userId} `
+                  : "Get started with Staff's Registration."}
+              </p>
             </section>
 
             <form

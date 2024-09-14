@@ -9,13 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Trash2Icon } from "lucide-react";
 import { uploadFileToStorage } from "@/lib/firebase";
 import { useToast } from "@chakra-ui/react";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { useSelector } from "react-redux";
 import showToast from "@/components/common/toast";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import TextEditor from "@/components/common/TextEditor";
 import { FormControl } from "@/components/ui/form";
+import { useAppContext } from "@/contexts/AppContext";
+import { sendEmail } from "@/services/email";
 
 type Props = {
   form: UseFormReturn<any>;
@@ -26,7 +28,7 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
   const toast = useToast();
   const { user } = useSelector((state: any) => state.auth);
   const { title, report, medicalReports, name } = form.getValues();
-
+  const { adminEmails } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
   const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
   const [isAddReportModalOpen, setIsAddReportModalOpen] = useState(false);
@@ -87,19 +89,15 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
       const newReport = {
         report,
         title,
-
         reportFile: reportFileUrl,
         activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
         activtyCarriedOutEmailBy: `${user?.email}`,
         formDate: new Date().toISOString(),
-
         desc: `New Medical Report on ${name}`,
         reportRegisteredBy: `${user?.firstName} ${user?.lastName}`,
         type: "Profile Update",
         patientDocId,
       };
-
-      console.log(newReport);
 
       const newMedicalReports = [...medicalReportsss, newReport];
 
@@ -114,7 +112,41 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
 
         await updateDoc(patientRef, patientPayload);
 
-        await setDoc(activitesRef, newReport);
+        const actvityPayload = {
+          ...newReport,
+          createdAt: serverTimestamp(),
+        };
+
+        await setDoc(activitesRef, actvityPayload);
+
+        const emailData = {
+          emails: [user?.email],
+          subject: `New Medical Report titled ${reportToDelete.title} `,
+          message: `Medical Report, titled "${
+            reportToDelete.title
+          }" is added by ${user?.firstName} ${
+            user?.lastName
+          }. This report is assigned to Patient ${name} on ${
+            formatDate(reportToDelete?.formDate) || "N/A"
+          }`,
+        };
+
+        const adminEmailData = {
+          emails: adminEmails,
+          subject: `New Medical Report titled ${reportToDelete.title} `,
+          message: `Medical Report, titled "${
+            reportToDelete.title
+          }" is added by ${user?.firstName} ${
+            user?.lastName
+          }. This report is assigned to Patient ${name} on ${
+            formatDate(reportToDelete?.formDate) || "N/A"
+          }`,
+        };
+
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
 
         showToast(toast, "SCA", "success", "Report added successfully");
 
@@ -137,7 +169,7 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
     e.preventDefault();
     setIsDeleteLoading(true);
     console.log(reportToDelete);
-
+    const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
     try {
       const updatedReports = medicalReports.filter(
         (d: any) => d.formDate !== reportToDelete?.formDate
@@ -148,6 +180,55 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
         await updateDoc(patientRef, {
           medicalReports: updatedReports,
         });
+
+        // Update Activity
+        const dataa = {
+          title: "Medical Report Deletion",
+          activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+          activtyCarriedOutEmailBy: `${user?.email}`,
+          createdAt: serverTimestamp(),
+          formDate: new Date().toISOString(),
+          type: "Deletion",
+          desc: `Medical Report, titled "${
+            reportToDelete.title
+          }" was deleted by ${user?.firstName} ${
+            user?.lastName
+          }. Initially, this report was assigned to Patient ${name} on ${
+            formatDate(reportToDelete?.formDate) || "N/A"
+          }`,
+        };
+
+        await setDoc(activitesRef, dataa);
+
+        const emailData = {
+          emails: [user?.email],
+          subject: `You just deleted a Report titled ${reportToDelete.title} `,
+          message: `Medical Report, titled "${
+            reportToDelete.title
+          }" was deleted by ${user?.firstName} ${
+            user?.lastName
+          }. Initially, this report was assigned to Patient ${name} on ${
+            formatDate(reportToDelete?.formDate) || "N/A"
+          }`,
+        };
+
+        const adminEmailData = {
+          emails: adminEmails,
+          subject: `Deleted Medical Reports `,
+          message: `Medical Report, titled "${
+            reportToDelete.title
+          }" was deleted by ${user?.firstName} ${
+            user?.lastName
+          }. Initially, this report was assigned to Patient ${name} on ${
+            formatDate(reportToDelete?.formDate) || "N/A"
+          }`,
+        };
+
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
+
         form.setValue("medicalReports", updatedReports);
         showToast(toast, "SCA", "warning", "Report deleted successfully");
       }

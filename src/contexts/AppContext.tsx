@@ -5,6 +5,7 @@
 import showToast from "@/components/common/toast";
 import { db } from "@/config/firebase";
 import { fetchFirestoreData } from "@/lib/firebase";
+import { AccessRole } from "@/types/types";
 import { useToast } from "@chakra-ui/react";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import {
@@ -65,7 +66,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   useEffect(() => {
     if (professionalCareOfficers.length > 0) {
       const filteredStaff = professionalCareOfficers.filter(
-        (staff: { occupation: string }) => staff.occupation === "Administrator"
+        (staff: { accessRole: string }) => staff.accessRole === AccessRole.Admin
       );
 
       const filteredStaffAdminEmails = filteredStaff.map(

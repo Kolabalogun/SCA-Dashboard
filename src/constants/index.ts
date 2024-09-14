@@ -48,6 +48,7 @@ export const PatientFormDefaultValues = {
   address: "",
   occupation: "",
   occupationHistory: "",
+  patientStatus: "Admitted",
 
   // Medical Information
   primaryPhysician: "",
@@ -145,6 +146,8 @@ export const StaffOccupations = [
   "Others",
   "Manager",
 ];
+
+export const PatientStatusOption = ["Admitted", "Discharged", "Others"];
 
 export const StaffStatusOption = [
   "Active",

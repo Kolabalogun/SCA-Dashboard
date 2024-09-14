@@ -213,7 +213,7 @@ p {
   }
 
   .table-actions {
-    @apply flex w-full items-center justify-between space-x-2 p-4;
+    @apply flex w-full items-center justify-end space-x-2 p-4;
   }
 
   /* ===== ALIGNMENTS */

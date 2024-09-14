@@ -76,7 +76,7 @@ const AddExpenses = () => {
 
       if (receipt && receipt.length > 0) {
         // Upload the first file to Firebase Storage and get its URL
-        fileUrl = await uploadFileToStorage(receipt[0], patient);
+        fileUrl = await uploadFileToStorage("expenses", receipt[0], patient);
       }
 
       const data = {

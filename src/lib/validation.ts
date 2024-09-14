@@ -200,6 +200,7 @@ export const PatientFormValidation = UserFormValidation.extend({
   secondaryEducation: z.string().optional(),
   tertiaryEducation: z.string().optional(),
   vocationalEducation: z.string().optional(),
+  patientStatus: z.string(),
 
   title: z.string().optional(),
   report: z.string().optional(),

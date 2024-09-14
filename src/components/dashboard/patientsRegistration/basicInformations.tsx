@@ -12,6 +12,7 @@ import {
   GenderOptions,
   IdentificationTypes,
   maritialStatusOptions,
+  PatientStatusOption,
 } from "@/constants";
 import { FormFieldType } from "@/types/types";
 import { UseFormReturn } from "react-hook-form";
@@ -19,14 +20,18 @@ import { UseFormReturn } from "react-hook-form";
 type Props = {
   form: UseFormReturn<any>;
   staffs: any[];
+  userId: string;
 };
 
-const BasicInformations = ({ form, staffs }: Props) => {
+const BasicInformations = ({ form, staffs, userId }: Props) => {
   return (
     <div className="space-y-9">
       <section className="space-y-6">
-        <div className="mb-9 space-y-1">
+        <div className="mb-9 space-y-2">
           <h2 className="sub-header">Personal Information</h2>
+          {userId && (
+            <p className="text-gray-300 text-[13px] ">Patient ID: {userId} </p>
+          )}
         </div>
 
         {/* NAME */}
@@ -134,15 +139,29 @@ const BasicInformations = ({ form, staffs }: Props) => {
           />
         </div>
 
-        {/* Address & Occupation */}
+        <CustomFormField
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name="address"
+          label="Address"
+          placeholder="14 street, New york, NY - 5101"
+        />
+
+        {/* Status & Occupation */}
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
-            fieldType={FormFieldType.INPUT}
+            fieldType={FormFieldType.SELECT}
             control={form.control}
-            name="address"
-            label="Address"
-            placeholder="14 street, New york, NY - 5101"
-          />
+            name="patientStatus"
+            label="Status"
+            placeholder="Select Patient Status"
+          >
+            {PatientStatusOption.map((type, i) => (
+              <SelectItem key={type + i} value={type}>
+                <p className="text-white">{type}</p>
+              </SelectItem>
+            ))}
+          </CustomFormField>
 
           <CustomFormField
             fieldType={FormFieldType.INPUT}

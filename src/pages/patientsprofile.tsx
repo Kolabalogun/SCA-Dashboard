@@ -211,19 +211,18 @@ const PatientProfile = () => {
         await updateDoc(docRef, patientPayload);
 
         //  Update Activities
-        if (step !== 4) {
-          const data = {
-            title: "Patient Profile Update",
-            activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
-            activtyCarriedOutEmailBy: `${user?.email}`,
-            createdAt: serverTimestamp(),
-            formDate: new Date().toISOString(),
-            type: "Profile Update",
-            desc: `Patient Profile Update for ${name}  `,
-          };
 
-          await setDoc(activitesRef, data);
-        }
+        const data = {
+          title: "Patient Profile Update",
+          activtyCarriedOutBy: `${user?.firstName} ${user?.lastName}`,
+          activtyCarriedOutEmailBy: `${user?.email}`,
+          createdAt: serverTimestamp(),
+          formDate: new Date().toISOString(),
+          type: "Profile Update",
+          desc: `Patient Profile Update for ${name}  `,
+        };
+
+        await setDoc(activitesRef, data);
 
         const emailData = {
           emails: [user?.email],
@@ -237,10 +236,10 @@ const PatientProfile = () => {
           message: `Patient Profile Update for ${name} performed by ${user?.firstName} ${user?.lastName}`,
         };
 
-        // const message = await sendEmail(emailData);
-        // const adminMessage = await sendEmail(adminEmailData);
-        // console.log("Email sent successfully:", message);
-        // console.log("Admin Email sent successfully:", adminMessage);
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
 
         showToast(
           toast,
@@ -253,7 +252,11 @@ const PatientProfile = () => {
 
         if (identificationDocument && identificationDocument.length > 0) {
           // Upload the first file to Firebase Storage and get its URL
-          fileUrl = await uploadFileToStorage(identificationDocument[0], name);
+          fileUrl = await uploadFileToStorage(
+            "identificationDocument",
+            identificationDocument[0],
+            name
+          );
         }
 
         if (step === 1) {
@@ -328,10 +331,10 @@ const PatientProfile = () => {
             message: `Patient Registration for ${name} performed by ${user?.firstName} ${user?.lastName}`,
           };
 
-          // const message = await sendEmail(emailData);
-          // const adminMessage = await sendEmail(adminEmailData);
-          // console.log("Email sent successfully:", message);
-          // console.log("Admin Email sent successfully:", adminMessage);
+          const message = await sendEmail(emailData);
+          const adminMessage = await sendEmail(adminEmailData);
+          console.log("Email sent successfully:", message);
+          console.log("Admin Email sent successfully:", adminMessage);
 
           showToast(
             toast,
@@ -433,7 +436,7 @@ const PatientProfile = () => {
         isOpen={isModalOpen}
         onConfirm={form.handleSubmit(onSubmit)}
         onCancel={() => setIsModalOpen(false)}
-        title="Confirm Deletion"
+        title="Confirm Action "
         message={`Are you sure you want to ${
           userId ? "edit" : "register"
         } this patient?`}
@@ -446,7 +449,7 @@ const PatientProfile = () => {
         onConfirm={handleDeletePatient}
         onCancel={() => setIsDeletePatientModalOpen(false)}
         isLoading={deleteLoader}
-        title="Confirm Action"
+        title="Confirm Deletion"
         message="Are you sure you want to delete this Patient's Profile?"
       />
 
@@ -480,11 +483,11 @@ const PatientProfile = () => {
                   <h1 className="sub-header">
                     {step === 1
                       ? "Basic Informations"
-                      : step === 3 && "Medical Informations 🩺"}
+                      : (step === 2 || step === 3) && "Medical Informations 🩺"}
                   </h1>
                 ) : (
                   <h1 className="sub-header">
-                    {step === 3 && "Medical Informations 🩺"}{" "}
+                    {(step === 2 || step === 3) && "Medical Informations 🩺"}
                   </h1>
                 )}
                 {userId && step !== 4 && (
@@ -504,24 +507,28 @@ const PatientProfile = () => {
                 <BasicInformations
                   staffs={professionalCareOfficers}
                   form={form}
+                  userId={patientDocId || userId}
                 />
               ) : step === 2 ? (
-                <PaymentInformations
-                  form={form}
-                  patientDocId={patientDocId || userId}
-                />
-              ) : step === 5 && userId ? (
-                <LogsInformations form={form} />
-              ) : step === 3 ? (
                 <MedicalInformations
                   staffs={professionalCareOfficers}
                   form={form}
                 />
-              ) : (
+              ) : step === 5 && userId ? (
+                <LogsInformations form={form} />
+              ) : step === 3 ? (
                 <MedicalReports
                   form={form}
                   patientDocId={patientDocId || userId}
                 />
+              ) : (
+                (AccessRole.Admin === user?.accessRole ||
+                  AccessRole.Editor === user?.accessRole) && (
+                  <PaymentInformations
+                    form={form}
+                    patientDocId={patientDocId || userId}
+                  />
+                )
               )}
 
               {step !== 5 && user?.accessRole !== AccessRole.Viewer && (
@@ -540,15 +547,20 @@ const PatientProfile = () => {
                   <ArrowLeft /> Go Back
                 </Button>
               )}
-              {step < 4 && userId && (
-                <Button
-                  className="flex bg-blue-700 items-center gap-2 "
-                  onClick={() => setStep(step + 1)}
-                >
-                  Next Page
-                  <ArrowRight />
-                </Button>
-              )}
+              {step < 4 &&
+                userId &&
+                (step !== 3 ||
+                  (step === 3 &&
+                    (AccessRole.Admin === user?.accessRole ||
+                      AccessRole.Editor === user?.accessRole))) && (
+                  <Button
+                    className="flex bg-blue-700 items-center gap-2"
+                    onClick={() => setStep(step + 1)}
+                  >
+                    Next Page
+                    <ArrowRight />
+                  </Button>
+                )}
 
               {step === 4 && userId && logs && logs?.length > 0 && (
                 <Button

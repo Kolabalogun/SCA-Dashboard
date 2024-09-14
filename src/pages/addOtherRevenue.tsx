@@ -65,7 +65,6 @@ const AddOtherRevenue = () => {
           "You don't have access to perform this action"
         );
 
-      console.log(values);
       const { receipt, patient, amount } = values;
 
       if (!amount)
@@ -75,11 +74,12 @@ const AddOtherRevenue = () => {
 
       if (receipt && receipt.length > 0) {
         // Upload the first file to Firebase Storage and get its URL
-        fileUrl = await uploadFileToStorage(receipt[0], patient);
+        fileUrl = await uploadFileToStorage("revenue", receipt[0], patient);
       }
 
       const data = {
         ...values,
+        amount: parseInt(values.amount as string),
         paymentRegisteredBy: `${user?.firstName} ${user?.lastName}`,
         createdAt: serverTimestamp(),
         receipt: fileUrl ? fileUrl : "",

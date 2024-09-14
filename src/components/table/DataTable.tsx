@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   getPaginationRowModel,
   ColumnDef,
@@ -20,11 +21,15 @@ import { Arrow } from "@/assets/icons";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  loadMore?: () => void;
+  lastDoc?: any;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  loadMore,
+  lastDoc,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -79,7 +84,7 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
       <div className="table-actions">
-        <Button
+        {/* <Button
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
@@ -87,12 +92,13 @@ export function DataTable<TData, TValue>({
           className="shad-gray-btn"
         >
           <img src={Arrow} width={24} height={24} alt="arrow" />
-        </Button>
+        </Button> */}
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          // onClick={() => table.nextPage()}
+          onClick={loadMore ? loadMore : () => console.log("")}
+          disabled={!lastDoc}
           className="shad-gray-btn"
         >
           <img
