@@ -29,6 +29,7 @@ const TextEditor = ({
       onChange={(event, editor) => {
         const newData = editor.getData();
         onDataChange(newData);
+        console.log(event);
       }}
     />
   );
