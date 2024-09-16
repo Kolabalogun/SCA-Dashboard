@@ -27,9 +27,10 @@ function AuthProvider({ children }: { children: any }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         // Query the 'staffs' collection to find a document with the user's email
+
         const q = query(
           collection(db, "staffs"),
-          where("email", "==", user.email)
+          where("email", "==", user?.email)
         );
 
         const querySnapshot = await getDocs(q);

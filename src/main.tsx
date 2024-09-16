@@ -13,13 +13,13 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <AppContextProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <AppContextProvider>
             <ChakraProvider>
               <App />
             </ChakraProvider>
-          </AuthProvider>
-        </AppContextProvider>
+          </AppContextProvider>
+        </AuthProvider>
       </PersistGate>
     </Provider>
   </StrictMode>

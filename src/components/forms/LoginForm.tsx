@@ -1,4 +1,5 @@
-import { auth } from "@/config/firebase";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { auth, db } from "@/config/firebase";
 import { LoginFormValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -15,6 +16,7 @@ import SubmitButton from "../common/SubmitButton";
 import { email, Key } from "@/assets/icons";
 import { useToast } from "@chakra-ui/react";
 import showToast from "../common/toast";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -42,15 +44,39 @@ const LoginForm = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
-        email,
+        email.toLowerCase(),
         password
       );
       const user = userCredential.user;
 
-      dispatch(setCredentials(user));
-      dispatch(setIsAuthenticated(true));
+      console.log(user);
 
-      showToast(toast, "SCA", "success", "You've successfully signed in");
+      if (user) {
+        const q = query(
+          collection(db, "staffs"),
+          where("email", "==", user?.email)
+        );
+
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          // Assuming there's only one document per email
+          const docSnap = querySnapshot.docs[0];
+          const userData = docSnap.data();
+
+          const { createdAt, updatedAt, birthDate, ...restUserData } = userData;
+
+          dispatch(setCredentials(restUserData));
+          dispatch(setIsAuthenticated(true));
+          showToast(toast, "SCA", "success", "You've successfully signed in");
+        } else {
+          dispatch(setIsAuthenticated(false));
+          showToast(toast, "SCA", "error", "Invalid Credentials");
+        }
+      } else {
+        // User is signed out
+        dispatch(setIsAuthenticated(false));
+        showToast(toast, "SCA", "error", "Invalid Credentials");
+      }
 
       setIsLoading(false);
       navigate(`/dashboard`);

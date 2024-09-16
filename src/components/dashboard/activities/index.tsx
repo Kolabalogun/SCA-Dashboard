@@ -20,6 +20,7 @@ const Activities = () => {
   const toast = useToast();
   const { user } = useSelector((state: any) => state.auth);
   const [activities, setActivities] = useState<any[]>();
+  console.log(user);
 
   const [loading, setIsLoading] = useState<boolean>(false);
 

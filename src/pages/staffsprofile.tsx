@@ -177,6 +177,9 @@ const StaffProfile = () => {
         // This block is for editing Staff info
         const StaffPayload = {
           ...values,
+          email: email.toLowerCase(),
+          firstName: firstName.toLowerCase(),
+          lastName: lastName.toLowerCase(),
         };
         if (typeof staffImage !== "string") {
           let fileUrl = "";
@@ -249,7 +252,7 @@ const StaffProfile = () => {
           // Check if a document with the same email already exists
           const q = query(
             collection(db, "staffs"),
-            where("email", "==", email)
+            where("email", "==", email.toLowerCase())
           );
           const querySnapshot = await getDocs(q);
 
@@ -280,7 +283,7 @@ const StaffProfile = () => {
 
               await createUserWithEmailAndPassword(
                 createAuth,
-                values.email,
+                values.email.toLowerCase(),
                 values.password
               );
 
@@ -293,6 +296,9 @@ const StaffProfile = () => {
 
           const Staff = {
             ...values,
+            email: email.toLowerCase(),
+            firstName: firstName.toLowerCase(),
+            lastName: lastName.toLowerCase(),
             registeredBy: `${user?.firstName} ${user?.lastName}`,
             createdAt: serverTimestamp(),
             staffImage: fileUrl ? [fileUrl] : "",
@@ -325,29 +331,42 @@ const StaffProfile = () => {
 
           await setDoc(activitesRef, data);
 
-          const emailData = {
-            emails: [user?.email],
-            subject: `Staff Registration for ${user?.firstName} ${user?.lastName} `,
-            message: `You carried out Staff registration for ${user?.firstName} ${user?.lastName}  `,
-          };
-
-          const adminEmailData = {
-            emails: adminEmails,
-            subject: `New Staff Registration for ${user?.firstName} ${user?.lastName} `,
-            message: `Staff Registration for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
-          };
-
-          const message = await sendEmail(emailData);
-          const adminMessage = await sendEmail(adminEmailData);
-          console.log("Email sent successfully:", message);
-          console.log("Admin Email sent successfully:", adminMessage);
-
           showToast(
             toast,
             "Registration",
             "success",
             "Staff successfully Registered"
           );
+
+          // Email sending in a separate try-catch block to handle its own errors
+          try {
+            const emailData = {
+              emails: [user?.email],
+              subject: `Staff Registration for ${user?.firstName} ${user?.lastName} `,
+              message: `You carried out Staff registration for ${user?.firstName} ${user?.lastName}  `,
+            };
+
+            const adminEmailData = {
+              emails: adminEmails,
+              subject: `New Staff Registration for ${user?.firstName} ${user?.lastName} `,
+              message: `Staff Registration for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
+            };
+
+            const message = await sendEmail(emailData);
+            const adminMessage = await sendEmail(adminEmailData);
+
+            console.log("Email sent successfully:", message);
+            console.log("Admin Email sent successfully:", adminMessage);
+          } catch (emailError) {
+            console.error("Error sending email:", emailError);
+            showToast(
+              toast,
+              "Email Error",
+              "warning",
+              "Staff registered, but email failed to send."
+            );
+          }
+
           getAdminContent();
           navigate("/dashboard/staffs");
           setIsLoading(false);
