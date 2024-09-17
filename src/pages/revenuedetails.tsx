@@ -92,17 +92,20 @@ const RevenueDetails = () => {
       await deleteDoc(revenueDocRef);
 
       if (adminData?.totalRevenue) {
-        const updatedRevenue = parseInt(adminData.totalRevenue) - amount;
+        const updatedRevenue =
+          parseInt(adminData.totalRevenue) - parseInt(amount as any);
         const adminDocRef = doc(db, "admin", "adminDoc");
 
         if (revenue?.type === "Patient Admission") {
           const updatedPatientRevenue =
-            parseInt(adminData.patientAdmissionRevenue) - amount;
+            parseInt(adminData.patientAdmissionRevenue) -
+            parseInt(amount as any);
           await updateDoc(adminDocRef, {
             patientAdmissionRevenue: updatedPatientRevenue,
           });
         } else {
-          const updatedOtherRevenue = parseInt(adminData.otherRevenue) - amount;
+          const updatedOtherRevenue =
+            parseInt(adminData.otherRevenue) - parseInt(amount as any);
           await updateDoc(adminDocRef, { otherRevenue: updatedOtherRevenue });
         }
 
@@ -133,42 +136,52 @@ const RevenueDetails = () => {
 
       await setDoc(activitesRef, dataa);
 
-      const emailData = {
-        emails: [user?.email],
-        subject: `You just deleted a Revenue on ${
-          revenue?.type
-        } amounting to ₦${parseInt(
-          revenue?.amount as string
-        )?.toLocaleString()}.`,
-        message: `Revenue with ID: ${revenue?.id}, titled "${
-          revenue?.desc
-        }" and amounting to ₦${parseInt(
-          revenue?.amount
-        )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
-          revenue?.paymentRegisteredBy || revenue?.registeredBy
-        } on ${formatDate(revenue?.formDate) || "N/A"}`,
-      };
+      try {
+        const emailData = {
+          emails: [user?.email],
+          subject: `You just deleted a Revenue on ${
+            revenue?.type
+          } amounting to ₦${parseInt(
+            revenue?.amount as string
+          )?.toLocaleString()}.`,
+          message: `Revenue with ID: ${revenue?.id}, titled "${
+            revenue?.desc
+          }" and amounting to ₦${parseInt(
+            revenue?.amount
+          )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
+            revenue?.paymentRegisteredBy || revenue?.registeredBy
+          } on ${formatDate(revenue?.formDate) || "N/A"}`,
+        };
 
-      const adminEmailData = {
-        emails: adminEmails,
-        subject: `New Revenue for ${revenue?.type} `,
-        message: `Revenue with ID: ${revenue?.id}, titled "${
-          revenue?.desc
-        }" and amounting to ₦${parseInt(
-          revenue?.amount
-        )?.toLocaleString()} was deleted by ${user?.firstName} ${
-          user?.lastName
-        }. Initially, this payment was approved by ${
-          revenue?.paymentRegisteredBy || revenue?.registeredBy
-        } on ${formatDate(revenue?.formDate) || "N/A"}`,
-      };
+        const adminEmailData = {
+          emails: adminEmails,
+          subject: `New Revenue for ${revenue?.type} `,
+          message: `Revenue with ID: ${revenue?.id}, titled "${
+            revenue?.desc
+          }" and amounting to ₦${parseInt(
+            revenue?.amount
+          )?.toLocaleString()} was deleted by ${user?.firstName} ${
+            user?.lastName
+          }. Initially, this payment was approved by ${
+            revenue?.paymentRegisteredBy || revenue?.registeredBy
+          } on ${formatDate(revenue?.formDate) || "N/A"}`,
+        };
 
-      const message = await sendEmail(emailData);
-      const adminMessage = await sendEmail(adminEmailData);
-      console.log("Email sent successfully:", message);
-      console.log("Admin Email sent successfully:", adminMessage);
-
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
+      } catch (emailError) {
+        console.error("Error sending email:", emailError);
+        showToast(
+          toast,
+          "Email Error",
+          "warning",
+          "Revenue deleted, but email failed to send."
+        );
+      }
       showToast(toast, "SCA", "warning", "Revenue deleted successfully");
+
       getAdminContent();
       navigate("/dashboard/revenue");
     } catch (error) {
@@ -214,9 +227,19 @@ const RevenueDetails = () => {
 
               <div className="items-center flex gap-2">
                 <p className="text-sm">Revenue Approved By:</p>
-                <p className="text-sm">
+                <p className="text-sm capitalize">
                   {revenue?.paymentRegisteredBy || revenue?.registeredBy}
                 </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm">Type:</p>
+                <p className="capitalize">{revenue?.type}</p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm">Recipient:</p>
+                <p className="capitalize">{revenue?.patient}</p>
               </div>
 
               {revenue?.stayPeriod && (

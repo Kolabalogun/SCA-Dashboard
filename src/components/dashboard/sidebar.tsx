@@ -130,7 +130,7 @@ const Sidebar = () => {
         message="Are you sure you want to Log Out?"
       />
 
-      <div className="w-32 border-r overflow-y-scroll remove-scrollbar shadow-md text-white flex justify-between flex-col h-full space-y-12  px-2 items-center pt-8 pb-10 ">
+      <div className="w-36 border-r overflow-y-scroll remove-scrollbar shadow-md text-white flex justify-between flex-col h-full space-y-12  px-2 items-center pt-8 pb-10 ">
         <div className="mb-10 cursor-pointer">
           <Menu size={24} />
         </div>

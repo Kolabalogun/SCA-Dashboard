@@ -38,7 +38,7 @@ const MedicalInfomations = ({ form, staffs }: Props) => {
                 alt="doctor"
                 className="rounded-full border border-dark-500"
               />
-              <p className="text-white">{`${doctor?.firstName} ${doctor?.lastName}`}</p>
+              <p className="text-white capitalize">{`${doctor?.firstName} ${doctor?.lastName}`}</p>
             </div>
           </SelectItem>
         ))}

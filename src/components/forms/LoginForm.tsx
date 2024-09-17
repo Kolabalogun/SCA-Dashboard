@@ -51,32 +51,35 @@ const LoginForm = () => {
 
       console.log(user);
 
-      if (user) {
-        const q = query(
-          collection(db, "staffs"),
-          where("email", "==", user?.email)
-        );
+      dispatch(setCredentials(user));
+      dispatch(setIsAuthenticated(true));
 
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          // Assuming there's only one document per email
-          const docSnap = querySnapshot.docs[0];
-          const userData = docSnap.data();
+      // if (user) {
+      //   const q = query(
+      //     collection(db, "staffs"),
+      //     where("email", "==", user?.email)
+      //   );
 
-          const { createdAt, updatedAt, birthDate, ...restUserData } = userData;
+      //   const querySnapshot = await getDocs(q);
+      //   if (!querySnapshot.empty) {
+      //     // Assuming there's only one document per email
+      //     const docSnap = querySnapshot.docs[0];
+      //     const userData = docSnap.data();
 
-          dispatch(setCredentials(restUserData));
-          dispatch(setIsAuthenticated(true));
-          showToast(toast, "SCA", "success", "You've successfully signed in");
-        } else {
-          dispatch(setIsAuthenticated(false));
-          showToast(toast, "SCA", "error", "Invalid Credentials");
-        }
-      } else {
-        // User is signed out
-        dispatch(setIsAuthenticated(false));
-        showToast(toast, "SCA", "error", "Invalid Credentials");
-      }
+      //     const { createdAt, updatedAt, birthDate, ...restUserData } = userData;
+
+      //     dispatch(setCredentials(restUserData));
+      //     dispatch(setIsAuthenticated(true));
+      //     showToast(toast, "SCA", "success", "You've successfully signed in");
+      //   } else {
+      //     dispatch(setIsAuthenticated(false));
+      //     showToast(toast, "SCA", "error", "Invalid Credentials");
+      //   }
+      // } else {
+      //   // User is signed out
+      //   dispatch(setIsAuthenticated(false));
+      //   showToast(toast, "SCA", "error", "Invalid Credentials");
+      // }
 
       setIsLoading(false);
       navigate(`/dashboard`);

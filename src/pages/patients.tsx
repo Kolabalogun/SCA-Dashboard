@@ -119,52 +119,36 @@ const Patients = () => {
       // Search by name
       const nameQuery = query(
         patientsRef,
-        where("name", ">=", searchTerm),
-        where("name", "<=", searchTerm + "\uf8ff")
+        where("name", ">=", searchTerm.trim().toLowerCase()),
+        where("name", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
       );
 
       // Search by email
       const emailQuery = query(
         patientsRef,
-        where("email", ">=", searchTerm),
-        where("email", "<=", searchTerm + "\uf8ff")
-      );
-
-      // Search by primaryPhysician
-      const primaryPhysicianQuery = query(
-        patientsRef,
-        where("primaryPhysician", ">=", searchTerm),
-        where("primaryPhysician", "<=", searchTerm + "\uf8ff")
+        where("email", ">=", searchTerm.trim().toLowerCase()),
+        where("email", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
       );
 
       // Search by patientStatus
       const patientStatusQuery = query(
         patientsRef,
-        where("patientStatus", ">=", searchTerm),
-        where("patientStatus", "<=", searchTerm + "\uf8ff")
+        where("patientStatus", ">=", searchTerm.trim().toLowerCase()),
+        where("patientStatus", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
       );
 
       // Get both name and email results in parallel
-      const [
-        nameSnapshot,
-        emailSnapshot,
-        primaryPhysicianSnapshot,
-        patientStatusSnapshot,
-      ] = await Promise.all([
-        getDocs(nameQuery),
-        getDocs(emailQuery),
-        getDocs(primaryPhysicianQuery),
-        getDocs(patientStatusQuery),
-      ]);
+      const [nameSnapshot, emailSnapshot, patientStatusSnapshot] =
+        await Promise.all([
+          getDocs(nameQuery),
+          getDocs(emailQuery),
+          getDocs(patientStatusQuery),
+        ]);
 
       // Combine results from name and email queries
       const searchedPatients = [
         ...nameSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
         ...emailSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
-        ...primaryPhysicianSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })),
         ...patientStatusSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -256,7 +240,7 @@ const Patients = () => {
       <div className="mb-2 flex gap-4 items-center">
         <input
           type="text"
-          placeholder="Search by Name, Email, Primary Physician or ID"
+          placeholder="Search by Name, Email,  or ID"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="py-2 px-4  border border-[#363a3d] text-sm flex-1 bg-[#1a1d21] rounded"

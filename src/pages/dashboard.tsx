@@ -17,7 +17,7 @@ const Dashboard = () => {
     <div className=" flex flex-col space-y-14">
       <main className="admin-main">
         <section className="w-full space-y-4">
-          <h1 className="header">Welcome {user?.firstName} 👋</h1>
+          <h1 className="header capitalize">Welcome {user?.firstName} 👋</h1>
           <p className="text-dark-700">Start the day with managing patients</p>
         </section>
 

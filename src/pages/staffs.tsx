@@ -110,42 +110,68 @@ const Staffs = () => {
     const staffsRef = collection(db, "staffs");
 
     try {
-      // Search by name
-      const nameQuery = query(
+      // Search by firstName
+      const firstNameQuery = query(
         staffsRef,
-        where("name", ">=", searchTerm.trim()),
-        where("name", "<=", searchTerm.trim() + "\uf8ff")
+        where("firstName", ">=", searchTerm.trim().toLowerCase()),
+        where("firstName", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
+      );
+
+      // Search by lastName
+      const lastNameQuery = query(
+        staffsRef,
+        where("lastName", ">=", searchTerm.trim().toLowerCase()),
+        where("lastName", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
+      );
+
+      // Search by occupation
+      const occupationQuery = query(
+        staffsRef,
+        where("occupation", ">=", searchTerm.trim().toLowerCase()),
+        where("occupation", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
       );
 
       // Search by email
       const emailQuery = query(
         staffsRef,
-        where("email", ">=", searchTerm.trim()),
-        where("email", "<=", searchTerm.trim() + "\uf8ff")
+        where("email", ">=", searchTerm.trim().toLowerCase()),
+        where("email", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
       );
 
-      // Get both name and email results in parallel
-      const [nameSnapshot, emailSnapshot] = await Promise.all([
-        getDocs(nameQuery),
+      // Get both firstName and email results in parallel
+      const [
+        firstNameSnapshot,
+        emailSnapshot,
+        lastNameSnapshot,
+        occupationSnapshot,
+      ] = await Promise.all([
+        getDocs(firstNameQuery),
         getDocs(emailQuery),
+        getDocs(lastNameQuery),
+        getDocs(occupationQuery),
       ]);
 
-      // Combine results from name and email queries
+      // Combine results from firstName and email queries
       const searchedStaffs = [
-        ...nameSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        ...firstNameSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
         ...emailSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        ...lastNameSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        ...occupationSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })),
       ];
 
       // Check for exact match on doc.id
       const idMatch = searchedStaffs.find(
-        (staff) => staff.id === searchTerm.trim()
+        (staff) => staff.id === searchTerm.trim().toLowerCase()
       );
 
       if (!idMatch) {
-        // If no match by doc.id in name/email results, search separately for doc.id
+        // If no match by doc.id in firstName/email results, search separately for doc.id
         const allDocsSnapshot = await getDocs(staffsRef);
         const idSearchResult = allDocsSnapshot.docs.find(
-          (doc) => doc.id === searchTerm.trim()
+          (doc) => doc.id === searchTerm.trim().toLowerCase()
         );
 
         if (idSearchResult) {
@@ -221,7 +247,7 @@ const Staffs = () => {
       <div className="mb-2 flex gap-4 items-center">
         <input
           type="text"
-          placeholder="Search by Name, Email or ID"
+          placeholder="Search by Name, Email, or Occupation"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="py-2 px-4  border border-[#363a3d] text-sm flex-1 bg-[#1a1d21] rounded"

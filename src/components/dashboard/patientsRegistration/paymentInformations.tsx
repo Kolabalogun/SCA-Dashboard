@@ -94,9 +94,11 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
         );
       }
 
+      const revenueId = `revenue-${Date.now()}`;
+
       const newPayment = {
         paymentReceived: parseInt(paymentReceived),
-
+        revenueId,
         formDate: new Date().toISOString(),
         desc: `Revenue from admission of ${name} for a period of ${stayPeriods} `,
         paymentReceipt: paymentReceiptFileUrl,
@@ -110,7 +112,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
 
       const newRevenue = {
         amount: parseInt(paymentReceived),
-
+        revenueId,
         formDate: new Date().toISOString(),
         receipt: paymentReceiptFileUrl,
         type: "Patient Admission",
@@ -124,7 +126,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
 
       const collectionRef = collection(db, "revenue");
 
-      const docRef = doc(collectionRef, `revenue-${Date.now()}`);
+      const docRef = doc(collectionRef, revenueId);
 
       await setDoc(docRef, newRevenue);
 
@@ -155,32 +157,41 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
 
         await updateDoc(patientRef, patientPayload);
 
-        const emailData = {
-          emails: [user?.email],
-          subject: `New Revenue from Patient Admission `,
-          message: `You added a New Revenue from Patient Admission amounting to ₦${parseInt(
-            paymentReceived as string
-          )?.toLocaleString()} from ${name}. Stay Periods: ${
-            stayPeriods || "N/A"
-          }.`,
-        };
+        try {
+          const emailData = {
+            emails: [user?.email],
+            subject: `New Revenue from Patient Admission`,
+            message: `You added a New Revenue from Patient Admission amounting to ₦${parseInt(
+              paymentReceived as string
+            )?.toLocaleString()} from ${name}. Stay Periods: ${
+              stayPeriods || "N/A"
+            }.`,
+          };
 
-        const adminEmailData = {
-          emails: adminEmails,
-          subject: `New Revenue from Patient Admission `,
-          message: `New Revenue added from Patient Admission performed by ${
-            user?.firstName
-          } ${user?.lastName} amounting to ₦${parseInt(
-            paymentReceived as string
-          )?.toLocaleString()} from ${name}. Stay Periods: ${
-            stayPeriods || "N/A"
-          }.`,
-        };
-
-        const message = await sendEmail(emailData);
-        const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
-        console.log("Admin Email sent successfully:", adminMessage);
+          const adminEmailData = {
+            emails: adminEmails,
+            subject: `New Revenue from Patient Admission `,
+            message: `New Revenue added from Patient Admission performed by ${
+              user?.firstName
+            } ${user?.lastName} amounting to ₦${parseInt(
+              paymentReceived as string
+            )?.toLocaleString()} from ${name}. Stay Periods: ${
+              stayPeriods || "N/A"
+            }.`,
+          };
+          const message = await sendEmail(emailData);
+          const adminMessage = await sendEmail(adminEmailData);
+          console.log("Email sent successfully:", message);
+          console.log("Admin Email sent successfully:", adminMessage);
+        } catch (emailError) {
+          console.error("Error sending email:", emailError);
+          showToast(
+            toast,
+            "Email Error",
+            "warning",
+            "Payment added, but email failed to send."
+          );
+        }
 
         showToast(toast, "Payment", "success", "Payment added successfully");
         form.setValue("paymentHistory", newPaymentHistory);
@@ -199,13 +210,14 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       setIsLoading(false);
     }
   };
+  console.log(paymentToDelete);
 
-  const handleDeletePayment = async (id: string, paymentAmount: number) => {
+  const handleDeletePayment = async () => {
     setIsDeleteLoading(true);
     try {
       // Filter out the payment to be deleted
       const updatedPayments = paymentHistory.filter(
-        (payment: any) => payment.id !== id
+        (payment: any) => payment.revenueId !== paymentToDelete?.revenueId
       );
       // Update the patient document's payment history
       if (patientDocId) {
@@ -215,18 +227,20 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
         });
       }
 
-      // Delete the corresponding revenue document
-      const revenueDocId = `revenue-${id.split("-")[1]}`; // Assuming revenue docId is similar to paymentId
-      const revenueDocRef = doc(db, "revenue", revenueDocId);
+      console.log(paymentToDelete?.revenueId);
+
+      const revenueDocRef = doc(db, "revenue", paymentToDelete?.revenueId);
 
       await deleteDoc(revenueDocRef);
 
       // Deduct the payment amount from totalRevenue
       if (adminData?.totalRevenue) {
-        const updatedRevenue = parseInt(adminData.totalRevenue) - paymentAmount;
+        const updatedRevenue =
+          parseInt(adminData.totalRevenue) - paymentToDelete?.paymentAmount;
 
         const updatedPatientRevenue =
-          parseInt(adminData.patientAdmissionRevenue) - paymentAmount;
+          parseInt(adminData.patientAdmissionRevenue) -
+          paymentToDelete?.paymentAmount;
         const adminDocRef = doc(db, "admin", "adminDoc");
 
         await updateDoc(adminDocRef, {
@@ -271,12 +285,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       {/* Delete Modal  */}
       <ConfirmationModal
         isOpen={isDeletePaymentModalOpen}
-        onConfirm={() =>
-          handleDeletePayment(
-            paymentToDelete?.id,
-            paymentToDelete?.paymentReceived
-          )
-        }
+        onConfirm={() => handleDeletePayment()}
         onCancel={() => setIsDeletePaymentModalOpen(false)}
         isLoading={deleteLoader}
         title="Delete Payment"
@@ -379,7 +388,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
           >
             {stayPeriodsData.map((type: string, i) => (
               <SelectItem key={type + i} value={type}>
-                <p className="text-white">{type}</p>
+                <p className="text-white capitalize">{type}</p>
               </SelectItem>
             ))}
           </CustomFormField>

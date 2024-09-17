@@ -132,19 +132,26 @@ export const stayPeriods = [
   "2 years +",
 ];
 
-export const AccessRoles = ["No Access", "Viewer", "Editor", "Admin"];
+export const AccessRoles = [
+  "No Access",
+  "Viewer",
+  "PatientEditor",
+  "Editor",
+  "Admin",
+];
 
 export const StaffOccupations = [
   "Administrator",
   "Doctor",
   "Psychiatric Physician",
   "Professional Care Officer",
+  "Manager",
+  "Social Worker",
   "Chef",
   "IT Officer",
   "Security",
   "Cleaner",
   "Others",
-  "Manager",
 ];
 
 export const PatientStatusOption = ["Admitted", "Discharged", "Others"];

@@ -27,7 +27,15 @@ type Props = {
 const MedicalReports = ({ form, patientDocId }: Props) => {
   const toast = useToast();
   const { user } = useSelector((state: any) => state.auth);
-  const { title, report, medicalReports, name } = form.getValues();
+  const {
+    title,
+    report,
+    medicalReports,
+    name,
+    email,
+    primaryPhysician,
+    patientStatus,
+  } = form.getValues();
   const { adminEmails } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
   const [deleteLoader, setIsDeleteLoading] = useState<boolean>(false);
@@ -55,13 +63,10 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
     control: form.control,
     name: "medicalReports",
   });
-  console.log(medicalReports);
 
   const handleDescriptionChange = (data: string) => {
     form.setValue("report", data);
   };
-
-  console.log(form.getValues());
 
   const handleAddReport = async (e: any) => {
     e.preventDefault();
@@ -105,6 +110,10 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
       if (patientDocId) {
         const patientPayload = {
           ...others,
+          email: email.toLowerCase(),
+          name: name.toLowerCase(),
+          primaryPhysician: primaryPhysician.toLowerCase(),
+          patientStatus: patientStatus.toLowerCase(),
           medicalReports: newMedicalReports,
         };
 
@@ -119,34 +128,44 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
 
         await setDoc(activitesRef, actvityPayload);
 
-        const emailData = {
-          emails: [user?.email],
-          subject: `New Medical Report titled ${reportToDelete.title} `,
-          message: `Medical Report, titled "${
-            reportToDelete.title
-          }" is added by ${user?.firstName} ${
-            user?.lastName
-          }. This report is assigned to Patient ${name} on ${
-            formatDate(reportToDelete?.formDate) || "N/A"
-          }`,
-        };
+        try {
+          const emailData = {
+            emails: [user?.email],
+            subject: `New Medical Report titled ${title} `,
+            message: `Medical Report, titled "${title}" is added by ${
+              user?.firstName
+            } ${
+              user?.lastName
+            }. This report is assigned to Patient ${name} on ${
+              formatDate(new Date().toISOString()) || "N/A"
+            }`,
+          };
 
-        const adminEmailData = {
-          emails: adminEmails,
-          subject: `New Medical Report titled ${reportToDelete.title} `,
-          message: `Medical Report, titled "${
-            reportToDelete.title
-          }" is added by ${user?.firstName} ${
-            user?.lastName
-          }. This report is assigned to Patient ${name} on ${
-            formatDate(reportToDelete?.formDate) || "N/A"
-          }`,
-        };
+          const adminEmailData = {
+            emails: adminEmails,
+            subject: `New Medical Report titled ${title} `,
+            message: `Medical Report, titled "${title}" is added by ${
+              user?.firstName
+            } ${
+              user?.lastName
+            }. This report is assigned to Patient ${name} on ${
+              formatDate(new Date().toISOString()) || "N/A"
+            }`,
+          };
 
-        const message = await sendEmail(emailData);
-        const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
-        console.log("Admin Email sent successfully:", adminMessage);
+          const message = await sendEmail(emailData);
+          const adminMessage = await sendEmail(adminEmailData);
+          console.log("Email sent successfully:", message);
+          console.log("Admin Email sent successfully:", adminMessage);
+        } catch (emailError) {
+          console.error("Error sending email:", emailError);
+          showToast(
+            toast,
+            "Email Error",
+            "warning",
+            "Report added, but email failed to send."
+          );
+        }
 
         showToast(toast, "SCA", "success", "Report added successfully");
 
@@ -200,34 +219,44 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
 
         await setDoc(activitesRef, dataa);
 
-        const emailData = {
-          emails: [user?.email],
-          subject: `You just deleted a Report titled ${reportToDelete.title} `,
-          message: `Medical Report, titled "${
-            reportToDelete.title
-          }" was deleted by ${user?.firstName} ${
-            user?.lastName
-          }. Initially, this report was assigned to Patient ${name} on ${
-            formatDate(reportToDelete?.formDate) || "N/A"
-          }`,
-        };
+        try {
+          const emailData = {
+            emails: [user?.email],
+            subject: `You just deleted a Report titled ${reportToDelete.title} `,
+            message: `Medical Report, titled "${
+              reportToDelete.title
+            }" was deleted by ${user?.firstName} ${
+              user?.lastName
+            }. Initially, this report was assigned to Patient ${name} on ${
+              formatDate(reportToDelete?.formDate) || "N/A"
+            }`,
+          };
 
-        const adminEmailData = {
-          emails: adminEmails,
-          subject: `Deleted Medical Reports `,
-          message: `Medical Report, titled "${
-            reportToDelete.title
-          }" was deleted by ${user?.firstName} ${
-            user?.lastName
-          }. Initially, this report was assigned to Patient ${name} on ${
-            formatDate(reportToDelete?.formDate) || "N/A"
-          }`,
-        };
+          const adminEmailData = {
+            emails: adminEmails,
+            subject: `Deleted Medical Reports `,
+            message: `Medical Report, titled "${
+              reportToDelete.title
+            }" was deleted by ${user?.firstName} ${
+              user?.lastName
+            }. Initially, this report was assigned to Patient ${name} on ${
+              formatDate(reportToDelete?.formDate) || "N/A"
+            }`,
+          };
 
-        const message = await sendEmail(emailData);
-        const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
-        console.log("Admin Email sent successfully:", adminMessage);
+          const message = await sendEmail(emailData);
+          const adminMessage = await sendEmail(adminEmailData);
+          console.log("Email sent successfully:", message);
+          console.log("Admin Email sent successfully:", adminMessage);
+        } catch (emailError) {
+          console.error("Error sending email:", emailError);
+          showToast(
+            toast,
+            "Email Error",
+            "warning",
+            "Report deleted, but email failed to send."
+          );
+        }
 
         form.setValue("medicalReports", updatedReports);
         showToast(toast, "SCA", "warning", "Report deleted successfully");

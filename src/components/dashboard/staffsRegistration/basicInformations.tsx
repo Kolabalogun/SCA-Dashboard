@@ -202,7 +202,7 @@ const BasicInformations = ({ form, userId }: Props) => {
           >
             {StaffOccupations.map((type, i) => (
               <SelectItem key={type + i} value={type}>
-                <p className="text-white">{type}</p>
+                <p className="text-white capitalize">{type}</p>
               </SelectItem>
             ))}
           </CustomFormField>
@@ -218,7 +218,7 @@ const BasicInformations = ({ form, userId }: Props) => {
           >
             {AccessRoles.map((type, i) => (
               <SelectItem key={type + i} value={type}>
-                <p className="text-white">{type}</p>
+                <p className="text-white capitalize">{type}</p>
               </SelectItem>
             ))}
           </CustomFormField>
@@ -232,7 +232,7 @@ const BasicInformations = ({ form, userId }: Props) => {
           >
             {StaffStatusOption.map((type, i) => (
               <SelectItem key={type + i} value={type}>
-                <p className="text-white">{type}</p>
+                <p className="text-white capitalize">{type}</p>
               </SelectItem>
             ))}
           </CustomFormField>

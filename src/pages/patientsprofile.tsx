@@ -139,7 +139,7 @@ const PatientProfile = () => {
           const reportDate =
             reportDateTimestamp instanceof Timestamp
               ? reportDateTimestamp.toDate()
-              : reportDateTimestamp;
+              : "";
 
           // Convert timestamps inside logs if logs are an array
           const logs = Array.isArray(logsTimestamp)
@@ -188,7 +188,13 @@ const PatientProfile = () => {
 
   const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
     setIsLoading(true);
-    const { email, identificationDocument, name } = values;
+    const {
+      email,
+      identificationDocument,
+      name,
+      primaryPhysician,
+      patientStatus,
+    } = values;
 
     const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
 
@@ -205,6 +211,10 @@ const PatientProfile = () => {
         // This block is for editing patient info
         const patientPayload = {
           ...values,
+          email: email.toLowerCase(),
+          name: name.toLowerCase(),
+          primaryPhysician: primaryPhysician.toLowerCase(),
+          patientStatus: patientStatus.toLowerCase(),
         };
 
         const docRef = doc(db, "patients", userId);
@@ -224,22 +234,32 @@ const PatientProfile = () => {
 
         await setDoc(activitesRef, data);
 
-        const emailData = {
-          emails: [user?.email],
-          subject: `Patient Profile Update for ${name} `,
-          message: `You carried out Patient Profile Update for ${name}  `,
-        };
+        try {
+          const emailData = {
+            emails: [user?.email],
+            subject: `Patient Profile Update for ${name} `,
+            message: `You carried out Patient Profile Update for ${name}  `,
+          };
 
-        const adminEmailData = {
-          emails: adminEmails,
-          subject: `New Patient Profile Update for ${name} `,
-          message: `Patient Profile Update for ${name} performed by ${user?.firstName} ${user?.lastName}`,
-        };
+          const adminEmailData = {
+            emails: adminEmails,
+            subject: `New Patient Profile Update for ${name} `,
+            message: `Patient Profile Update for ${name} performed by ${user?.firstName} ${user?.lastName}`,
+          };
 
-        const message = await sendEmail(emailData);
-        const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
-        console.log("Admin Email sent successfully:", adminMessage);
+          const message = await sendEmail(emailData);
+          const adminMessage = await sendEmail(adminEmailData);
+          console.log("Email sent successfully:", message);
+          console.log("Admin Email sent successfully:", adminMessage);
+        } catch (emailError) {
+          console.error("Error sending email:", emailError);
+          showToast(
+            toast,
+            "Email Error",
+            "warning",
+            "Patient Data, but email failed to send."
+          );
+        }
 
         showToast(
           toast,
@@ -263,7 +283,7 @@ const PatientProfile = () => {
           // Check if a document with the same email already exists
           const q = query(
             collection(db, "patients"),
-            where("email", "==", email)
+            where("email", "==", email.toLowerCase())
           );
           const querySnapshot = await getDocs(q);
 
@@ -284,6 +304,10 @@ const PatientProfile = () => {
 
           const patient = {
             ...values,
+            email: email.toLowerCase(),
+            name: name.toLowerCase(),
+            primaryPhysician: primaryPhysician.toLowerCase(),
+            patientStatus: patientStatus.toLowerCase(),
             registeredBy: `${user?.firstName} ${user?.lastName}`,
             createdAt: serverTimestamp(),
             identificationDocument: fileUrl ? fileUrl : "",
@@ -319,23 +343,32 @@ const PatientProfile = () => {
 
           await setDoc(activitesRef, data);
 
-          const emailData = {
-            emails: [user?.email],
-            subject: `Patient Registration for ${name} `,
-            message: `You carried out Patient registration for ${name}  `,
-          };
+          try {
+            const emailData = {
+              emails: [user?.email],
+              subject: `Patient Registration for ${name} `,
+              message: `You carried out Patient registration for ${name}  `,
+            };
 
-          const adminEmailData = {
-            emails: adminEmails,
-            subject: `New Patient Registration for ${name} `,
-            message: `Patient Registration for ${name} performed by ${user?.firstName} ${user?.lastName}`,
-          };
+            const adminEmailData = {
+              emails: adminEmails,
+              subject: `New Patient Registration for ${name} `,
+              message: `Patient Registration for ${name} performed by ${user?.firstName} ${user?.lastName}`,
+            };
 
-          const message = await sendEmail(emailData);
-          const adminMessage = await sendEmail(adminEmailData);
-          console.log("Email sent successfully:", message);
-          console.log("Admin Email sent successfully:", adminMessage);
-
+            const message = await sendEmail(emailData);
+            const adminMessage = await sendEmail(adminEmailData);
+            console.log("Email sent successfully:", message);
+            console.log("Admin Email sent successfully:", adminMessage);
+          } catch (emailError) {
+            console.error("Error sending email:", emailError);
+            showToast(
+              toast,
+              "Email Error",
+              "warning",
+              "Patient Registered, but email failed to send."
+            );
+          }
           showToast(
             toast,
             "Registration",
@@ -356,6 +389,10 @@ const PatientProfile = () => {
           ];
           const patientPayload = {
             ...values,
+            email: email.toLowerCase(),
+            name: name.toLowerCase(),
+            primaryPhysician: primaryPhysician.toLowerCase(),
+            patientStatus: patientStatus.toLowerCase(),
             updatedAt: serverTimestamp(),
             logs,
           };
@@ -457,7 +494,7 @@ const PatientProfile = () => {
         <div className="flex flex-col mb-10  space-y-14">
           <main>
             <section className="w-full space-y-4 mb-8">
-              <h1 className="header ">
+              <h1 className="header capitalize ">
                 {userId ? `${patient?.name} Profile` : "Hi there 👋"}
               </h1>
               {!userId && (

@@ -160,7 +160,8 @@ const StaffProfile = () => {
 
   const onSubmit = async (values: z.infer<typeof StaffFormValidation>) => {
     setIsLoading(true);
-    const { email, staffImage, firstName, lastName } = values;
+    const { email, staffImage, firstName, lastName, occupation, password } =
+      values;
 
     const activitesRef = doc(db, "activites", `activity-${Date.now()}`);
 
@@ -180,6 +181,7 @@ const StaffProfile = () => {
           email: email.toLowerCase(),
           firstName: firstName.toLowerCase(),
           lastName: lastName.toLowerCase(),
+          occupation: occupation.toLowerCase(),
         };
         if (typeof staffImage !== "string") {
           let fileUrl = "";
@@ -212,22 +214,27 @@ const StaffProfile = () => {
 
         await setDoc(activitesRef, data);
 
-        const emailData = {
-          emails: [user?.email],
-          subject: `Staff Profile Update for ${user?.firstName} ${user?.lastName} `,
-          message: `You carried out Staff Profile Update for ${user?.firstName} ${user?.lastName}  `,
-        };
+        try {
+          const emailData = {
+            emails: [user?.email],
+            subject: `Staff Profile Update for ${user?.firstName} ${user?.lastName} `,
+            message: `You carried out Staff Profile Update for ${user?.firstName} ${user?.lastName}  `,
+          };
 
-        const adminEmailData = {
-          emails: adminEmails,
-          subject: `New Staff Profile Update for ${user?.firstName} ${user?.lastName} `,
-          message: `Staff Profile Update for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
-        };
+          const adminEmailData = {
+            emails: adminEmails,
+            subject: `New Staff Profile Update for ${user?.firstName} ${user?.lastName} `,
+            message: `Staff Profile Update for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
+          };
 
-        const message = await sendEmail(emailData);
-        const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
-        console.log("Admin Email sent successfully:", adminMessage);
+          const message = await sendEmail(emailData);
+          const adminMessage = await sendEmail(adminEmailData);
+          console.log("Email sent successfully:", message);
+          console.log("Admin Email sent successfully:", adminMessage);
+        } catch (emailError) {
+          console.error("Error sending email:", emailError);
+          showToast(toast, "Email Error", "warning", "Email failed to send.");
+        }
 
         showToast(
           toast,
@@ -235,6 +242,7 @@ const StaffProfile = () => {
           "success",
           "Staff Data successfully updated"
         );
+
         setIsEditStaffModalOpen(false);
       } else {
         let fileUrl = "";
@@ -299,6 +307,7 @@ const StaffProfile = () => {
             email: email.toLowerCase(),
             firstName: firstName.toLowerCase(),
             lastName: lastName.toLowerCase(),
+            occupation: occupation.toLowerCase(),
             registeredBy: `${user?.firstName} ${user?.lastName}`,
             createdAt: serverTimestamp(),
             staffImage: fileUrl ? [fileUrl] : "",
@@ -331,19 +340,18 @@ const StaffProfile = () => {
 
           await setDoc(activitesRef, data);
 
-          showToast(
-            toast,
-            "Registration",
-            "success",
-            "Staff successfully Registered"
-          );
-
           // Email sending in a separate try-catch block to handle its own errors
           try {
             const emailData = {
               emails: [user?.email],
               subject: `Staff Registration for ${user?.firstName} ${user?.lastName} `,
               message: `You carried out Staff registration for ${user?.firstName} ${user?.lastName}  `,
+            };
+
+            const newStaffEmailData = {
+              emails: [email],
+              subject: `Account Registration`,
+              message: `Your profile has been registered at Shayofunmi Care Agency. You've been given  an access role of ${accessRole}. Your password is ${password} `,
             };
 
             const adminEmailData = {
@@ -353,19 +361,23 @@ const StaffProfile = () => {
             };
 
             const message = await sendEmail(emailData);
+            const staffMessage = await sendEmail(newStaffEmailData);
             const adminMessage = await sendEmail(adminEmailData);
 
             console.log("Email sent successfully:", message);
+            console.log("Email sent successfully:", staffMessage);
             console.log("Admin Email sent successfully:", adminMessage);
           } catch (emailError) {
             console.error("Error sending email:", emailError);
-            showToast(
-              toast,
-              "Email Error",
-              "warning",
-              "Staff registered, but email failed to send."
-            );
+            showToast(toast, "Email Error", "warning", "Email failed to send.");
           }
+
+          showToast(
+            toast,
+            "Registration",
+            "success",
+            "Staff successfully Registered"
+          );
 
           getAdminContent();
           navigate("/dashboard/staffs");
@@ -437,7 +449,7 @@ const StaffProfile = () => {
         <div className="flex flex-col mb-10  space-y-14">
           <main>
             <section className="w-full space-y-4 mb-8">
-              <h1 className="header ">
+              <h1 className="header capitalize ">
                 {userId ? `${Staff?.firstName}'s Profile` : "Hi there 👋"}
               </h1>
 

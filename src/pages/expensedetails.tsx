@@ -115,37 +115,46 @@ const ExpenseDetails = () => {
 
       await setDoc(activitesRef, dataa);
 
-      const emailData = {
-        emails: [user?.email],
-        subject: `You just deleted an Expenses on ${expenses?.type} `,
-        message: `Expense with ID: ${expenses?.id}, titled "${
-          expenses?.desc
-        }" and amounting to ₦${parseInt(
-          expenses?.amount
-        )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
-          expenses?.paymentRegisteredBy || expenses?.registeredBy
-        } on ${formatDate(expenses?.formDate) || "N/A"}`,
-      };
+      try {
+        const emailData = {
+          emails: [user?.email],
+          subject: `You just deleted an Expenses on ${expenses?.type} `,
+          message: `Expense with ID: ${expenses?.id}, titled "${
+            expenses?.desc
+          }" and amounting to ₦${parseInt(
+            expenses?.amount
+          )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
+            expenses?.paymentRegisteredBy || expenses?.registeredBy
+          } on ${formatDate(expenses?.formDate) || "N/A"}`,
+        };
 
-      const adminEmailData = {
-        emails: adminEmails,
-        subject: `New Expenses for ${expenses?.type} `,
-        message: `Expense with ID: ${expenses?.id}, titled "${
-          expenses?.desc
-        }" and amounting to ₦${parseInt(
-          expenses?.amount
-        )?.toLocaleString()} was deleted by ${user?.firstName} ${
-          user?.lastName
-        }. Initially, this payment was approved by ${
-          expenses?.paymentRegisteredBy || expenses?.registeredBy
-        } on ${formatDate(expenses?.formDate) || "N/A"}`,
-      };
+        const adminEmailData = {
+          emails: adminEmails,
+          subject: `New Expenses for ${expenses?.type} `,
+          message: `Expense with ID: ${expenses?.id}, titled "${
+            expenses?.desc
+          }" and amounting to ₦${parseInt(
+            expenses?.amount
+          )?.toLocaleString()} was deleted by ${user?.firstName} ${
+            user?.lastName
+          }. Initially, this payment was approved by ${
+            expenses?.paymentRegisteredBy || expenses?.registeredBy
+          } on ${formatDate(expenses?.formDate) || "N/A"}`,
+        };
 
-      const message = await sendEmail(emailData);
-      const adminMessage = await sendEmail(adminEmailData);
-      console.log("Email sent successfully:", message);
-      console.log("Admin Email sent successfully:", adminMessage);
-
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
+      } catch (emailError) {
+        console.error("Error sending email:", emailError);
+        showToast(
+          toast,
+          "Email Error",
+          "warning",
+          "Expense deleted, but email failed to send."
+        );
+      }
       showToast(toast, "SCA", "warning", "Expense deleted successfully");
 
       getAdminContent();
@@ -187,6 +196,16 @@ const ExpenseDetails = () => {
                 <p className="text-sm">
                   {expenses?.paymentRegisteredBy || expenses?.registeredBy}
                 </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm">Type:</p>
+                <p className="capitalize">{expenses?.type}</p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm">Recipient:</p>
+                <p className="capitalize">{expenses?.patient}</p>
               </div>
 
               <div className="space-y-2">

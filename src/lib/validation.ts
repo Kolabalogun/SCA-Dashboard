@@ -93,6 +93,7 @@ export const StaffFormValidation = z
       "Psychiatric Physician",
       "Professional Care Officer",
       "Chef",
+      "Social Worker",
       "IT Officer",
       "Security",
       "Cleaner",
@@ -200,7 +201,7 @@ export const PatientFormValidation = UserFormValidation.extend({
   secondaryEducation: z.string().optional(),
   tertiaryEducation: z.string().optional(),
   vocationalEducation: z.string().optional(),
-  patientStatus: z.string(),
+  patientStatus: z.enum(["Admitted", "Discharged", "Others"]),
 
   title: z.string().optional(),
   report: z.string().optional(),

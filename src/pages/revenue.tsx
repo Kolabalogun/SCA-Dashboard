@@ -146,14 +146,14 @@ const Revenue = () => {
 
       const typeQuery = query(
         revenueRef,
-        where("type", ">=", searchTerm.trim()),
-        where("type", "<=", searchTerm.trim() + "\uf8ff")
+        where("type", ">=", searchTerm.trim().toLowerCase()),
+        where("type", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
       );
 
       const patientQuery = query(
         revenueRef,
-        where("patient", ">=", searchTerm.trim()),
-        where("patient", "<=", searchTerm.trim() + "\uf8ff")
+        where("patient", ">=", searchTerm.trim().toLowerCase()),
+        where("patient", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
       );
 
       const amountQuery = query(
@@ -214,7 +214,7 @@ const Revenue = () => {
         </div>
       </section>
       {AccessRole.Admin === user?.accessRole && (
-        <section className="admin-stat">
+        <section className="w-full   justify-between gap-5  xl:gap-10 grid grid-cols-2">
           <StatCard
             type="pending"
             count={`₦${adminData?.totalRevenue?.toLocaleString() || 0}`}
@@ -226,7 +226,7 @@ const Revenue = () => {
             count={`₦${
               adminData?.patientAdmissionRevenue?.toLocaleString() || 0
             }`}
-            label="Income from revenue Admissions"
+            label="Income from Patient Admissions"
             icon={ExpensesIcon}
           />
 

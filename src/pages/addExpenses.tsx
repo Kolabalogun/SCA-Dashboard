@@ -67,7 +67,7 @@ const AddExpenses = () => {
           "You don't have access to perform this action"
         );
 
-      const { receipt, patient, amount } = values;
+      const { receipt, patient, amount, type } = values;
 
       if (!amount)
         return showToast(toast, "SCA", "error", "Amount can't be empty!");
@@ -81,6 +81,8 @@ const AddExpenses = () => {
 
       const data = {
         ...values,
+        type: type.toLowerCase(),
+        patient: patient.toLowerCase(),
         paymentRegisteredBy: `${user?.firstName} ${user?.lastName}`,
         createdAt: serverTimestamp(),
         receipt: fileUrl ? fileUrl : "",
@@ -121,32 +123,42 @@ const AddExpenses = () => {
 
       await setDoc(activitesRef, dataa);
 
-      const emailData = {
-        emails: [user?.email],
-        subject: `New Expenses on ${values?.type} `,
-        message: `You carried out New Expenses cost ₦${parseInt(
-          values?.amount as string
-        )?.toLocaleString()} on ${values?.type}. Paid to ${
-          values.patient
-        }. Description: ${values.desc}  `,
-      };
+      try {
+        const emailData = {
+          emails: [user?.email],
+          subject: `New Expenses on ${values?.type} `,
+          message: `You carried out New Expenses cost ₦${parseInt(
+            values?.amount as string
+          )?.toLocaleString()} on ${values?.type}. Paid to ${
+            values.patient
+          }. Description: ${values.desc}  `,
+        };
 
-      const adminEmailData = {
-        emails: adminEmails,
-        subject: `New Expenses on ${values?.type} `,
-        message: `New Expenses cost ₦${parseInt(
-          values?.amount as string
-        )?.toLocaleString()} on ${values?.type} performed by ${
-          user?.firstName
-        } ${user?.lastName}. Paid to ${values.patient}. Description: ${
-          values.desc
-        } `,
-      };
+        const adminEmailData = {
+          emails: adminEmails,
+          subject: `New Expenses on ${values?.type} `,
+          message: `New Expenses cost ₦${parseInt(
+            values?.amount as string
+          )?.toLocaleString()} on ${values?.type} performed by ${
+            user?.firstName
+          } ${user?.lastName}. Paid to ${values.patient}. Description: ${
+            values.desc
+          } `,
+        };
 
-      const message = await sendEmail(emailData);
-      const adminMessage = await sendEmail(adminEmailData);
-      console.log("Email sent successfully:", message);
-      console.log("Admin Email sent successfully:", adminMessage);
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
+      } catch (emailError) {
+        console.error("Error sending email:", emailError);
+        showToast(
+          toast,
+          "Email Error",
+          "warning",
+          "Expenses Added, but email failed to send."
+        );
+      }
 
       showToast(
         toast,
@@ -154,6 +166,7 @@ const AddExpenses = () => {
         "success",
         "Expenses successfully Added"
       );
+
       getAdminContent();
       setIsLoading(false);
       navigate("/dashboard/Expenses");

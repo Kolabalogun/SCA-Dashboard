@@ -65,7 +65,7 @@ const AddOtherRevenue = () => {
           "You don't have access to perform this action"
         );
 
-      const { receipt, patient, amount } = values;
+      const { receipt, patient, amount, type } = values;
 
       if (!amount)
         return showToast(toast, "SCA", "error", "Amount can't be empty!");
@@ -79,6 +79,8 @@ const AddOtherRevenue = () => {
 
       const data = {
         ...values,
+        type: type.toLowerCase(),
+        patient: patient.toLowerCase(),
         amount: parseInt(values.amount as string),
         paymentRegisteredBy: `${user?.firstName} ${user?.lastName}`,
         createdAt: serverTimestamp(),
@@ -126,36 +128,47 @@ const AddOtherRevenue = () => {
 
       await setDoc(activitesRef, dataa);
 
-      const emailData = {
-        emails: [user?.email],
-        subject: `New Revenue from ${values?.type} `,
-        message: `You added a New Revenue from ${
-          values?.type
-        } amounting to ₦${parseInt(
-          values?.amount as string
-        )?.toLocaleString()} from ${values?.patient}. Description: ${
-          values.desc || "N/A"
-        }.`,
-      };
+      try {
+        const emailData = {
+          emails: [user?.email],
+          subject: `New Revenue from ${values?.type} `,
+          message: `You added a New Revenue from ${
+            values?.type
+          } amounting to ₦${parseInt(
+            values?.amount as string
+          )?.toLocaleString()} from ${values?.patient}. Description: ${
+            values.desc || "N/A"
+          }.`,
+        };
 
-      const adminEmailData = {
-        emails: adminEmails,
-        subject: `New Revenue from ${values?.type} `,
-        message: `New Revenue added from ${values?.type} performed by ${
-          user?.firstName
-        } ${user?.lastName} amounting to ₦${parseInt(
-          values?.amount as string
-        )?.toLocaleString()} from ${values?.patient}. Description: ${
-          values.desc || "N/A"
-        }.`,
-      };
+        const adminEmailData = {
+          emails: adminEmails,
+          subject: `New Revenue from ${values?.type} `,
+          message: `New Revenue added from ${values?.type} performed by ${
+            user?.firstName
+          } ${user?.lastName} amounting to ₦${parseInt(
+            values?.amount as string
+          )?.toLocaleString()} from ${values?.patient}. Description: ${
+            values.desc || "N/A"
+          }.`,
+        };
 
-      const message = await sendEmail(emailData);
-      const adminMessage = await sendEmail(adminEmailData);
-      console.log("Email sent successfully:", message);
-      console.log("Admin Email sent successfully:", adminMessage);
+        const message = await sendEmail(emailData);
+        const adminMessage = await sendEmail(adminEmailData);
+        console.log("Email sent successfully:", message);
+        console.log("Admin Email sent successfully:", adminMessage);
+      } catch (emailError) {
+        console.error("Error sending email:", emailError);
+        showToast(
+          toast,
+          "Email Error",
+          "warning",
+          "Revenue added, but email failed to send."
+        );
+      }
 
       showToast(toast, "Registration", "success", "Revenue successfully Added");
+
       getAdminContent();
       setIsLoading(false);
       navigate("/dashboard/revenue");

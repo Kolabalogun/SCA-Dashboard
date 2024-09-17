@@ -16,7 +16,7 @@ export const columns = [
     header: "Patient",
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
-      return <p className="text-14-medium capitalize ">{appointment?.name}</p>;
+      return <p className="text-14-medium uppercase ">{appointment?.name}</p>;
     },
   },
   {
@@ -114,7 +114,7 @@ export const staffsColumns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className="text-14-medium cursor-pointer lowecase ">
+        <p className="text-14-medium cursor-pointer lowercase ">
           <a href={`mailto:${appointment?.email}`}> {appointment?.email}</a>
         </p>
       );
@@ -126,7 +126,9 @@ export const staffsColumns = [
     header: "Occupation",
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
-      return <p className="text-14-regular ">{appointment?.occupation}</p>;
+      return (
+        <p className="text-14-regular capitalize ">{appointment?.occupation}</p>
+      );
     },
   },
 
@@ -186,7 +188,9 @@ export const revenueColumns = [
     header: "From",
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
-      return <p className="text-14-regular ">{appointment?.patient}</p>;
+      return (
+        <p className="text-14-regular uppercase ">{appointment?.patient}</p>
+      );
     },
   },
   {

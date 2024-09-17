@@ -158,7 +158,7 @@ const BasicInformations = ({ form, staffs, userId }: Props) => {
           >
             {PatientStatusOption.map((type, i) => (
               <SelectItem key={type + i} value={type}>
-                <p className="text-white">{type}</p>
+                <p className=" capitalize text-white">{type}</p>
               </SelectItem>
             ))}
           </CustomFormField>
@@ -317,7 +317,7 @@ const BasicInformations = ({ form, staffs, userId }: Props) => {
         >
           {IdentificationTypes.map((type, i) => (
             <SelectItem key={type + i} value={type}>
-              <p className="text-white">{type}</p>
+              <p className="text-white capitalize">{type}</p>
             </SelectItem>
           ))}
         </CustomFormField>
