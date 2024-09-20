@@ -48,7 +48,7 @@ export const PatientFormDefaultValues = {
   address: "",
   occupation: "",
   occupationHistory: "",
-  patientStatus: "Admitted",
+  patientStatus: "Admitted" as const,
 
   // Medical Information
   primaryPhysician: "",

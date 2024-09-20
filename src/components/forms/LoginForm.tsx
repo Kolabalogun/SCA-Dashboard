@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { auth, db } from "@/config/firebase";
+import { auth } from "@/config/firebase";
 import { LoginFormValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -16,7 +15,6 @@ import SubmitButton from "../common/SubmitButton";
 import { email, Key } from "@/assets/icons";
 import { useToast } from "@chakra-ui/react";
 import showToast from "../common/toast";
-import { collection, getDocs, query, where } from "firebase/firestore";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);

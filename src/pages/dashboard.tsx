@@ -21,7 +21,7 @@ const Dashboard = () => {
           <p className="text-dark-700">Start the day with managing patients</p>
         </section>
 
-        <section className="admin-stat">
+        <section className="w-full   justify-between gap-5  xl:gap-10 grid grid-cols-2">
           <StatCard
             type="appointments"
             count={adminData?.totalPatients || 0}
