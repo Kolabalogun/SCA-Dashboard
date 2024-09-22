@@ -7,6 +7,7 @@ import {
   Landmark,
   LogOut,
   Menu,
+  ScrollIcon,
   Users,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -107,6 +108,11 @@ const Sidebar = () => {
       icon: <ChartCandlestick size={20} />,
       title: "Expenses",
       link: "/dashboard/expenses",
+    },
+    {
+      icon: <ScrollIcon size={20} />,
+      title: "Payslip",
+      link: "/dashboard/payslip",
     },
   ];
 

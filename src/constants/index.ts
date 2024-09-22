@@ -120,6 +120,31 @@ export const PatientFormDefaultValues = {
   updatedAt: new Date(Date.now()),
 };
 
+export const payslipInitialState = {
+  payslipNo: "",
+  payslipCurrentMonth: new Date(Date.now()),
+  employmentNo: "",
+  gender: "",
+  occupation: "",
+  fullName: "",
+  address: "",
+  dateofappointment: new Date(Date.now()),
+  basicSalary: "0",
+  rent_allowance: "12000",
+  hazard_allowance: "10000",
+  travel_allowance: "11000",
+  grossEarnings: "0",
+  salary_tax: "0",
+  grossDeduction: "0",
+  pension_deduction: "0",
+  netEarnings: "0",
+  cummulative_income: "0",
+  cummulative_tax_deduction: "0",
+  cummulative_pension: "0",
+
+  shouldDownload: false,
+};
+
 export const stayPeriods = [
   "1 month",
   "2 months",

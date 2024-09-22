@@ -17,6 +17,7 @@ import {
   Staffs,
   AddOtherRevenue,
 } from "@/pages";
+import PaySlip from "@/pages/payslip";
 
 import { createBrowserRouter } from "react-router-dom";
 const routes = createBrowserRouter([
@@ -115,6 +116,14 @@ const routes = createBrowserRouter([
             ]}
           >
             <Staffs />
+          </AccessRole>
+        ),
+      },
+      {
+        path: "/dashboard/payslip",
+        element: (
+          <AccessRole allowedRoles={[AccessRoleEnum.Admin]}>
+            <PaySlip />
           </AccessRole>
         ),
       },
