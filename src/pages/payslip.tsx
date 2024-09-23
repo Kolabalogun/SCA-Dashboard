@@ -18,7 +18,6 @@ const PaySlip = () => {
 
   const [form, setForm] = useState(payslipInitialState);
   //   const [isLoading, setIsLoading] = useState(false);
-  console.log(form);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -31,16 +30,7 @@ const PaySlip = () => {
     }));
   };
 
-  const {
-    basicSalary,
-    rent_allowance,
-    hazard_allowance,
-    travel_allowance,
-    grossEarnings,
-    salary_tax,
-    grossDeduction,
-    pension_deduction,
-  } = form;
+  const { netEarnings, grossEarnings, salary_tax, pension_deduction } = form;
 
   useEffect(() => {
     const computeEquations = () => {
@@ -53,50 +43,6 @@ const PaySlip = () => {
         currentMonthDate.getFullYear() * 12 +
         currentMonthDate.getMonth() -
         (dateOfAppointment.getFullYear() * 12 + dateOfAppointment.getMonth());
-
-      // Compute salary tax and pension deduction
-      if (basicSalary) {
-        const salaryTax = 0.1 * parseFloat(basicSalary);
-        const pensionTax = 0.08 * parseFloat(basicSalary);
-        const grossDeduction = salaryTax + pensionTax;
-
-        setForm((prev: any) => ({
-          ...prev,
-          salary_tax: salaryTax,
-          pension_deduction: pensionTax,
-          grossDeduction,
-        }));
-      }
-
-      // Compute gross earnings
-      if (
-        basicSalary ||
-        rent_allowance ||
-        hazard_allowance ||
-        travel_allowance
-      ) {
-        const grossEarnings =
-          parseFloat(basicSalary) +
-          parseFloat(rent_allowance) +
-          parseFloat(travel_allowance) +
-          parseFloat(hazard_allowance);
-
-        setForm((prev: any) => ({
-          ...prev,
-          grossEarnings,
-        }));
-      }
-
-      // Compute net earnings
-      if (grossDeduction || grossEarnings) {
-        const netEarnings =
-          parseFloat(grossEarnings) - parseFloat(grossDeduction);
-
-        setForm((prev: any) => ({
-          ...prev,
-          netEarnings,
-        }));
-      }
 
       // Compute cummulative income based on current month
       if (monthNumber && grossEarnings) {
@@ -131,11 +77,6 @@ const PaySlip = () => {
 
     computeEquations();
   }, [
-    basicSalary,
-    rent_allowance,
-    hazard_allowance,
-    travel_allowance,
-    grossDeduction,
     grossEarnings,
 
     salary_tax,
@@ -143,6 +84,61 @@ const PaySlip = () => {
     form.dateofappointment,
     form.payslipCurrentMonth,
   ]);
+
+  useEffect(() => {
+    if (netEarnings) {
+      const {
+        basicSalary,
+        salaryTax,
+        pensionDeduction,
+        totalGrossDeduction,
+        totalGrossEarnings,
+      } = calculatePayrollFromNet(parseFloat(netEarnings));
+
+      setForm((prev: any) => ({
+        ...prev,
+        basicSalary,
+        salary_tax: salaryTax,
+        pension_deduction: pensionDeduction,
+        grossDeduction: totalGrossDeduction,
+        grossEarnings: totalGrossEarnings,
+      }));
+    }
+  }, [netEarnings]);
+
+  const calculatePayrollFromNet = (netEarnings: number) => {
+    // Known allowances
+    const rentAllowance = 12000;
+    const hazardAllowance = 10000;
+    const travelAllowance = 11000;
+
+    const totalAllowances = rentAllowance + hazardAllowance + travelAllowance; // 33,000
+
+    // Rearranged formula to solve for Basic Salary
+    const basicSalary = (netEarnings - totalAllowances) / 0.82;
+
+    // Calculating Salary Tax and Pension Deduction
+    const salaryTax = 0.1 * basicSalary;
+    const pensionDeduction = 0.08 * basicSalary;
+
+    // Total deductions
+    const totalGrossDeduction = salaryTax + pensionDeduction;
+
+    // Total gross earnings
+    const totalGrossEarnings = basicSalary + totalAllowances;
+
+    return {
+      basicSalary: basicSalary.toFixed(2), // Round to 2 decimal places
+      salaryTax: salaryTax.toFixed(2),
+      pensionDeduction: pensionDeduction.toFixed(2),
+      totalGrossDeduction: totalGrossDeduction.toFixed(2),
+      totalGrossEarnings: totalGrossEarnings.toFixed(2),
+    };
+  };
+
+  // Example Usage:
+
+  // console.log(payroll);
 
   const onSubmit = async (e: any) => {
     e.preventDefault();

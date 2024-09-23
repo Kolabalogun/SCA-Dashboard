@@ -137,7 +137,7 @@ export const payslipInitialState = {
   salary_tax: "0",
   grossDeduction: "0",
   pension_deduction: "0",
-  netEarnings: "0",
+  netEarnings: "300000",
   cummulative_income: "0",
   cummulative_tax_deduction: "0",
   cummulative_pension: "0",

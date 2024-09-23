@@ -30,6 +30,7 @@ const PayslipForm = ({ form, handleChange, setForm }: Props) => {
     grossDeduction,
     pension_deduction,
     netEarnings,
+
     cummulative_pension,
     cummulative_tax_deduction,
     cummulative_income,
@@ -115,7 +116,7 @@ const PayslipForm = ({ form, handleChange, setForm }: Props) => {
           <Input
             onChange={handleChange}
             name="fullName"
-            placeholder="SCA/002"
+            placeholder="Enter Full Name"
             value={fullName}
             className="shad-input border-0 w-full"
           />
@@ -185,6 +186,7 @@ const PayslipForm = ({ form, handleChange, setForm }: Props) => {
               onChange={handleChange}
               name="basicSalary"
               type="number"
+              readOnly
               placeholder="Enter Basic Salary"
               value={basicSalary}
               className="shad-input border-0 w-full"
@@ -200,6 +202,7 @@ const PayslipForm = ({ form, handleChange, setForm }: Props) => {
               onChange={handleChange}
               name="rent_allowance"
               type="number"
+              readOnly
               placeholder="Enter Rent allowance"
               value={rent_allowance}
               className="shad-input border-0 w-full"
@@ -213,6 +216,7 @@ const PayslipForm = ({ form, handleChange, setForm }: Props) => {
               onChange={handleChange}
               name="hazard_allowance"
               type="number"
+              readOnly
               placeholder="Enter Hazard allowance"
               value={hazard_allowance}
               className="shad-input border-0 w-full"
@@ -220,12 +224,13 @@ const PayslipForm = ({ form, handleChange, setForm }: Props) => {
           </div>
 
           <div className="flex flex-col gap-3 w-full">
-            <p className="text-sm font-medium">Travel allowance</p>
+            <p className="text-sm font-medium">Teaching allowance</p>
 
             <Input
               onChange={handleChange}
               name="travel_allowance"
               type="number"
+              readOnly
               placeholder="Enter Travel allowance"
               value={travel_allowance}
               className="shad-input border-0 w-full"
@@ -326,7 +331,7 @@ const PayslipForm = ({ form, handleChange, setForm }: Props) => {
             onChange={handleChange}
             name="netEarnings"
             placeholder="Total Net Earnings"
-            readOnly
+            // readOnly
             value={netEarnings}
             className="shad-input border-0 w-full"
           />

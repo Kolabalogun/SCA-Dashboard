@@ -20,3 +20,7 @@ export { default as PatientsIcon } from "./group.png";
 export { default as ExpensesIcon } from "./expenses.png";
 export { default as Revenue } from "./naira.png";
 export { default as Staff } from "./staffs.png";
+
+export { default as PdfLogo } from "./pdfLogo.png";
+
+export { default as PdfSign } from "./pdfSign.png";
