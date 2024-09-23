@@ -128,7 +128,7 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
 
       {/* Payslip Info */}
       <View style={styles.section}>
-        <Text style={{ fontSize: 16, fontWeight: "bold", textAlign: "center" }}>
+        <Text style={{ fontSize: 14, fontWeight: "bold", textAlign: "center" }}>
           EMPLOYEE PAYSLIP
         </Text>
         <Text style={{ fontSize: 11, fontWeight: "bold", textAlign: "center" }}>
