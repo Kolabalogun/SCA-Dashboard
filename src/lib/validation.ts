@@ -4,7 +4,7 @@ import { z } from "zod";
 const nameSchema = z
   .string()
   .min(2, "Field must be at least 2 characters")
-  .max(50, "Field must be at most 50 characters");
+  .max(500, "Field must be at most 500 characters");
 
 const emailSchema = z.string().email("Invalid email address");
 
@@ -66,7 +66,6 @@ export const AddRevenueValidation = z.object({
   type: nameSchema,
   receipt: z.custom<File[]>().optional(),
   amount: z.union([z.string(), z.number()]),
-
   patient: nameSchema,
   desc: nameSchema,
 });
