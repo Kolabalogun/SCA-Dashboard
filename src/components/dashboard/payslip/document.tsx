@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HelveticaBold, HelveticaRegular } from "@/assets/font/Helvetica";
-import { PdfLogo, PdfSign } from "@/assets/images";
+
+import { nairaImg, PdfLogo, PdfSign } from "@/assets/images";
 import {
   Page,
   Text,
@@ -8,31 +8,50 @@ import {
   Document,
   StyleSheet,
   Image,
-  Font,
 } from "@react-pdf/renderer";
 
 // Register your custom font (.ttf file)
-Font.register({
-  family: "Helvetica",
-  fonts: [
-    { src: HelveticaRegular, fontWeight: 400 }, // Normal
 
-    { src: HelveticaBold, fontWeight: "bold" }, // Bold
-  ],
-});
+// Font.register({
+//   family: "Times-Roman",
+//   fonts: [{ src: Times-RomanRegular }, { src: Times-RomanBold }],
+// });
 
-// Custom styles for the PDF
 const styles = StyleSheet.create({
-  page: {
-    padding: 20,
-    fontSize: 11,
-    fontFamily: "Helvetica",
+  col4: { width: "25%" },
+  col8: { width: "75%" },
+  col6: { width: "50%" },
+  mb8: { marginBottom: 8 },
+  mb40: { marginBottom: 40 },
+  overline: {
+    fontSize: 8,
+    marginBottom: 8,
+    fontWeight: 700,
+    textTransform: "uppercase",
   },
+  h3: { fontSize: 16, fontWeight: 700 },
+  h4: { fontSize: 13, fontWeight: 700 },
+  body1: { fontSize: 10 },
+  subtitle2: { fontSize: 9, fontWeight: 700 },
+  alignRight: { textAlign: "right" },
+  page: {
+    padding: "20px ",
+    fontSize: 9,
+    lineHeight: 1.3,
+    fontFamily: "Times-Roman",
+    backgroundColor: "#fff",
+    textTransform: "capitalize",
+  },
+  // page: {
+  //   padding: 20,
+  //   fontSize: 11,
+  //   fontFamily: "Times-Roman",
+  // },
   header: {
     display: "flex",
     marginBottom: 20,
     fontSize: 11,
-    fontFamily: "Helvetica",
+    fontFamily: "Times-Roman",
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
@@ -46,6 +65,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     gap: 4,
+    textTransform: "capitalize",
   },
   section: {
     marginTop: 15,
@@ -76,7 +96,7 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
               fontWeight: "bold",
               fontSize: 10,
               marginBottom: 2,
-              fontFamily: "Helvetica",
+              fontFamily: "Times-Roman",
             }}
           >
             RC: 2409240
@@ -86,7 +106,7 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
               fontWeight: "bold",
               fontSize: 10,
               marginBottom: 2,
-              fontFamily: "Helvetica",
+              fontFamily: "Times-Roman",
             }}
           >
             Road 16, Magbon/Ereko Boundary,
@@ -128,7 +148,7 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
 
       {/* Payslip Info */}
       <View style={styles.section}>
-        <Text style={{ fontSize: 14, fontWeight: "bold", textAlign: "center" }}>
+        <Text style={{ fontSize: 12, fontWeight: "bold", textAlign: "center" }}>
           EMPLOYEE PAYSLIP
         </Text>
         <Text style={{ fontSize: 11, fontWeight: "bold", textAlign: "center" }}>
@@ -141,7 +161,7 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
 
       <View style={{ paddingVertical: 15, borderBottom: "2px black solid" }}>
         <View style={{ marginTop: 10 }}>
-          <Text style={styles.topText}>
+          <Text style={[styles.topText, { textTransform: "uppercase" }]}>
             Employment No: {payslipData.employmentNo}
           </Text>
         </View>
@@ -168,7 +188,7 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
 
       <View
         style={{
-          paddingVertical: 15,
+          paddingVertical: 10,
           borderBottom: "2px black solid",
           display: "flex",
           justifyContent: "space-between",
@@ -232,17 +252,34 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Basic Salary
             </Text>
-            <Text
+
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-              {(
-                Math.round(payslipData.basicSalary / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.basicSalary / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>
           </View>
           <View
             style={{
@@ -261,18 +298,34 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Rent Allowance
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
 
-              {(
-                Math.round(payslipData.rent_allowance / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.rent_allowance / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>
           </View>
           <View
             style={{
@@ -291,18 +344,33 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Hazard Allowance
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-
-              {(
-                Math.round(payslipData.hazard_allowance / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.hazard_allowance / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>
           </View>
           <View
             style={{
@@ -321,20 +389,34 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Travel Allowance
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-
-              {(
-                Math.round(payslipData.travel_allowance / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.travel_allowance / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>
           </View>
-
           <View
             style={{
               display: "flex",
@@ -352,25 +434,40 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Total Gross Earnings
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-
-              {(
-                Math.round(payslipData.grossEarnings / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.grossEarnings / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>
           </View>
         </View>
 
         <View style={{ flex: 1 }}>
           <Text
             style={{
-              fontWeight: "bold",
+              fontWeight: 800,
               fontSize: 11,
               textAlign: "center",
               marginBottom: 9,
@@ -423,17 +520,33 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Salary Tax
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-              {(
-                Math.round(payslipData.salary_tax / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.salary_tax / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>{" "}
           </View>
           <View
             style={{
@@ -452,18 +565,33 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Pension Deduction
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-
-              {(
-                Math.round(payslipData.pension_deduction / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.pension_deduction / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>{" "}
           </View>
           <View
             style={{
@@ -535,26 +663,42 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Total Gross Deduction
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-
-              {(
-                Math.round(payslipData.grossDeduction / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.grossDeduction / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>{" "}
           </View>
         </View>
       </View>
 
       <View
         style={{
-          paddingVertical: 15,
+          paddingVertical: 10,
           borderBottom: "2px black solid",
+
           display: "flex",
           justifyContent: "space-between",
           gap: 50,
@@ -574,7 +718,6 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
           >
             Summary of Payments
           </Text>
-
           <View
             style={{
               display: "flex",
@@ -592,19 +735,34 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Total Gross Earnings
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-              {(
-                Math.round(payslipData.grossEarnings / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.grossEarnings / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>{" "}
           </View>
-
           <View
             style={{
               display: "flex",
@@ -623,19 +781,34 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Total Gross Deductions
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-              {(
-                Math.round(payslipData.grossDeduction / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.grossDeduction / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>{" "}
           </View>
-
           <View
             style={{
               display: "flex",
@@ -653,28 +826,44 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Total Net Earnings:
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-
-              {(
-                Math.round(payslipData.netEarnings / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                }}
+              >
+                {(
+                  Math.round(payslipData.netEarnings / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
 
       <View
         style={{
-          paddingVertical: 25,
+          paddingTop: 15,
+          marginBottom: 30,
         }}
       >
-        <Text style={{ fontSize: 11, fontWeight: "bold", marginBottom: 30 }}>
+        <Text style={{ fontSize: 11, fontWeight: "bold", marginBottom: 20 }}>
           Balances
         </Text>
         <View
@@ -704,19 +893,35 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
               }}
             >
               Cummulative Tax Deduct
-            </Text>
-            <Text
+            </Text>{" "}
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
-                textAlign: "center",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-              {(
-                Math.round(payslipData.cummulative_tax_deduction / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                  textAlign: "center",
+                }}
+              >
+                {(
+                  Math.round(payslipData.cummulative_tax_deduction / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>{" "}
           </View>
 
           <View
@@ -737,18 +942,34 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Cummulative Income
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
-                textAlign: "center",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-              {(
-                Math.round(payslipData.cummulative_income / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                  textAlign: "center",
+                }}
+              >
+                {(
+                  Math.round(payslipData.cummulative_income / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>{" "}
           </View>
 
           <View
@@ -770,27 +991,44 @@ const PayslipDocument = ({ payslipData }: { payslipData: any }) => (
             >
               Cummulative Pension
             </Text>
-            <Text
+            <View
               style={{
-                fontWeight: "bold",
-                fontSize: 11,
-                textAlign: "center",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {"\u20A6"}
-              {(
-                Math.round(payslipData.cummulative_pension / 10) * 10
-              ).toLocaleString() || 0}
-            </Text>
+              <Image
+                source={nairaImg}
+                style={{
+                  height: 13,
+                  width: 13,
+                  marginTop: -2,
+                  marginRight: -2,
+                }}
+              />
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 11,
+                  textAlign: "center",
+                }}
+              >
+                {(
+                  Math.round(payslipData.cummulative_pension / 10) * 10
+                ).toLocaleString() || 0}
+              </Text>
+            </View>{" "}
           </View>
         </View>
+        ,
       </View>
 
-      <View style={{ marginTop: 20 }}>
+      <View style={{ marginTop: 10 }}>
         <View>
           <Image
             source={PdfSign}
-            style={{ height: 40, width: 100, marginBottom: 10 }}
+            style={{ height: 40, width: 100, marginBottom: 5 }}
           />
         </View>
 

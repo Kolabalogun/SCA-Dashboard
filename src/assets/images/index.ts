@@ -24,3 +24,5 @@ export { default as Staff } from "./staffs.png";
 export { default as PdfLogo } from "./pdfLogo.png";
 
 export { default as PdfSign } from "./pdfSign.png";
+
+export { default as nairaImg } from "./nairaa.png";
