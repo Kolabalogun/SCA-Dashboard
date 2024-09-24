@@ -27,6 +27,7 @@ import {
   BasicInformations,
   MedicalInformations,
   PaymentInformations,
+  MedicalInformations2,
 } from "@/components/dashboard";
 import SubmitButton from "@/components/common/SubmitButton";
 import { PatientFormDefaultValues } from "@/constants";
@@ -64,7 +65,7 @@ const PatientProfile = () => {
   const [isDeletePatientModalOpen, setIsDeletePatientModalOpen] =
     useState(false);
 
-  console.log(patient);
+  // console.log(patient);
 
   useEffect(() => {
     scrollToTop();
@@ -214,7 +215,7 @@ const PatientProfile = () => {
           email: email.toLowerCase(),
           name: name.toLowerCase(),
           primaryPhysician: primaryPhysician.toLowerCase(),
-          patientStatus: patientStatus.toLowerCase(),
+          patientStatus: patientStatus,
         };
 
         const docRef = doc(db, "patients", userId);
@@ -235,11 +236,11 @@ const PatientProfile = () => {
         await setDoc(activitesRef, data);
 
         try {
-          const emailData = {
-            emails: [user?.email],
-            subject: `Patient Profile Update for ${name} `,
-            message: `You carried out Patient Profile Update for ${name}  `,
-          };
+          // const emailData = {
+          //   emails: [user?.email],
+          //   subject: `Patient Profile Update for ${name} `,
+          //   message: `You carried out Patient Profile Update for ${name}  `,
+          // };
 
           const adminEmailData = {
             emails: adminEmails,
@@ -247,9 +248,9 @@ const PatientProfile = () => {
             message: `Patient Profile Update for ${name} performed by ${user?.firstName} ${user?.lastName}`,
           };
 
-          const message = await sendEmail(emailData);
+          // // const message = await sendEmail(emailData);
           const adminMessage = await sendEmail(adminEmailData);
-          console.log("Email sent successfully:", message);
+          ////  console.log("Email sent successfully:", message);
           console.log("Admin Email sent successfully:", adminMessage);
         } catch (emailError) {
           console.error("Error sending email:", emailError);
@@ -344,11 +345,11 @@ const PatientProfile = () => {
           await setDoc(activitesRef, data);
 
           try {
-            const emailData = {
-              emails: [user?.email],
-              subject: `Patient Registration for ${name} `,
-              message: `You carried out Patient registration for ${name}  `,
-            };
+            // const emailData = {
+            //   emails: [user?.email],
+            //   subject: `Patient Registration for ${name} `,
+            //   message: `You carried out Patient registration for ${name}  `,
+            // };
 
             const adminEmailData = {
               emails: adminEmails,
@@ -356,9 +357,9 @@ const PatientProfile = () => {
               message: `Patient Registration for ${name} performed by ${user?.firstName} ${user?.lastName}`,
             };
 
-            const message = await sendEmail(emailData);
+            // const message = await sendEmail(emailData);
             const adminMessage = await sendEmail(adminEmailData);
-            console.log("Email sent successfully:", message);
+            //  console.log("Email sent successfully:", message);
             console.log("Admin Email sent successfully:", adminMessage);
           } catch (emailError) {
             console.error("Error sending email:", emailError);
@@ -416,7 +417,7 @@ const PatientProfile = () => {
             if (step !== 5) {
               setStep(step + 1);
             } else {
-              navigate(`/dashboard/success/${values.name}`);
+              navigate(`/dashboard/patients`);
             }
           } else {
             setStep(1);
@@ -463,6 +464,8 @@ const PatientProfile = () => {
       setIsDeleteLoading(false);
     }
   };
+
+  console.log(step);
 
   if (loading) return <Loader />;
 
@@ -532,9 +535,11 @@ const PatientProfile = () => {
                     {userId && "Edit"}{" "}
                     {step === 1
                       ? "Patient"
+                      : step === 2
+                      ? "Medical"
                       : step === 3
                       ? "Medical"
-                      : step === 2 && "Payment"}{" "}
+                      : step === 5 && "Payment"}{" "}
                     Informations.
                   </p>
                 )}
@@ -551,9 +556,11 @@ const PatientProfile = () => {
                   staffs={professionalCareOfficers}
                   form={form}
                 />
-              ) : step === 5 && userId ? (
+              ) : step === 6 && userId ? (
                 <LogsInformations form={form} />
               ) : step === 3 ? (
+                <MedicalInformations2 form={form} />
+              ) : step === 4 ? (
                 <MedicalReports
                   form={form}
                   patientDocId={patientDocId || userId}
@@ -568,9 +575,9 @@ const PatientProfile = () => {
                 )
               )}
 
-              {step !== 5 && user?.accessRole !== AccessRole.Viewer && (
+              {step !== 6 && user?.accessRole !== AccessRole.Viewer && (
                 <SubmitButton isLoading={isLoading}>
-                  {userId ? "Submit" : step !== 4 ? "Continue" : "Submit"}
+                  {userId ? "Submit" : step !== 5 ? "Continue" : "Submit"}
                 </SubmitButton>
               )}
             </form>
@@ -584,10 +591,10 @@ const PatientProfile = () => {
                   <ArrowLeft /> Go Back
                 </Button>
               )}
-              {step < 4 &&
+              {step < 5 &&
                 userId &&
-                (step !== 3 ||
-                  (step === 3 &&
+                (step !== 4 ||
+                  (step === 4 &&
                     (AccessRole.Admin === user?.accessRole ||
                       AccessRole.Editor === user?.accessRole))) && (
                   <Button
@@ -599,7 +606,7 @@ const PatientProfile = () => {
                   </Button>
                 )}
 
-              {step === 4 && userId && logs && logs?.length > 0 && (
+              {step === 5 && userId && logs && logs?.length > 0 && (
                 <Button
                   className="flex bg-blue-700 items-center gap-2 "
                   onClick={() => setStep(step + 1)}
@@ -610,7 +617,7 @@ const PatientProfile = () => {
               )}
             </div>
 
-            {userId && user?.accessRole === AccessRole.Admin && (
+            {userId && step === 1 && user?.accessRole === AccessRole.Admin && (
               <div className="my-8">
                 <Button
                   type="button"

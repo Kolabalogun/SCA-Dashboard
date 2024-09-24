@@ -129,17 +129,17 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
         await setDoc(activitesRef, actvityPayload);
 
         try {
-          const emailData = {
-            emails: [user?.email],
-            subject: `New Medical Report titled ${title} `,
-            message: `Medical Report, titled "${title}" is added by ${
-              user?.firstName
-            } ${
-              user?.lastName
-            }. This report is assigned to Patient ${name} on ${
-              formatDate(new Date().toISOString()) || "N/A"
-            }`,
-          };
+          // const emailData = {
+          //   emails: [user?.email],
+          //   subject: `New Medical Report titled ${title} `,
+          //   message: `Medical Report, titled "${title}" is added by ${
+          //     user?.firstName
+          //   } ${
+          //     user?.lastName
+          //   }. This report is assigned to Patient ${name} on ${
+          //     formatDate(new Date().toISOString()) || "N/A"
+          //   }`,
+          // };
 
           const adminEmailData = {
             emails: adminEmails,
@@ -153,9 +153,9 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
             }`,
           };
 
-          const message = await sendEmail(emailData);
+          // // const message = await sendEmail(emailData);
           const adminMessage = await sendEmail(adminEmailData);
-          console.log("Email sent successfully:", message);
+          ////  console.log("Email sent successfully:", message);
           console.log("Admin Email sent successfully:", adminMessage);
         } catch (emailError) {
           console.error("Error sending email:", emailError);
@@ -220,17 +220,17 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
         await setDoc(activitesRef, dataa);
 
         try {
-          const emailData = {
-            emails: [user?.email],
-            subject: `You just deleted a Report titled ${reportToDelete.title} `,
-            message: `Medical Report, titled "${
-              reportToDelete.title
-            }" was deleted by ${user?.firstName} ${
-              user?.lastName
-            }. Initially, this report was assigned to Patient ${name} on ${
-              formatDate(reportToDelete?.formDate) || "N/A"
-            }`,
-          };
+          // const emailData = {
+          //   emails: [user?.email],
+          //   subject: `You just deleted a Report titled ${reportToDelete.title} `,
+          //   message: `Medical Report, titled "${
+          //     reportToDelete.title
+          //   }" was deleted by ${user?.firstName} ${
+          //     user?.lastName
+          //   }. Initially, this report was assigned to Patient ${name} on ${
+          //     formatDate(reportToDelete?.formDate) || "N/A"
+          //   }`,
+          // };
 
           const adminEmailData = {
             emails: adminEmails,
@@ -244,9 +244,9 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
             }`,
           };
 
-          const message = await sendEmail(emailData);
+          // // const message = await sendEmail(emailData);
           const adminMessage = await sendEmail(adminEmailData);
-          console.log("Email sent successfully:", message);
+          ////  console.log("Email sent successfully:", message);
           console.log("Admin Email sent successfully:", adminMessage);
         } catch (emailError) {
           console.error("Error sending email:", emailError);
@@ -296,7 +296,7 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
       <section className="space-y-6">
         {medicalReports && medicalReports.length > 0 && (
           <section className="space-y-6">
-            <h3 className="sub-header">Medical Reports</h3>
+            <h3 className="sub-header">Medical Reviews</h3>
             <ul className="space-y-5 ">
               {medicalReports
                 ?.slice()
@@ -371,7 +371,7 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
 
       <section className="space-y-9">
         <div className="mb-9 space-y-1">
-          <h2 className="sub-header">Add New Report</h2>
+          <h2 className="sub-header">Add New Review</h2>
         </div>
 
         {/* <CustomFormField
@@ -385,8 +385,8 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
           fieldType={FormFieldType.INPUT}
           control={form.control}
           name="title"
-          label="Title of Report"
-          placeholder="Enter Title of Report"
+          label="Title of Review"
+          placeholder="Enter Title of Review"
         />
 
         <div style={{ color: "black" }} className="text-black">
@@ -397,7 +397,7 @@ const MedicalReports = ({ form, patientDocId }: Props) => {
           fieldType={FormFieldType.SKELETON}
           control={form.control}
           name="reportFile"
-          label="Add Report Document (if any)"
+          label="Add Review Document (if any)"
           renderSkeleton={(field) => (
             <FormControl>
               <FileUploader files={field.value} onChange={field.onChange} />

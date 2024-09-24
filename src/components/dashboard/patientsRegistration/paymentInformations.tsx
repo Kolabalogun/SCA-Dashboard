@@ -158,15 +158,15 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
         await updateDoc(patientRef, patientPayload);
 
         try {
-          const emailData = {
-            emails: [user?.email],
-            subject: `New Revenue from Patient Admission`,
-            message: `You added a New Revenue from Patient Admission amounting to ₦${parseInt(
-              paymentReceived as string
-            )?.toLocaleString()} from ${name}. Stay Periods: ${
-              stayPeriods || "N/A"
-            }.`,
-          };
+          // const emailData = {
+          //   emails: [user?.email],
+          //   subject: `New Revenue from Patient Admission`,
+          //   message: `You added a New Revenue from Patient Admission amounting to ₦${parseInt(
+          //     paymentReceived as string
+          //   )?.toLocaleString()} from ${name}. Stay Periods: ${
+          //     stayPeriods || "N/A"
+          //   }.`,
+          // };
 
           const adminEmailData = {
             emails: adminEmails,
@@ -179,9 +179,9 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
               stayPeriods || "N/A"
             }.`,
           };
-          const message = await sendEmail(emailData);
+          // // const message = await sendEmail(emailData);
           const adminMessage = await sendEmail(adminEmailData);
-          console.log("Email sent successfully:", message);
+          ////  console.log("Email sent successfully:", message);
           console.log("Admin Email sent successfully:", adminMessage);
         } catch (emailError) {
           console.error("Error sending email:", emailError);
@@ -210,7 +210,6 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       setIsLoading(false);
     }
   };
-  console.log(paymentToDelete);
 
   const handleDeletePayment = async () => {
     setIsDeleteLoading(true);
@@ -227,8 +226,6 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
         });
       }
 
-      console.log(paymentToDelete?.revenueId);
-
       const revenueDocRef = doc(db, "revenue", paymentToDelete?.revenueId);
 
       await deleteDoc(revenueDocRef);
@@ -236,11 +233,12 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       // Deduct the payment amount from totalRevenue
       if (adminData?.totalRevenue) {
         const updatedRevenue =
-          parseInt(adminData.totalRevenue) - paymentToDelete?.paymentAmount;
+          parseInt(adminData.totalRevenue) -
+          parseInt(paymentToDelete?.paymentReceived);
 
         const updatedPatientRevenue =
           parseInt(adminData.patientAdmissionRevenue) -
-          paymentToDelete?.paymentAmount;
+          parseInt(paymentToDelete?.paymentReceived);
         const adminDocRef = doc(db, "admin", "adminDoc");
 
         await updateDoc(adminDocRef, {
@@ -250,6 +248,7 @@ const PaymentInformations = ({ form, patientDocId }: Props) => {
       }
 
       form.setValue("paymentHistory", updatedPayments);
+      getAdminContent();
 
       showToast(toast, "Payment", "warning", "Payment deleted successfully");
       setIsDeletePaymentModalOpen(false);

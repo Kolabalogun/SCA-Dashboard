@@ -133,8 +133,8 @@ const Patients = () => {
       // Search by patientStatus
       const patientStatusQuery = query(
         patientsRef,
-        where("patientStatus", ">=", searchTerm.trim().toLowerCase()),
-        where("patientStatus", "<=", searchTerm.trim().toLowerCase() + "\uf8ff")
+        where("patientStatus", ">=", searchTerm.trim()),
+        where("patientStatus", "<=", searchTerm.trim() + "\uf8ff")
       );
 
       // Get both name and email results in parallel
@@ -237,10 +237,10 @@ const Patients = () => {
       </section>
 
       {/* Search Input */}
-      <div className="mb-2 flex gap-4 items-center">
+      <div className="mb-2 flex flex-col xl:flex-row gap-4 xl:items-center">
         <input
           type="text"
-          placeholder="Search by Name, Email,  or ID"
+          placeholder="Search by Name, Email, or Status"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="py-2 px-4  border border-[#363a3d] text-sm flex-1 bg-[#1a1d21] rounded"

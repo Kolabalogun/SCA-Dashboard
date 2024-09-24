@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useToast } from "@chakra-ui/react";
 import {
@@ -20,6 +21,72 @@ import { useDispatch } from "react-redux";
 import showToast from "../common/toast";
 import { useSelector } from "react-redux";
 import { AccessRole } from "@/types/types";
+
+export const viewerLinks = [
+  {
+    icon: <HomeIcon size={20} />,
+    title: "Home",
+    link: "/dashboard",
+  },
+  {
+    icon: <Users size={20} />,
+    title: "Patients",
+    link: "/dashboard/patients",
+  },
+
+  {
+    icon: <Contact size={20} />,
+    title: "Staffs",
+    link: "/dashboard/staffs",
+  },
+];
+
+export const patientEditorLinks = [
+  {
+    icon: <HomeIcon size={20} />,
+    title: "Home",
+    link: "/dashboard",
+  },
+  {
+    icon: <Users size={20} />,
+    title: "Patients",
+    link: "/dashboard/patients",
+  },
+];
+
+export const otherslinks = [
+  {
+    icon: <HomeIcon size={20} />,
+    title: "Home",
+    link: "/dashboard",
+  },
+  {
+    icon: <Users size={20} />,
+    title: "Patients",
+    link: "/dashboard/patients",
+  },
+
+  {
+    icon: <Contact size={20} />,
+    title: "Staffs",
+    link: "/dashboard/staffs",
+  },
+  {
+    icon: <Landmark size={20} />,
+    title: "Revenue",
+    link: "/dashboard/revenue",
+  },
+  {
+    icon: <ChartCandlestick size={20} />,
+    title: "Expenses",
+    link: "/dashboard/expenses",
+  },
+  {
+    icon: <ScrollIcon size={20} />,
+    title: "Payslip",
+    link: "/dashboard/payslip",
+  },
+];
 
 const Sidebar = () => {
   const toast = useToast();
@@ -50,72 +117,6 @@ const Sidebar = () => {
     }
   };
 
-  const viewerLinks = [
-    {
-      icon: <HomeIcon size={20} />,
-      title: "Home",
-      link: "/dashboard",
-    },
-    {
-      icon: <Users size={20} />,
-      title: "Patients",
-      link: "/dashboard/patients",
-    },
-
-    {
-      icon: <Contact size={20} />,
-      title: "Staffs",
-      link: "/dashboard/staffs",
-    },
-  ];
-
-  const patientEditorLinks = [
-    {
-      icon: <HomeIcon size={20} />,
-      title: "Home",
-      link: "/dashboard",
-    },
-    {
-      icon: <Users size={20} />,
-      title: "Patients",
-      link: "/dashboard/patients",
-    },
-  ];
-
-  const otherslinks = [
-    {
-      icon: <HomeIcon size={20} />,
-      title: "Home",
-      link: "/dashboard",
-    },
-    {
-      icon: <Users size={20} />,
-      title: "Patients",
-      link: "/dashboard/patients",
-    },
-
-    {
-      icon: <Contact size={20} />,
-      title: "Staffs",
-      link: "/dashboard/staffs",
-    },
-    {
-      icon: <Landmark size={20} />,
-      title: "Revenue",
-      link: "/dashboard/revenue",
-    },
-    {
-      icon: <ChartCandlestick size={20} />,
-      title: "Expenses",
-      link: "/dashboard/expenses",
-    },
-    {
-      icon: <ScrollIcon size={20} />,
-      title: "Payslip",
-      link: "/dashboard/payslip",
-    },
-  ];
-
   const links =
     user?.accessRole === AccessRole.Admin ||
     user?.accessRole === AccessRole.Editor
@@ -136,7 +137,7 @@ const Sidebar = () => {
         message="Are you sure you want to Log Out?"
       />
 
-      <div className="w-36 border-r overflow-y-scroll remove-scrollbar shadow-md text-white flex justify-between flex-col h-full space-y-12  px-2 items-center pt-8 pb-10 ">
+      <div className="w-36 xl:flex hidden border-r overflow-y-scroll remove-scrollbar shadow-md text-white   justify-between flex-col h-full space-y-12  px-2 items-center pt-8 pb-10 ">
         <div className="mb-10 cursor-pointer">
           <Menu size={24} />
         </div>

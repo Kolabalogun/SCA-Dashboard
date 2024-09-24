@@ -4,7 +4,7 @@ import { z } from "zod";
 const nameSchema = z
   .string()
   .min(2, "Field must be at least 2 characters")
-  .max(500, "Field must be at most 500 characters");
+  .max(5000, "Field must be at most 5000 characters");
 
 const emailSchema = z.string().email("Invalid email address");
 

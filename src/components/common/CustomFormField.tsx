@@ -119,6 +119,7 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
           <Textarea
             placeholder={props.placeholder}
             {...field}
+            rows={15}
             readOnly={props.readOnly}
             className="shad-textArea"
             disabled={props.disabled}

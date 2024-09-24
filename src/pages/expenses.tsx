@@ -232,7 +232,7 @@ const Expenses = () => {
       )}
 
       {/* Search Input with Date Pickers */}
-      <div className="mb-2 flex gap-4 z-50 items-center">
+      <div className="mb-2 flex flex-col xl:flex-row gap-4 z-50 xl:items-center">
         <input
           type="text"
           placeholder="Search by patient, amount, or type"

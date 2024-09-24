@@ -8,7 +8,7 @@ export default function Root() {
       <div className="  border-l-gray-600 remove-scrollbar  flex-1 h-full min-h-screen overflow-y-scroll  ">
         <Header />
 
-        <main className=" max-w-[1600px] mx-auto   p-6">
+        <main className=" max-w-[1600px] mx-auto  py-6 px-3  xl:p-6">
           <Outlet />
         </main>
       </div>

@@ -8,7 +8,11 @@ export const columns = [
   {
     header: "#",
     cell: ({ row }: { row: any }) => {
-      return <p className="text-14-medium py-2 ">{row.index + 1}</p>;
+      return (
+        <p className="text-12-medium xl:text-14-medium py-2 ">
+          {row.index + 1}
+        </p>
+      );
     },
   },
   {
@@ -16,7 +20,11 @@ export const columns = [
     header: "Patient",
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
-      return <p className="text-14-medium uppercase ">{appointment?.name}</p>;
+      return (
+        <p className="text-12-medium xl:text-14-medium min-w-[150px] xl:w-full uppercase ">
+          {appointment?.name}
+        </p>
+      );
     },
   },
   {
@@ -25,7 +33,7 @@ export const columns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className="text-14-medium capitalize ">
+        <p className="text-12-medium xl:text-14-medium  capitalize ">
           {appointment?.patientStatus}
         </p>
       );
@@ -37,7 +45,7 @@ export const columns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className="text-14-regular min-w-[100px]">
+        <p className="text-12-medium xl:text-14-regular min-w-[200px] xl:w-full  ">
           {formatDateTime(appointment?.createdAt)}
         </p>
       );
@@ -51,7 +59,7 @@ export const columns = [
 
       return (
         <div className="flex items-center gap-3">
-          <p className="whitespace-nowrap">
+          <p className="whitespace-nowrap text-12-medium xl:text-14-regular min-w-[200px] xl:w-full  capitalize">
             Dr. {appointment?.primaryPhysician}
           </p>
         </div>
@@ -74,7 +82,9 @@ function ActionsCell({ appointment }: { appointment: any }) {
       onClick={() => navigate(`/dashboard/patient/${appointment?.id}`)}
       className="cursor-pointer"
     >
-      <p className="text-14-medium text-green-500">View Profile</p>
+      <p className="text-center  min-w-[200px] xl:w-full  text-12-medium xl:text-14-medium text-green-500">
+        View Profile
+      </p>
     </button>
   );
 }
@@ -83,7 +93,11 @@ export const staffsColumns = [
   {
     header: "#",
     cell: ({ row }: { row: any }) => {
-      return <p className="text-14-medium py-2 ">{row.index + 1}</p>;
+      return (
+        <p className="text-12-medium xl:text-14-medium py-2 ">
+          {row.index + 1}
+        </p>
+      );
     },
   },
   {
@@ -92,7 +106,9 @@ export const staffsColumns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className="text-14-medium capitalize ">{appointment?.firstName}</p>
+        <p className="text-12-medium xl:text-14-medium min-w-[150px] xl:w-full capitalize ">
+          {appointment?.firstName}
+        </p>
       );
     },
   },
@@ -103,7 +119,9 @@ export const staffsColumns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className="text-14-medium capitalize ">{appointment?.lastName}</p>
+        <p className="text-12-medium xl:text-14-medium min-w-[150px] xl:w-full capitalize ">
+          {appointment?.lastName}
+        </p>
       );
     },
   },
@@ -114,7 +132,7 @@ export const staffsColumns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className="text-14-medium cursor-pointer lowercase ">
+        <p className="text-12-medium xl:text-14-medium min-w-[150px] xl:w-full cursor-pointer lowercase ">
           <a href={`mailto:${appointment?.email}`}> {appointment?.email}</a>
         </p>
       );
@@ -127,7 +145,9 @@ export const staffsColumns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className="text-14-regular capitalize ">{appointment?.occupation}</p>
+        <p className="text-12-medium xl:text-14-regular min-w-[150px] xl:w-full   capitalize ">
+          {appointment?.occupation}
+        </p>
       );
     },
   },
@@ -149,7 +169,9 @@ function StaffActionsCell({ appointment }: { appointment: any }) {
       onClick={() => navigate(`/dashboard/staff/${appointment?.id}`)}
       className="cursor-pointer"
     >
-      <p className="text-14-medium text-green-500">View Profile</p>
+      <p className="text-12-medium xl:text-14-medium min-w-[100px] xl:w-full text-green-500">
+        View Profile
+      </p>
     </button>
   );
 }
@@ -158,7 +180,11 @@ export const revenueColumns = [
   {
     header: "#",
     cell: ({ row }: { row: any }) => {
-      return <p className="text-14-medium py-2 ">{row.index + 1}</p>;
+      return (
+        <p className="text-12-medium xl:text-14-medium  py-2 ">
+          {row.index + 1}
+        </p>
+      );
     },
   },
   {
@@ -166,7 +192,11 @@ export const revenueColumns = [
     header: "Type",
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
-      return <p className="text-14-medium capitalize ">{appointment?.type}</p>;
+      return (
+        <p className="text-12-medium xl:text-14-medium min-w-[150px] xl:w-full capitalize ">
+          {appointment?.type}
+        </p>
+      );
     },
   },
 
@@ -176,7 +206,7 @@ export const revenueColumns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className="text-14-medium capitalize ">
+        <p className="text-12-medium xl:text-14-medium min-w-[150px] xl:w-full capitalize ">
           {formatDateTime(appointment?.createdAt)}
         </p>
       );
@@ -189,7 +219,9 @@ export const revenueColumns = [
     cell: ({ row }: { row: any }) => {
       const appointment = row.original;
       return (
-        <p className="text-14-regular uppercase ">{appointment?.patient}</p>
+        <p className="text-12-medium xl:text-14-regular min-w-[150px] xl:w-full uppercase ">
+          {appointment?.patient}
+        </p>
       );
     },
   },
@@ -200,7 +232,7 @@ export const revenueColumns = [
       const appointment = row.original;
       return (
         <p
-          className={` font-bold ${
+          className={` min-w-[150px] xl:w-full font-bold ${
             appointment?.id.includes("expenses")
               ? "text-red-500"
               : "text-green-700 "
@@ -235,7 +267,9 @@ function RevenueActionsCell({ appointment }: { appointment: any }) {
       }
       className="cursor-pointer"
     >
-      <p className="text-14-medium text-green-500">View Details</p>
+      <p className="text-12-medium xl:text-14-medium min-w-[100px] xl:w-full text-green-500">
+        View Details
+      </p>
     </button>
   );
 }

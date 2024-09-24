@@ -48,7 +48,7 @@ export const PatientFormDefaultValues = {
   address: "",
   occupation: "",
   occupationHistory: "",
-  patientStatus: "Admitted" as const,
+  patientStatus: "Admitted" as PStatus,
 
   // Medical Information
   primaryPhysician: "",
@@ -213,7 +213,7 @@ export const IdentificationTypes = [
   "Birth Certificate",
   "Driver's License",
   "Medical Insurance Card/Policy",
-  "National Identity Card",
+  "National Identity Card (NIN)",
   "Passport",
   "Resident Alien Card (Green Card)",
   "Student ID Card",

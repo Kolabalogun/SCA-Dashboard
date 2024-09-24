@@ -129,17 +129,17 @@ const AddOtherRevenue = () => {
       await setDoc(activitesRef, dataa);
 
       try {
-        const emailData = {
-          emails: [user?.email],
-          subject: `New Revenue from ${values?.type} `,
-          message: `You added a New Revenue from ${
-            values?.type
-          } amounting to ₦${parseInt(
-            values?.amount as string
-          )?.toLocaleString()} from ${values?.patient}. Description: ${
-            values.desc || "N/A"
-          }.`,
-        };
+        // const emailData = {
+        //   emails: [user?.email],
+        //   subject: `New Revenue from ${values?.type} `,
+        //   message: `You added a New Revenue from ${
+        //     values?.type
+        //   } amounting to ₦${parseInt(
+        //     values?.amount as string
+        //   )?.toLocaleString()} from ${values?.patient}. Description: ${
+        //     values.desc || "N/A"
+        //   }.`,
+        // };
 
         const adminEmailData = {
           emails: adminEmails,
@@ -153,9 +153,9 @@ const AddOtherRevenue = () => {
           }.`,
         };
 
-        const message = await sendEmail(emailData);
+        // const message = await sendEmail(emailData);
         const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
+        //  console.log("Email sent successfully:", message);
         console.log("Admin Email sent successfully:", adminMessage);
       } catch (emailError) {
         console.error("Error sending email:", emailError);

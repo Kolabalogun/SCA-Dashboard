@@ -215,11 +215,11 @@ const StaffProfile = () => {
         await setDoc(activitesRef, data);
 
         try {
-          const emailData = {
-            emails: [user?.email],
-            subject: `Staff Profile Update for ${user?.firstName} ${user?.lastName} `,
-            message: `You carried out Staff Profile Update for ${user?.firstName} ${user?.lastName}  `,
-          };
+          // const emailData = {
+          //   emails: [user?.email],
+          //   subject: `Staff Profile Update for ${user?.firstName} ${user?.lastName} `,
+          //   message: `You carried out Staff Profile Update for ${user?.firstName} ${user?.lastName}  `,
+          // };
 
           const adminEmailData = {
             emails: adminEmails,
@@ -227,9 +227,9 @@ const StaffProfile = () => {
             message: `Staff Profile Update for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
           };
 
-          const message = await sendEmail(emailData);
+          // const message = await sendEmail(emailData);
           const adminMessage = await sendEmail(adminEmailData);
-          console.log("Email sent successfully:", message);
+          //  console.log("Email sent successfully:", message);
           console.log("Admin Email sent successfully:", adminMessage);
         } catch (emailError) {
           console.error("Error sending email:", emailError);
@@ -342,11 +342,11 @@ const StaffProfile = () => {
 
           // Email sending in a separate try-catch block to handle its own errors
           try {
-            const emailData = {
-              emails: [user?.email],
-              subject: `Staff Registration for ${user?.firstName} ${user?.lastName} `,
-              message: `You carried out Staff registration for ${user?.firstName} ${user?.lastName}  `,
-            };
+            // const emailData = {
+            //   emails: [user?.email],
+            //   subject: `Staff Registration for ${user?.firstName} ${user?.lastName} `,
+            //   message: `You carried out Staff registration for ${user?.firstName} ${user?.lastName}  `,
+            // };
 
             const newStaffEmailData = {
               emails: [email],
@@ -360,11 +360,11 @@ const StaffProfile = () => {
               message: `Staff Registration for ${firstName} ${lastName} performed by ${user?.firstName} ${user?.lastName}. Staff Role is set to ${values?.accessRole}`,
             };
 
-            const message = await sendEmail(emailData);
+            // const message = await sendEmail(emailData);
             const staffMessage = await sendEmail(newStaffEmailData);
             const adminMessage = await sendEmail(adminEmailData);
 
-            console.log("Email sent successfully:", message);
+            //  console.log("Email sent successfully:", message);
             console.log("Email sent successfully:", staffMessage);
             console.log("Admin Email sent successfully:", adminMessage);
           } catch (emailError) {

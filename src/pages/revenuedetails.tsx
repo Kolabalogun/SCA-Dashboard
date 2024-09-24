@@ -137,21 +137,21 @@ const RevenueDetails = () => {
       await setDoc(activitesRef, dataa);
 
       try {
-        const emailData = {
-          emails: [user?.email],
-          subject: `You just deleted a Revenue on ${
-            revenue?.type
-          } amounting to ₦${parseInt(
-            revenue?.amount as string
-          )?.toLocaleString()}.`,
-          message: `Revenue with ID: ${revenue?.id}, titled "${
-            revenue?.desc
-          }" and amounting to ₦${parseInt(
-            revenue?.amount
-          )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
-            revenue?.paymentRegisteredBy || revenue?.registeredBy
-          } on ${formatDate(revenue?.formDate) || "N/A"}`,
-        };
+        // const emailData = {
+        //   emails: [user?.email],
+        //   subject: `You just deleted a Revenue on ${
+        //     revenue?.type
+        //   } amounting to ₦${parseInt(
+        //     revenue?.amount as string
+        //   )?.toLocaleString()}.`,
+        //   message: `Revenue with ID: ${revenue?.id}, titled "${
+        //     revenue?.desc
+        //   }" and amounting to ₦${parseInt(
+        //     revenue?.amount
+        //   )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
+        //     revenue?.paymentRegisteredBy || revenue?.registeredBy
+        //   } on ${formatDate(revenue?.formDate) || "N/A"}`,
+        // };
 
         const adminEmailData = {
           emails: adminEmails,
@@ -167,9 +167,9 @@ const RevenueDetails = () => {
           } on ${formatDate(revenue?.formDate) || "N/A"}`,
         };
 
-        const message = await sendEmail(emailData);
+        // const message = await sendEmail(emailData);
         const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
+        //  console.log("Email sent successfully:", message);
         console.log("Admin Email sent successfully:", adminMessage);
       } catch (emailError) {
         console.error("Error sending email:", emailError);

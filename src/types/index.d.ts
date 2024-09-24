@@ -7,6 +7,7 @@ declare type Gender = "Male" | "Female" | "Other";
 declare type MaritalStatus = "Single" | "Married" | "Other";
 declare type Status = "pending" | "scheduled" | "cancelled";
 declare type AccessRole = "No Access" | "Viewer" | "Editor" | "Admin";
+declare type PStatus = "Admitted" | "Discharged" | "Others";
 
 declare type StaffOccupation =
   | "Administrator"

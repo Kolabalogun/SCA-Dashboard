@@ -142,9 +142,9 @@ const ExpenseDetails = () => {
           } on ${formatDate(expenses?.formDate) || "N/A"}`,
         };
 
-        const message = await sendEmail(emailData);
+        // const message = await sendEmail(emailData);
         const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
+        //  console.log("Email sent successfully:", message);
         console.log("Admin Email sent successfully:", adminMessage);
       } catch (emailError) {
         console.error("Error sending email:", emailError);

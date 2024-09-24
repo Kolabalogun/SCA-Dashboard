@@ -214,7 +214,7 @@ const Revenue = () => {
         </div>
       </section>
       {AccessRole.Admin === user?.accessRole && (
-        <section className="w-full   justify-between gap-5  xl:gap-10 grid grid-cols-2">
+        <section className="w-full   justify-between gap-5 xl:space-y-0 space-y-6   xl:gap-10 xl:grid grid-cols-2">
           <StatCard
             type="pending"
             count={`₦${adminData?.totalRevenue?.toLocaleString() || 0}`}
@@ -246,7 +246,7 @@ const Revenue = () => {
       )}
 
       {/* Search Input with Date Pickers */}
-      <div className="mb-2 flex gap-4 z-50 items-center">
+      <div className="mb-2 flex xl:flex-row flex-col gap-4 z-50 xl:items-center">
         <input
           type="text"
           placeholder="Search by patient, amount, or type"

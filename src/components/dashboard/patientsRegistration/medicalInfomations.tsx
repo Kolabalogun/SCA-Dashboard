@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DrCruz } from "@/assets/images";
 import CustomFormField from "@/components/common/CustomFormField";
-import { FormControl } from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 import { SelectItem } from "@/components/ui/select";
-import { DrugsOptions } from "@/constants";
+
 import { FormFieldType } from "@/types/types";
 import { UseFormReturn } from "react-hook-form";
 
@@ -46,25 +44,38 @@ const MedicalInfomations = ({ form, staffs }: Props) => {
 
       <section className="space-y-6">
         <div className="mb-9 space-y-1">
-          <h2 className="sub-header">Patient History</h2>
+          <h2 className="sub-header">Complaints</h2>
         </div>
 
         {/* FAMILY MEDICATION & PAST MEDICATIONS */}
+
+        <CustomFormField
+          fieldType={FormFieldType.TEXTAREA}
+          control={form.control}
+          name="familyMembersComplains"
+          label="Complaint from the family/parent"
+          placeholder="Describe any concerns or complaints expressed by the family or parent regarding the individual's behavior, health, or well-being."
+        />
+
+        <CustomFormField
+          fieldType={FormFieldType.TEXTAREA}
+          control={form.control}
+          name="patientsComplains"
+          label="Complaint from the patient (if any)"
+          placeholder="Mention any complaints or concerns raised by the patient regarding their health, treatment, or well-being (if applicable)"
+        />
+      </section>
+      <section className="space-y-6">
+        <div className="mb-9 space-y-1">
+          <h2 className="sub-header">History</h2>
+        </div>
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
             control={form.control}
             name="familyMedicalHistory"
-            label="Patient's history"
-            placeholder="Mother had brain cancer, Father has hypertension"
-          />
-
-          <CustomFormField
-            fieldType={FormFieldType.TEXTAREA}
-            control={form.control}
-            name="pastMedicalHistory"
-            label="Past medical history"
-            placeholder="Appendectomy in 2015, Asthma diagnosis in childhood"
+            label="Family History"
+            placeholder="Provide details of any relevant family medical history, including genetic conditions, chronic illnesses, or other health concerns"
           />
         </div>
 
@@ -72,17 +83,41 @@ const MedicalInfomations = ({ form, staffs }: Props) => {
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
             control={form.control}
-            name="familyMembersComplains"
-            label="Complaints From The Relation"
-            placeholder="Strange acting.."
+            name="psychosocialHistory"
+            label="Psychosocial History"
+            placeholder="Provide relevant details about the individual's social, emotional, and psychological background, including family relationships, social interactions, and any relevant personal history"
           />
-
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
             control={form.control}
-            name="patientsComplains"
-            label="Complaints From The Patient"
-            placeholder="Strange acting..."
+            name="psychosexualHistory"
+            label="Psychosexual History"
+            placeholder="Describe the individual's sexual development, experiences, orientation, and any relevant concerns or issues related to sexual behavior or identity"
+          />
+        </div>
+
+        <CustomFormField
+          fieldType={FormFieldType.TEXTAREA}
+          control={form.control}
+          name="pastMedicalHistory"
+          label="Past Medical History"
+          placeholder="List any past medical conditions, surgeries, or hospitalizations, including dates and treatments received."
+        />
+
+        <div className="flex flex-col gap-6 xl:flex-row">
+          <CustomFormField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="educationHistory"
+            label="Education History"
+            placeholder="Provide details of the patient's educational background, including the highest level completed and any difficulties encountered."
+          />
+          <CustomFormField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="vocationalHistory"
+            label="Vocational History"
+            placeholder="Describe the patient's work history, job roles, and any work-related challenges or achievements."
           />
         </div>
 
@@ -90,9 +125,9 @@ const MedicalInfomations = ({ form, staffs }: Props) => {
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
             control={form.control}
-            name="socialWorkerFindings"
-            label="Social Worker Findings"
-            placeholder="Apperance, Mood, Judgement"
+            name="forensic"
+            label="Forensic"
+            placeholder="Detail any involvement with the legal system, including arrests, charges, or court cases, if applicable."
           />
 
           <CustomFormField
@@ -100,12 +135,22 @@ const MedicalInfomations = ({ form, staffs }: Props) => {
             control={form.control}
             name="allergies"
             label="Allergies (if any)"
-            placeholder="Peanuts, Penicillin, Pollen"
+            placeholder="List any known allergies (e.g., food, medication, environmental) or indicate 'none' if there are none."
+          />
+        </div>
+
+        <div className="flex flex-col gap-6 xl:flex-row">
+          <CustomFormField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="drugUseHistory"
+            label="Drug Use History"
+            placeholder="Provide details about past and current drug use, including types of drugs and frequency of use, or indicate 'none' if applicable."
           />
         </div>
 
         {/* ALLERGY & CURRENT MEDICATIONS */}
-        <div className="flex flex-col gap-6 xl:flex-row">
+        {/* <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.TEXTAREA}
             control={form.control}
@@ -121,100 +166,20 @@ const MedicalInfomations = ({ form, staffs }: Props) => {
             label="Current medications"
             placeholder="Ibuprofen 200mg, Levothyroxine 50mcg"
           />
-        </div>
-      </section>
-      <section className="space-y-6">
-        <div className="mb-9 space-y-1">
-          <h2 className="sub-header">History Of Drug Abuse</h2>
-        </div>
-
-        <CustomFormField
-          fieldType={FormFieldType.SKELETON}
-          control={form.control}
-          name="typeOfDrugUse"
-          label="Type of Drug use"
-          renderSkeleton={(field) => (
-            <FormControl>
-              <RadioGroup
-                className="flex h-11 gap-6 xl:justify-between"
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                value={field.value}
-              >
-                {DrugsOptions.map((option, i) => (
-                  <div key={option + i} className="radio-group">
-                    <RadioGroupItem value={option} id={option} />
-                    <Label htmlFor={option} className="cursor-pointer">
-                      {option}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </FormControl>
-          )}
-        />
-        <div className="flex flex-col gap-6 xl:flex-row">
-          <CustomFormField
-            fieldType={FormFieldType.INPUT}
-            control={form.control}
-            name="otherDrugs"
-            label="Other Drugs (Specify if any)"
-            placeholder="Weed"
-          />
-          <CustomFormField
-            fieldType={FormFieldType.INPUT}
-            control={form.control}
-            name="quantityDrugsConsumedDaily"
-            label="Quantity Consummed daily"
-            placeholder="2"
-          />
-        </div>
-        <div className="flex flex-col gap-6 xl:flex-row">
-          <CustomFormField
-            fieldType={FormFieldType.TEXTAREA}
-            control={form.control}
-            name="financialImplicationsOfDrugAbuse"
-            label="Financial Implications on Drug Consummed"
-            placeholder="N500 per Day"
-          />
-
-          <CustomFormField
-            fieldType={FormFieldType.TEXTAREA}
-            control={form.control}
-            name="factorsThatLedToTheAbuse"
-            label="Factors that led to the Abuse"
-            placeholder=""
-          />
-        </div>
+        </div> */}
       </section>
 
       <section className="space-y-6">
         <div className="mb-9 space-y-1">
-          <h2 className="sub-header">Psychiatrist Comment</h2>
+          <h2 className="sub-header">Differential Diagnosis</h2>
         </div>
 
         <CustomFormField
           fieldType={FormFieldType.TEXTAREA}
           control={form.control}
-          name="diagnosis"
-          label="Diagnosis"
-          placeholder="Headache, Stomach aches, etc..."
-        />
-
-        <CustomFormField
-          fieldType={FormFieldType.TEXTAREA}
-          control={form.control}
-          name="newMedication"
-          label="New Medications"
-          placeholder="Ibuprofen 200mg, Levothyroxine 50mcg"
-        />
-
-        <CustomFormField
-          fieldType={FormFieldType.TEXTAREA}
-          control={form.control}
-          name="rehabilitationRecommendation"
-          label="Rehabilitation & Recommendation"
-          placeholder=""
+          name="patientsComplains"
+          label="Psychiatrist Only"
+          placeholder="Enter the differential diagnosis as assessed by the psychiatrist"
         />
       </section>
     </div>

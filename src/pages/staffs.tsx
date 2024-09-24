@@ -244,7 +244,7 @@ const Staffs = () => {
       )}
 
       {/* Search Input */}
-      <div className="mb-2 flex gap-4 items-center">
+      <div className="mb-2 flex gap-4 xl:flex-row flex-col xl:items-center">
         <input
           type="text"
           placeholder="Search by Name, Email, or Occupation"

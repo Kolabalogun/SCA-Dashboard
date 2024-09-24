@@ -124,15 +124,15 @@ const AddExpenses = () => {
       await setDoc(activitesRef, dataa);
 
       try {
-        const emailData = {
-          emails: [user?.email],
-          subject: `New Expenses on ${values?.type} `,
-          message: `You carried out New Expenses cost ₦${parseInt(
-            values?.amount as string
-          )?.toLocaleString()} on ${values?.type}. Paid to ${
-            values.patient
-          }. Description: ${values.desc}  `,
-        };
+        // const emailData = {
+        //   emails: [user?.email],
+        //   subject: `New Expenses on ${values?.type} `,
+        //   message: `You carried out New Expenses cost ₦${parseInt(
+        //     values?.amount as string
+        //   )?.toLocaleString()} on ${values?.type}. Paid to ${
+        //     values.patient
+        //   }. Description: ${values.desc}  `,
+        // };
 
         const adminEmailData = {
           emails: adminEmails,
@@ -146,9 +146,9 @@ const AddExpenses = () => {
           } `,
         };
 
-        const message = await sendEmail(emailData);
+        // // const message = await sendEmail(emailData);
         const adminMessage = await sendEmail(adminEmailData);
-        console.log("Email sent successfully:", message);
+        ////  console.log("Email sent successfully:", message);
         console.log("Admin Email sent successfully:", adminMessage);
       } catch (emailError) {
         console.error("Error sending email:", emailError);

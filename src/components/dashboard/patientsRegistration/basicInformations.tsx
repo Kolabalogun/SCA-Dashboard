@@ -172,13 +172,13 @@ const BasicInformations = ({ form, staffs, userId }: Props) => {
           />
         </div>
 
-        <CustomFormField
+        {/* <CustomFormField
           fieldType={FormFieldType.TEXTAREA}
           control={form.control}
           name="occupationHistory"
           label="Occupation History"
           placeholder="Enter Patient Occupation History"
-        />
+        /> */}
       </section>
       <section className="space-y-6">
         <div className="mb-9 space-y-1">
@@ -194,23 +194,15 @@ const BasicInformations = ({ form, staffs, userId }: Props) => {
             label="Name of Next of KIN"
             placeholder="Next of KIN's name"
           />
+        </div>
 
+        <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.PHONE_INPUT}
             control={form.control}
             name="nextOfKinNumber"
             label="Phone Number"
             placeholder="(555) 123-4567"
-          />
-        </div>
-
-        <div className="flex flex-col gap-6 xl:flex-row">
-          <CustomFormField
-            fieldType={FormFieldType.INPUT}
-            control={form.control}
-            name="nextOfKinAddress"
-            label="Address"
-            placeholder="14 street, New york, NY - 5101"
           />
 
           <CustomFormField
@@ -240,6 +232,24 @@ const BasicInformations = ({ form, staffs, userId }: Props) => {
           />
         </div>
 
+        <div className="flex flex-col gap-6 xl:flex-row">
+          <CustomFormField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="nextOfKinAddress"
+            label="Address"
+            placeholder="14 street, New york, NY - 5101"
+          />
+
+          <CustomFormField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="nextOfKinOfficeAddress"
+            label="Office Address"
+            placeholder="14 street, New york, NY - 5101"
+          />
+        </div>
+
         {/* Relationship & Occupation */}
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
@@ -259,76 +269,35 @@ const BasicInformations = ({ form, staffs, userId }: Props) => {
           />
         </div>
       </section>
-      <section className="space-y-6">
-        <div className="mb-9 space-y-1">
-          <h2 className="sub-header">Educatiton History</h2>
-        </div>
-
-        {/* PRIMARY & SECONDARY EDUCATION */}
-        <div className="flex flex-col gap-6 xl:flex-row">
-          <CustomFormField
-            fieldType={FormFieldType.TEXTAREA}
-            control={form.control}
-            name="primaryEducation"
-            label="Primary Education"
-            placeholder="Ogunmepon Nursery & Primary"
-          />
-
-          <CustomFormField
-            fieldType={FormFieldType.TEXTAREA}
-            control={form.control}
-            name="secondaryEducation"
-            label="Secondary Education"
-            placeholder="Ajanlekoko High School"
-          />
-        </div>
-
-        {/* Tertiary & Vocational EDUCATION */}
-        <div className="flex flex-col gap-6 xl:flex-row">
-          <CustomFormField
-            fieldType={FormFieldType.TEXTAREA}
-            control={form.control}
-            name="tertiaryEducation"
-            label="Tertiary Education"
-            placeholder="Mafikubolaje University"
-          />
-
-          <CustomFormField
-            fieldType={FormFieldType.TEXTAREA}
-            control={form.control}
-            name="vocationalEducation"
-            label="Vocational Education (if any)"
-            placeholder="Olowokinpelaye Vocational Transformation"
-          />
-        </div>
-      </section>
 
       <section className="space-y-6">
         <div className="mb-9 space-y-1">
           <h2 className="sub-header">Identification and Verfication</h2>
         </div>
 
-        <CustomFormField
-          fieldType={FormFieldType.SELECT}
-          control={form.control}
-          name="identificationType"
-          label="Identification Type"
-          placeholder="Select identification type"
-        >
-          {IdentificationTypes.map((type, i) => (
-            <SelectItem key={type + i} value={type}>
-              <p className="text-white capitalize">{type}</p>
-            </SelectItem>
-          ))}
-        </CustomFormField>
+        <div className="flex flex-col gap-6 xl:flex-row">
+          <CustomFormField
+            fieldType={FormFieldType.SELECT}
+            control={form.control}
+            name="identificationType"
+            label="Identification Type"
+            placeholder="Select identification type"
+          >
+            {IdentificationTypes.map((type, i) => (
+              <SelectItem key={type + i} value={type}>
+                <p className="text-white capitalize">{type}</p>
+              </SelectItem>
+            ))}
+          </CustomFormField>
 
-        <CustomFormField
-          fieldType={FormFieldType.INPUT}
-          control={form.control}
-          name="identificationNumber"
-          label="Identification Number"
-          placeholder="123456789"
-        />
+          <CustomFormField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="identificationNumber"
+            label="Identification Number"
+            placeholder="123456789"
+          />
+        </div>
 
         <CustomFormField
           fieldType={FormFieldType.SKELETON}
@@ -364,7 +333,7 @@ const BasicInformations = ({ form, staffs, userId }: Props) => {
                   alt="doctor"
                   className="rounded-full border border-dark-500"
                 />
-                <p className="text-white">{`${doctor?.firstName} ${doctor?.lastName}`}</p>
+                <p className="text-white capitalize">{`${doctor?.firstName} ${doctor?.lastName}`}</p>
               </div>
             </SelectItem>
           ))}
@@ -377,7 +346,7 @@ const BasicInformations = ({ form, staffs, userId }: Props) => {
           fieldType={FormFieldType.CHECKBOX}
           control={form.control}
           name="treatmentConsent"
-          label="Patient consent to receive treatment for their health condition."
+          label="Patient consent to receive rehabilitation for their health condition."
         />
 
         <CustomFormField
@@ -385,7 +354,7 @@ const BasicInformations = ({ form, staffs, userId }: Props) => {
           control={form.control}
           name="disclosureConsent"
           label="Patient consent to the use and disclosure of my health
-            information for their treatment purposes."
+            information for their rehabilitation purposes."
         />
 
         <CustomFormField
