@@ -116,17 +116,17 @@ const ExpenseDetails = () => {
       await setDoc(activitesRef, dataa);
 
       try {
-        const emailData = {
-          emails: [user?.email],
-          subject: `You just deleted an Expenses on ${expenses?.type} `,
-          message: `Expense with ID: ${expenses?.id}, titled "${
-            expenses?.desc
-          }" and amounting to ₦${parseInt(
-            expenses?.amount
-          )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
-            expenses?.paymentRegisteredBy || expenses?.registeredBy
-          } on ${formatDate(expenses?.formDate) || "N/A"}`,
-        };
+        // const emailData = {
+        //   emails: [user?.email],
+        //   subject: `You just deleted an Expenses on ${expenses?.type} `,
+        //   message: `Expense with ID: ${expenses?.id}, titled "${
+        //     expenses?.desc
+        //   }" and amounting to ₦${parseInt(
+        //     expenses?.amount
+        //   )?.toLocaleString()} was deleted by you. Initially, this payment was approved by ${
+        //     expenses?.paymentRegisteredBy || expenses?.registeredBy
+        //   } on ${formatDate(expenses?.formDate) || "N/A"}`,
+        // };
 
         const adminEmailData = {
           emails: adminEmails,
