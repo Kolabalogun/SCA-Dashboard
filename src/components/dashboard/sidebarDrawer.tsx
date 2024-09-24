@@ -4,10 +4,9 @@ import {
   DrawerBody,
   DrawerOverlay,
   DrawerContent,
-  DrawerCloseButton,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
-import { LogOut, Menu, X } from "lucide-react";
+import { LogOut, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { signOut } from "firebase/auth";
@@ -31,6 +30,8 @@ const SidebarDrawer = ({
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
+
+  console.log(isLoading, "Loading");
 
   const handleLogOut = async () => {
     try {
